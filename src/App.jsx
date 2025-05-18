@@ -4,6 +4,7 @@ import HomePage from './pages/home/HomePage'
 import CartPage from './pages/cart/CartPage'
 import LoginPage from './pages/login/LoginPage'
 import ProducDetail from './pages/productDetail/ProductDetail'
+import Footer from './components/footer/Footer'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route path='/product/:id' element={<ProducDetail />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </>
   )
