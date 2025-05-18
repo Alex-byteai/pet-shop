@@ -1,63 +1,10 @@
-/* .header {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  font-family: Montserrat, sans-serif;
-  color: #fff;
-  background: transparent;
-
-  .header-container {
-    display: block;
-    width: 70%;
-    margin: 0 auto;
-    padding-top: 1em;
-
-    .logo-container {
-      float: left;
-      font-weight: 700;
-      font-size: 1.875em;
-    }
-    
-    .search-container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      margin: 0 2rem;
-    }
-
-    .search-button {
-      padding: 0.5em 1.5em;
-      border: none;
-      background-color: #fce38a;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-      transition: backgorund 0.2s ease-in-out;
-    }
-
-    .search-button:hover {
-      background-color: #f9d847;
-    }
-
-    .main-menu {
-      float: right;
-      text-align: center;
-      .nav-link {
-        display: inline-block;
-        padding: 0.75em 1.875em;
-
-      }
-    }
-  }
-} */
-
 .main-header {
-  
+  position: sticky;
+  background: rgb(223, 71, 71);
   top: 0;
   width: 100%;
   z-index: 1000;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: transparent;
   color: #333;
 }
 
@@ -77,32 +24,49 @@
   color: #333;
 }
 
+/* estilos para la barra de buscar */
+
 .search-container {
-  flex: 1;
   display: flex;
-  justify-content: center;
-  margin: 0 2rem;
+  align-items: center;
+  position: relative;
+  flex: 1 1 400px;
+  min-width: 25px;
+  max-width: 600px;
+  margin: 0 1rem;
 }
 
 .search-input {
-  padding: 0.5em 1em;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-  width: 60%;
+  height: 40px;
+  line-height: 28px;
+  padding: 0 1rem;
+  padding-left: 2.5rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  outline: none;
+  background-color: #f3f3f4;
+  color: #0d0c22;
+  width: 100%;
+  transition: .3s ease;
 }
 
-.search-button {
-  padding: 0.5em 1.5em;
-  border: none;
-  background-color: #fce38a;
-  color: #000;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out;
+.search-input::placeholder {
+  color : #9e9ea7;
 }
 
-.search-button:hover {
-  background-color: #f9d847;
+.search-input:focus, input:hover {
+  outline: none;
+  border-color: rgba(79, 38, 146, 0.4);
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgb(234, 76, 137/10%);
+}
+
+.icon {
+  position: absolute;
+  left: 1rem;
+  fill: #9e9ea7;
+  width: 1rem;
+  height: 1rem;
 }
 
 .main-menu {
