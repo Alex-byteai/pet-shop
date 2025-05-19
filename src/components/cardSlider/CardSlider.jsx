@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide } from "swiper/react";
+import { MdOutlinePets } from "react-icons/md";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,15 +13,17 @@ const CardSlider = ( {children} ) => {
   return (
     <>
       <Swiper
+        className="card-slider"
+        initialSlide={12/2}
         slidesPerView={3}
         centeredSlides={true}
         spaceBetween={30}
         pagination={{
-          type: 'fraction',
+          clickable: false,
         }}
         navigation={true}
         modules={[Pagination, Navigation]}
-        className="mySwiper"
+
       >
         {Array.isArray(children) ? (
           children.map((child, index) => (

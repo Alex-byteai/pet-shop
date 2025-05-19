@@ -6,3 +6,4 @@ export const topProducts = Array(12).fill({
   price: 29.99,
   image: product1
 });
+

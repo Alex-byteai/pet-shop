@@ -10,19 +10,25 @@ import './HomePage.css';
 const HomePage = () => {
   return (
     <div className='home-page'>
-      <HomeSlider />
+      
+      <section className='home-slider'>
+        <HomeSlider />
+      </section>
 
       {/* categorias Destacadas */}
       <section className='feactured-categories'>
-        <h2>Categorias Destacadas</h2>
-        <div className='categories-grid'>
-          {featuredCategories.map((category) => (
-            <div key={category.id}>
-              <div className='category-card'>
-                <img src={category.image} alt={category.name} />
-                <button className='btn'>Ver Productos</button>
+        <div className="category-grid">
+          {featuredCategories.map((cat, i) => (
+            <div 
+              className='category-card'
+              key={i} 
+              style={{ backgroundColor: cat.bgColor }}
+            >
+              <div className="category-text">
+                <h2>{cat.title}</h2>
+                <button>{cat.button}</button>
               </div>
-              <h3>{category.name}</h3>
+              <img src={cat.img} alt={cat.title} />
             </div>
           ))}
         </div>
@@ -42,6 +48,8 @@ const HomePage = () => {
             </CardSlider>
           </div>
       </section>
+
+      
 
     </div>
   );

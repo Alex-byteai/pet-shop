@@ -3,6 +3,7 @@
   height: auto;      
 }
 .swiper-slide {
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: stretch; 
@@ -16,3 +17,26 @@
     overflow-clip-margin: content-box;
     overflow: clip;
 }
+
+
+.card-slider .swiper-pagination {
+  margin-top: 20px;
+  text-align: center;
+  position: static;
+}
+
+.card-slider .swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: #ccc;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card-slider .swiper-pagination-bullet-active {
+  background-color: #1a1a1a;
+  opacity: 1;
+  transform: scale(1.4);
+}
+

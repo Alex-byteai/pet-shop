@@ -8,11 +8,10 @@ import 'swiper/css/navigation';
 
 import './HomeSlider.css';
 
-import promo1 from '../../assets/images/promotions/promotion-1.png';
-import promo2 from '../../assets/images/promotions/promotion-2.png';
-import promo3 from '../../assets/images/promotions/promotion-3.png';
-import promo4 from '../../assets/images/promotions/promotion-4.png';
-import promo5 from '../../assets/images/promotions/promotion-5.png';
+import promo1 from '../../assets/images/promotions/promotion-1.jpg';
+import promo2 from '../../assets/images/promotions/promotion-2.jpg';
+import promo3 from '../../assets/images/promotions/promotion-3.jpg';
+import promo4 from '../../assets/images/promotions/promotion-4.jpg';
 
 
 
@@ -31,7 +30,6 @@ const HomeSlider = () => {
       <SwiperSlide><img src={promo2} alt="Promoción 2" /></SwiperSlide>
       <SwiperSlide><img src={promo3} alt="Promoción 3" /></SwiperSlide>
       <SwiperSlide><img src={promo4} alt="Promoción 4" /></SwiperSlide>
-      <SwiperSlide><img src={promo5} alt="Promoción 5" /></SwiperSlide>
     </Swiper>
   );
 };

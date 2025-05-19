@@ -1,16 +1,11 @@
 .card {
-  background-color: #1e293b; 
-  color: white;
-  border-radius: 12px;
+  background-color: #ffffff; 
+  color: rgb(107, 78, 38);
   padding: 16px;
   width: 320px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   font-family: sans-serif;
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
+  border: 1px solid #000000;
 }
 
 .card-image {
@@ -32,19 +27,41 @@
   margin-bottom: 16px;
 }
 
+/* estilo del boton */
+
 .card-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #2563eb; /* blue-600 */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14px;
+  background: #ffffff;
+  color: #000000;
+  padding: 8px 16px;
+  border: 1px solid #000000;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 16px;
+  margin: 0 auto;
+  display: block;
+  z-index: 1;
+  position: relative;
+  overflow: hidden;
 }
 
 .card-button:hover {
-  background-color: #1e40af; /* blue-800 */
+  color: #ffffff;
+}
+
+.card-button::after {
+  content: '';
+  background-color: black;
+  position: absolute;
+  z-index: -1;
+  left: -20%;
+  right: -20%;
+  top: 0;
+  bottom: 0;
+  transform: skewX(-45deg) scale(0, 1);
+  transition: all 0.5s;
+}
+
+.card-button:hover::after {
+  transform: skewX(-45deg) scale(1, 1);
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
 }
