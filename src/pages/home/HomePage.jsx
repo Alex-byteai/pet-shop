@@ -2,6 +2,10 @@
 import HomeSlider from '../../components/homeSlider/HomeSlider';
 import { featuredCategories } from '../../data/feacturedCategories';
 import { topProducts } from '../../data/topProducts';
+import CardSlider from '../../components/cardSlider/CardSlider';
+import Card from '../../components/card/Card';
+
+import './HomePage.css';
 
 const HomePage = () => {
   return (
@@ -13,10 +17,12 @@ const HomePage = () => {
         <h2>Categorias Destacadas</h2>
         <div className='categories-grid'>
           {featuredCategories.map((category) => (
-            <div key={category.id} className='category-card'>
-              <img src={category.image} alt={category.name} />
+            <div key={category.id}>
+              <div className='category-card'>
+                <img src={category.image} alt={category.name} />
+                <button className='btn'>Ver Productos</button>
+              </div>
               <h3>{category.name}</h3>
-              <button className='btn'>Ver Productos</button>
             </div>
           ))}
         </div>
@@ -26,17 +32,17 @@ const HomePage = () => {
       <section className='top-products'>
           <h2>Lo Mas Vendidos</h2>
           <div className='products-grid'>
-            {topProducts.map((product) => (
-              <div key={product.id} className='product-card'>
-                <img src={product.image} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <span>${product.price}</span>
-                <button className='btn'>Agregar al Carrito</button>
-              </div>
-            ))}
+            <CardSlider>
+              {topProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  {...product}
+                />
+              ))}
+            </CardSlider>
           </div>
       </section>
+
     </div>
   );
 };
