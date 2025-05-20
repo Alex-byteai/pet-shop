@@ -1,0 +1,62 @@
+.user-list-container {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.user-list-title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.user-search-input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th,
+.user-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.user-table th {
+    background-color: #f3f3f3;
+}
+
+.view-detail-button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    margin-right: 0.5rem;
+}
+
+.view-detail-button:hover {
+    background-color: #0056b3;
+}
+
+.deactivate-button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #d9534f;
+    color: white;
+}
+
+.deactivate-button:hover {
+    background-color: #c9302c;
+}
