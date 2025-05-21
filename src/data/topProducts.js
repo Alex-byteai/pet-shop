@@ -1,9 +1,5 @@
-import product1 from '../assets/images/product/product-1.jpg';
+import { products } from './products';
 
-export const topProducts = Array(12).fill({
-  id: 1,
-  name: 'Producto Popular',
-  price: 29.99,
-  image: product1
-});
+// Obtener los productos más vendidos
+export const topProducts = products.filter(product => product.isBestSeller);
 

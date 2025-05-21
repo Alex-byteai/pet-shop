@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 import './Header.css'; 
 import { FaHeart, FaUser, FaShoppingBag, FaSearch  } from 'react-icons/fa';
+import SearchBar from '../search/SearchBar';
+import CategoryMenu from '../categoryMenu/CategoryMenu';
+import ProductMenu from '../productMenu/ProductMenu';
 
 const Header = () => {
   return (
@@ -28,13 +31,17 @@ const Header = () => {
 
         <nav className="nav-links">
           <Link to="/">Inicio</Link>
-          <Link to="/productos">Productos</Link>
-          <Link to="/categorias">Categorias</Link>
+          <CategoryMenu />
+          <ProductMenu />
         </nav>
 
-        <div className="search-bar">
+        {/* <div className="search-bar">
           <input type="text" placeholder="Buscar productos..." />
           <button type="submit"><FaSearch  /></button>
+        </div> */}
+
+        <div className="search-bar">
+          <SearchBar />
         </div>
       </div>
     </header>

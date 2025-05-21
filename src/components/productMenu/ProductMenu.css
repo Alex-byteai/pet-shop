@@ -1,0 +1,158 @@
+.product-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.product-menu-button {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.3s;
+}
+
+.product-menu-button:hover {
+  color: #a26e3c;
+}
+
+.product-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  width: 90vw;
+  max-width: 1200px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 24px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.product-sections {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1200px) {
+  .product-dropdown {
+    width: 95vw;
+  }
+}
+
+@media (max-width: 992px) {
+  .product-sections {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .product-section:last-child {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-dropdown {
+    width: 100vw;
+    left: 0;
+    transform: none;
+    border-radius: 0;
+    padding: 16px;
+  }
+
+  .product-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .product-section:last-child {
+    grid-column: auto;
+  }
+}
+
+.product-section {
+  padding: 16px;
+  min-width: 0;
+}
+
+.product-section h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.product-links div {
+  padding: 8px 0;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.product-links div:hover {
+  color: #a26e3c;
+}
+
+.product-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-highlight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.product-highlight:hover {
+  background-color: #f5f5f5;
+}
+
+.product-highlight img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.highlight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.highlight-name {
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.highlight-price {
+  font-size: 14px;
+  color: #a26e3c;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

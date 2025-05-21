@@ -14,10 +14,10 @@ const CardSlider = ( {children} ) => {
     <>
       <Swiper
         className="card-slider"
-        initialSlide={12/2}
+        initialSlide={7/2}
         slidesPerView={3}
         centeredSlides={true}
-        spaceBetween={30}
+        spaceBetween={10}
         pagination={{
           clickable: false,
         }}

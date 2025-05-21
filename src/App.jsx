@@ -1,29 +1,29 @@
-import { Routes, Route} from 'react-router-dom'
-import Header from './components/header/Header'
-import HomePage from './pages/home/HomePage'
-import CartPage from './pages/cart/CartPage'
-import LoginPage from './pages/login/LoginPage'
-import ProducDetail from './pages/productDetail/ProductDetail'
-import Footer from './components/footer/Footer'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
+import HomePage from './pages/home/HomePage';
+import SearchResults from './pages/searchResult/SearchResults';
+import ProductDetail from './pages/productDetail/ProductDetail';
 
 function App() {
-
   return (
-    <>
-      <div className='App'>
-        <Header />
-        <main className='main-content'>
-          <Routes>
-            <Route path='/' element={<HomePage />} />
-            <Route path='/cart' element={<CartPage />} />
-            <Route path='/login' element={<LoginPage />} />
-            <Route path='/product/:id' element={<ProducDetail />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </>
-  )
+    <Router>
+      <CartProvider>
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/product/:productId" element={<ProductDetail />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </CartProvider>
+    </Router>
+  );
 }
 
-export default App
+export default App;

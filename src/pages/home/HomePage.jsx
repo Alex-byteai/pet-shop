@@ -4,10 +4,11 @@ import { featuredCategories } from '../../data/feacturedCategories';
 import { topProducts } from '../../data/topProducts';
 import CardSlider from '../../components/cardSlider/CardSlider';
 import Card from '../../components/card/Card';
-
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className='home-page'>
       
@@ -17,18 +18,19 @@ const HomePage = () => {
 
       {/* categorias Destacadas */}
       <section className='feactured-categories'>
+        <h2>Categorias Destacadas</h2>
         <div className="category-grid">
-          {featuredCategories.map((cat, i) => (
+          {featuredCategories.map((cat) => (
             <div 
               className='category-card'
-              key={i} 
+              key={cat.id} 
               style={{ backgroundColor: cat.bgColor }}
             >
               <div className="category-text">
-                <h2>{cat.title}</h2>
-                <button>{cat.button}</button>
+                <h2>{cat.name}</h2>
+                <button onClick={() => navigate(`/search?category=${cat.id}`)}>Ver mas</button>
               </div>
-              <img src={cat.img} alt={cat.title} />
+              <img src={cat.image} alt={cat.name} />
             </div>
           ))}
         </div>
@@ -37,7 +39,7 @@ const HomePage = () => {
       {/* Productos Mas Vendidos */}
       <section className='top-products'>
           <h2>Lo Mas Vendidos</h2>
-          <div className='products-grid'>
+          <div className='products-slider'>
             <CardSlider>
               {topProducts.map((product) => (
                 <Card

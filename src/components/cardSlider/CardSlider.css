@@ -10,6 +10,10 @@
   height: auto;
 }
 
+.card-slider {
+  padding: 10px;
+}
+
 .swiper-slide img {
     display: block;
     width: 100%;
@@ -39,4 +43,3 @@
   opacity: 1;
   transform: scale(1.4);
 }
-

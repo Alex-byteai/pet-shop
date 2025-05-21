@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DK+Loopet:wght@100..400&display=swap');
+
 * {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -86,4 +88,16 @@
 
 .top-products {
   margin: 30px;
+  text-align: center;
+}
+
+.feactured-categories h2, 
+.top-products h2 {
+  font-family: 'Playwrite DK Loopet', cursive;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.top-products h2 {
+  margin-bottom: 20px;
 }
