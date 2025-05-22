@@ -20,7 +20,7 @@ const ProductDetail = () => {
     }
   }, [product]);
 
-  if (!product) {
+  if (!product) { 
     return (
       <div className="product-detail">
         <h1 className="product-title">Producto no encontrado</h1>

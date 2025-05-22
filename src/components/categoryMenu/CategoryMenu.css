@@ -21,7 +21,7 @@
 .category-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: -160px;
   background: white;
   min-width: 550px;
   max-width: 800px;

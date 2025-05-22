@@ -58,7 +58,7 @@ const Footer = () => {
       <div className="footer-container">
         <div className="row-footer">
           <div className="footer-section">
-            <p>&copy; 2024 PetShop. Todos los derechos reservados.</p>
+            <p>&copy; 2025 PetShop. Todos los derechos reservados.</p>
           </div>
         </div>
       </div>
