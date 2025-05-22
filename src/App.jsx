@@ -17,6 +17,14 @@ import Contact from './pages/footer/Contact';
 import Support from './pages/footer/Support';
 import Feedback from './pages/footer/Feedback';
 
+// Importando páginas para el admin
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserList from "./pages/admin/UserList";
+import UserDetail from "./pages/admin/UserDetail";
+import OrdersList from "./pages/admin/OrdersList";
+import OrderDetail from "./pages/admin/OrderDetail";
+
+
 function App() {
   return (
     <Router>
@@ -25,6 +33,7 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
+              {/*Rutas principales de home-search-product*/}
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
@@ -39,6 +48,13 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/support" element={<Support />} />
               <Route path="/feedback" element={<Feedback />} />
+                
+              {/* Admin */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<UserList />} />
+              <Route path="/admin/users/:userId" element={<UserDetail />} />
+              <Route path="/admin/orders" element={<OrdersList />} />
+              <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
             </Routes>
           </main>
           <Footer />
