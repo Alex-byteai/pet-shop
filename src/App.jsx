@@ -1,36 +1,66 @@
-import { Routes, Route } from "react-router-dom";
-import Header from "./components/header/Header";
-import HomePage from "./pages/home/HomePage";
-import CartPage from "./pages/cart/CartPage";
-import LoginPage from "./pages/login/LoginPage";
-import ProducDetail from "./pages/productDetail/ProductDetail";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import Header from './components/header/Header';
+import Footer from './components/footer/Footer';
+import HomePage from './pages/home/HomePage';
+import SearchResults from './pages/searchResult/SearchResults';
+import ProductDetail from './pages/productDetail/ProductDetail';
 
+// Importando páginas del footer
+import About from './pages/footer/About';
+import Terms from './pages/footer/Terms';
+import Privacy from './pages/footer/Privacy';
+import FAQ from './pages/footer/FAQ';
+import Shipping from './pages/footer/Shipping';
+import Returns from './pages/footer/Returns';
+import Contact from './pages/footer/Contact';
+import Support from './pages/footer/Support';
+import Feedback from './pages/footer/Feedback';
+
+// Importando páginas para el admin
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserList from "./pages/admin/UserList";
 import UserDetail from "./pages/admin/UserDetail";
 import OrdersList from "./pages/admin/OrdersList";
 import OrderDetail from "./pages/admin/OrderDetail";
 
+
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/product/:id" element={<ProducDetail />} />
-
-          {/* Admin */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UserList />} />
-          <Route path="/admin/users/:userId" element={<UserDetail />} />
-          <Route path="/admin/orders" element={<OrdersList />} />
-          <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
-        </Routes>
-      </main>
-    </div>
+    <Router>
+      <CartProvider>
+        <div className="App">
+          <Header />
+          <main className="main-content">
+            <Routes>
+              {/*Rutas principales de home-search-product*/}
+              <Route path="/" element={<HomePage />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/product/:productId" element={<ProductDetail />} />
+              
+              {/* Rutas del footer */}
+              <Route path="/about" element={<About />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/returns" element={<Returns />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/feedback" element={<Feedback />} />
+                
+              {/* Admin */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/users" element={<UserList />} />
+              <Route path="/admin/users/:userId" element={<UserDetail />} />
+              <Route path="/admin/orders" element={<OrdersList />} />
+              <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </CartProvider>
+    </Router>
   );
 }
 

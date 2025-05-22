@@ -1,15 +1,14 @@
 .swiper {
   width: 100%;
-  height: 400px;
+  height: 100%; 
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .swiper-slide {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5; 
+  background: #f5f5f5;
 }
 
 .swiper-slide img {
@@ -18,4 +17,47 @@
   height: 100%;
   overflow-clip-margin: content-box;
   overflow: clip;
+  object-fit: cover;
+}
+/* bullets */
+.swiper-pagination-bullet {
+  width: 30px;          /* Largo de la línea */
+  height: 4px;          /* Alto de la línea */
+  border-radius: 2px;   /* Bordes redondeados */
+  background-color: #ccc;
+  opacity: 0.5;
+  margin: 0 6px;
+  transition: all 0.3s ease;
+}
+
+/* Bullet activo */
+.swiper-pagination-bullet-active {
+  background-color: #1a1a1a; /* Cambia a color activo */
+  opacity: 1;
+  transform: scaleX(1.2);
+}
+
+/* Botones de navegación */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #7c4f24;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background-color: #a26e3c;
+  color: white;
+}
+
+.swiper-button-disabled {
+  opacity: 0.3;
+  pointer-events: none;
 }

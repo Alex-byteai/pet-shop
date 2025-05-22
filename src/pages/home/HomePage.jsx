@@ -2,21 +2,35 @@
 import HomeSlider from '../../components/homeSlider/HomeSlider';
 import { featuredCategories } from '../../data/feacturedCategories';
 import { topProducts } from '../../data/topProducts';
+import CardSlider from '../../components/cardSlider/CardSlider';
+import Card from '../../components/card/Card';
+import { useNavigate } from 'react-router-dom';
+import './HomePage.css';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className='home-page'>
-      <HomeSlider />
+      
+      <section className='home-slider'>
+        <HomeSlider />
+      </section>
 
       {/* categorias Destacadas */}
       <section className='feactured-categories'>
         <h2>Categorias Destacadas</h2>
-        <div className='categories-grid'>
-          {featuredCategories.map((category) => (
-            <div key={category.id} className='category-card'>
-              <img src={category.image} alt={category.name} />
-              <h3>{category.name}</h3>
-              <button className='btn'>Ver Productos</button>
+        <div className="category-grid">
+          {featuredCategories.map((cat) => (
+            <div 
+              className='category-card'
+              key={cat.id} 
+              style={{ backgroundColor: cat.bgColor }}
+            >
+              <div className="category-text">
+                <h2>{cat.name}</h2>
+                <button onClick={() => navigate(`/search?category=${cat.id}`)}>Ver mas</button>
+              </div>
+              <img src={cat.image} alt={cat.name} />
             </div>
           ))}
         </div>
@@ -25,18 +39,20 @@ const HomePage = () => {
       {/* Productos Mas Vendidos */}
       <section className='top-products'>
           <h2>Lo Mas Vendidos</h2>
-          <div className='products-grid'>
-            {topProducts.map((product) => (
-              <div key={product.id} className='product-card'>
-                <img src={product.image} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <span>${product.price}</span>
-                <button className='btn'>Agregar al Carrito</button>
-              </div>
-            ))}
+          <div className='products-slider'>
+            <CardSlider>
+              {topProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  {...product}
+                />
+              ))}
+            </CardSlider>
           </div>
       </section>
+
+      
+
     </div>
   );
 };

@@ -1,0 +1,177 @@
+import product1 from '../assets/images/product/product-1.jpg'
+import product2 from '../assets/images/product/product-2.jpg'
+import product3 from '../assets/images/product/product-3.jpg'
+// import product4 from '../assets/images/product/product-4.jpg'
+
+
+
+export const products = [
+  {
+    id: 1,
+    name: 'Royal Canin Adult',
+    description: 'Alimento premium para perros adultos, formulado con proteínas de alta calidad y nutrientes esenciales.',
+    price: 59.99,
+    category: 1,
+    subcategory: 'Alimento Seco',
+    brand: 'Royal Canin',
+    rating: 4.8,
+    stock: 50,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 2,
+    name: 'Whiskas Pescado',
+    description: 'Alimento húmedo para gatos, sabor pescado en salsa.',
+    price: 2.99,
+    category: 1,
+    subcategory: 'Alimento Húmedo',
+    brand: 'Whiskas',
+    rating: 4.5,
+    stock: 100,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 3,
+    name: 'Collar Ajustable Premium',
+    description: 'Collar ajustable de cuero genuino con hebilla metálica resistente.',
+    price: 24.99,
+    category: 2,
+    subcategory: 'Collares',
+    brand: 'PetStyle',
+    rating: 4.7,
+    stock: 30,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: false
+  },
+  {
+    id: 4,
+    name: 'Cama Ortopédica Grande',
+    description: 'Cama ortopédica con espuma viscoelástica para perros grandes.',
+    price: 89.99,
+    category: 2,
+    subcategory: 'Camas',
+    brand: 'ComfortPet',
+    rating: 4.9,
+    stock: 15,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: true
+  },
+  {
+    id: 5,
+    name: 'Shampoo Antipulgas Natural',
+    description: 'Shampoo natural con ingredientes orgánicos y protección contra pulgas.',
+    price: 18.99,
+    category: 3,
+    subcategory: 'Shampoo',
+    brand: 'NaturePet',
+    rating: 4.6,
+    stock: 40,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 6,
+    name: 'Juguete Interactivo Dispensador',
+    description: 'Juguete dispensador de premios que mantiene a tu mascota entretenida.',
+    price: 15.99,
+    category: 2,
+    subcategory: 'Juguetes',
+    brand: 'PlayfulPets',
+    rating: 4.4,
+    stock: 60,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: false
+  },
+  {
+    id: 7,
+    name: 'Arena Premium para Gatos',
+    description: 'Arena aglomerante de alta absorción y control de olores.',
+    price: 19.99,
+    category: 3,
+    subcategory: 'Arena para Gatos',
+    brand: 'CleanCat',
+    rating: 4.7,
+    stock: 80,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 8,
+    name: 'Suplemento Vitamínico Complete',
+    description: 'Complejo vitamínico completo para perros y gatos.',
+    price: 29.99,
+    category: 4,
+    subcategory: 'Vitaminas',
+    brand: 'VetCare',
+    rating: 4.8,
+    stock: 45,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: false
+  },
+  {
+    id: 9,
+    name: 'Abrigo Impermeable',
+    description: 'Abrigo impermeable con forro polar para días lluviosos.',
+    price: 34.99,
+    category: 5,
+    subcategory: 'Abrigos',
+    brand: 'PetFashion',
+    rating: 4.5,
+    stock: 25,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: false
+  },
+  {
+    id: 10,
+    name: 'Transportadora Deluxe',
+    description: 'Transportadora espaciosa y segura con ventilación óptima.',
+    price: 49.99,
+    category: 2,
+    subcategory: 'Transportadoras',
+    brand: 'TravelPet',
+    rating: 4.6,
+    stock: 20,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 11,
+    name: 'Snacks Dentales',
+    description: 'Premios dentales para la higiene bucal de tu mascota.',
+    price: 12.99,
+    category: 1,
+    subcategory: 'Snacks y Premios',
+    brand: 'DentalCare',
+    rating: 4.4,
+    stock: 70,
+    images: [product1, product2, product3],
+    isNew: false,
+    isBestSeller: true
+  },
+  {
+    id: 12,
+    name: 'Kit de Cepillado Premium',
+    description: 'Kit completo de cepillos y peines para el cuidado del pelaje.',
+    price: 39.99,
+    category: 3,
+    subcategory: 'Cepillos',
+    brand: 'GroomPro',
+    rating: 4.7,
+    stock: 35,
+    images: [product1, product2, product3],
+    isNew: true,
+    isBestSeller: false
+  }
+];

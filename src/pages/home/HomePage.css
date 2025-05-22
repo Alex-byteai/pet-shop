@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DK+Loopet:wght@100..400&display=swap');
+
+* {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.home-slider {
+  width: 100%;
+  height: 600px; 
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.home-slider .swiper {
+  height: 100%;
+}
+
+.home-slider .swiper-slide img {
+  height: 100%;
+}
+
+.feactured-categories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  margin: 10px 0;
+}
+
+/* CategoryGrid */
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 300px;
+  gap: 10px;
+  margin: 30px;
+}
+
+.category-card {
+  width: 600px;
+  position: relative;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 20px 50px;
+}
+
+.category-card img {
+  position: absolute;
+  top: 50px;
+  left: -10px;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.category-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-text h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.category-text button {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 6px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  height: 30px;
+  width: 100px;
+}
+
+.category-text button:hover {
+  background-color: white;
+  color: black;
+}
+
+.top-products {
+  margin: 30px;
+  text-align: center;
+}
+
+.feactured-categories h2, 
+.top-products h2 {
+  font-family: 'Playwrite DK Loopet', cursive;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.top-products h2 {
+  margin-bottom: 20px;
+}
