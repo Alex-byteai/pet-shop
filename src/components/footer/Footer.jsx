@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 import "./footer.css"; 
 
 const Footer = () => {
   return (
+    <div className="contenedor">
+      <main className="relleno">
+        <Outlet />
+      </main>
     <footer className="footer">
       <div className="footer-container">
         <div className="row">
-
           <div className="footer-section">
             <h3>Sobre Nosotros</h3>
             <ul className="footer-links">
@@ -63,6 +67,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+    </div>
   );
 };
 

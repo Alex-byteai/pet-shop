@@ -24,6 +24,12 @@ import UserDetail from "./pages/admin/UserDetail";
 import OrdersList from "./pages/admin/OrdersList";
 import OrderDetail from "./pages/admin/OrderDetail";
 
+//Importando para el login
+import LoginPage from './pages/login/LoginPage';
+import InicioC from './pages/login/InicioC';
+import Register from './pages/login/Register';
+import Recover from './pages/login/Recover';
+import VerificarCodigo from './pages/login/Codigo';
 
 function App() {
   return (
@@ -33,6 +39,7 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
+              <Route element={<Footer />}>
               {/*Rutas principales de home-search-product*/}
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchResults />} />
@@ -55,9 +62,17 @@ function App() {
               <Route path="/admin/users/:userId" element={<UserDetail />} />
               <Route path="/admin/orders" element={<OrdersList />} />
               <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
+
+
+              {/* Login */}
+              <Route path="/login/LoginPage" element={<LoginPage/>} />
+              <Route path="/login/InicioC" element={<InicioC/>} />
+              <Route path="/login/Register" element={<Register/>} />
+              <Route path="/login/Recover" element={<Recover/>} />
+              <Route path="/login/Codigo" element={<VerificarCodigo/>} />
+              </Route>
             </Routes>
           </main>
-          <Footer />
         </div>
       </CartProvider>
     </Router>

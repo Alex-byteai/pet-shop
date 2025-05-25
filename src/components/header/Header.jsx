@@ -1,36 +1,42 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Header.css'; 
-import { FaHeart, FaUser, FaShoppingBag, FaSearch  } from 'react-icons/fa';
+import { FaHeart, FaUser, FaShoppingBag, FaSearch } from 'react-icons/fa';
 import SearchBar from '../search/SearchBar';
 import CategoryMenu from '../categoryMenu/CategoryMenu';
 import ProductMenu from '../productMenu/ProductMenu';
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header>
       {/* Barra superior */}
-
       <div className="top-bar">
-
         <div className="top-bar-left">
           {/* Aqui van los contactos */}
         </div>
 
         <div className="top-bar-right">
-          <span><FaHeart />Deseados</span>
-          <span><FaUser />Mi cuenta</span>
-          <span><FaShoppingBag />Mi carrito</span>
+          <span className="custom-link" onClick={() => navigate('/deseados')}>
+            <FaHeart /> Deseados
+          </span>
+          <span className="custom-link" onClick={() => navigate('/login/LoginPage')}>
+            <FaUser /> Mi cuenta
+          </span>
+          <span className="custom-link" onClick={() => navigate('/mi-carrito')}>
+            <FaShoppingBag /> Mi carrito
+          </span>
         </div>
-
       </div>
+
       {/* Barra principal */}
-      <div className="main-header">
+        <div className="main-header">
         <div className="logo">
-          <Link to="/">PetShop</Link>
+          PetShop
         </div>
 
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          <span className='a' onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Inicio</span>
           <CategoryMenu />
           <ProductMenu />
         </nav>
@@ -49,3 +55,4 @@ const Header = () => {
 };
 
 export default Header;
+
