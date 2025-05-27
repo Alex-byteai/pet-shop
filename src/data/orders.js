@@ -1,7 +1,7 @@
-export const orders = [
+const ordersprev = [
   {
-    id: 101,
-    userId: 1,
+   orderid: 101,
+    userid: 1,
     date: "2025-05-16",
     total: 89.9,
     status: "Pendiente",
@@ -11,8 +11,8 @@ export const orders = [
     ],
   },
   {
-    id: 102,
-    userId: 2,
+   orderid: 102,
+    userid: 1,
     date: "2025-05-16",
     total: 149.9,
     status: "Enviado",
@@ -22,8 +22,8 @@ export const orders = [
     ],
   },
   {
-    id: 103,
-    userId: 3,
+   orderid: 103,
+    userid: 3,
     date: "2025-05-17",
     total: 59.9,
     status: "Pendiente",
@@ -33,24 +33,24 @@ export const orders = [
     ],
   },
   {
-    id: 104,
-    userId: 4,
+   orderid: 104,
+    userid: 4,
     date: "2025-05-18",
     total: 39.9,
     status: "Pendiente",
     items: [{ nombre: "Rascador para gato", cantidad: 1, precio: 39.9 }],
   },
   {
-    id: 105,
-    userId: 5,
+   orderid: 105,
+    userid: 5,
     date: "2025-05-18",
     total: 99.9,
     status: "Cancelada",
     items: [{ nombre: "Comida para perro", cantidad: 3, precio: 33.3 }],
   },
   {
-    id: 106,
-    userId: 6,
+   orderid: 106,
+    userid: 6,
     date: "2025-05-18",
     total: 129.9,
     status: "Pendiente",
@@ -59,16 +59,16 @@ export const orders = [
     ],
   },
   {
-    id: 107,
-    userId: 7,
+   orderid: 107,
+    userid: 7,
     date: "2025-05-18",
     total: 49.9,
     status: "Enviado",
     items: [{ nombre: "Alimento para peces", cantidad: 2, precio: 24.95 }],
   },
   {
-    id: 108,
-    userId: 8,
+   orderid: 108,
+    userid: 8,
     date: "2025-05-18",
     total: 29.9,
     status: "Pendiente",
@@ -77,16 +77,16 @@ export const orders = [
     ],
   },
   {
-    id: 109,
-    userId: 9,
+   orderid: 109,
+    userid: 9,
     date: "2025-05-18",
     total: 49.9,
     status: "Pendiente",
     items: [{ nombre: "Jaula para hámster", cantidad: 1, precio: 49.9 }],
   },
   {
-    id: 110,
-    userId: 10,
+   orderid: 110,
+    userid: 10,
     date: "2025-05-18",
     total: 129.7, // Actualizado
     status: "Pendiente",
@@ -99,3 +99,10 @@ export const orders = [
     ],
   },
 ];
+export const orders = JSON.parse(localStorage.getItem("orders")) || ordersprev;
+
+if (!localStorage.getItem("orders")) {
+  localStorage.setItem("orders", JSON.stringify(ordersprev));
+}
+
+export default orders;

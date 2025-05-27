@@ -58,3 +58,20 @@ hr {
   text-align: center;
   color: #a0a0a0;
 }
+
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.relleno{
+  flex: 1;
+  background-color: white;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
