@@ -31,15 +31,11 @@ export default function ShoppingCart() {
 
       {cart.map(item => (
         <div key={item.id} className="cart-item">
-          <img
-            src={item.images[0]}
-            alt={item.name}
-            className="cart-item-image"
+          <img src={item.images[0]} alt={item.name} className="cart-item-image"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = '/placeholder-image.jpg';
-            }}
-          />
+            }}/>
           <div className="cart-item-details">
             <h3>{item.name}</h3>
             <p>${item.price.toFixed(2)}</p>
@@ -53,18 +49,9 @@ export default function ShoppingCart() {
                 -
               </button>
               <span>{item.quantity}</span>
-              <button
-                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-              >
-                +
-              </button>
+              <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
             </div>
-            <button 
-              onClick={() => removeFromCart(item.id)}
-              className="remove-button"
-            >
-              Eliminar
-            </button>
+            <button onClick={() => removeFromCart(item.id)} className="remove-button">Eliminar</button>
           </div>
         </div>
       ))}
@@ -82,9 +69,7 @@ export default function ShoppingCart() {
           <span>Total:</span>
           <span>${getTotal().toFixed(2)}</span>
         </div>
-        <Link to="/checkout" className="checkout-button">
-          Proceder al pago
-        </Link>
+        <Link to="/checkout" className="checkout-button">Proceder al pago</Link>
       </div>
     </div>
   );

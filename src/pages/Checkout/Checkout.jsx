@@ -105,47 +105,19 @@ export default function Checkout() {
               <div className="form-grid">
                 <div className="form-group form-full-width">
                   <label className="form-label" htmlFor="address">Dirección</label>
-                  <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    className="form-input"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" id="address" name="address" className="form-input" value={formData.address} onChange={handleInputChange}/>
                 </div>
                 <div className="form-group">
                   <label className="form-label" htmlFor="city">Ciudad</label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    className="form-input"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" id="city" name="city" className="form-input" value={formData.city} onChange={handleInputChange}/>
                 </div>
                 <div className="form-group">
                   <label className="form-label" htmlFor="state">Estado/Provincia</label>
-                  <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    className="form-input"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" id="state" name="state" className="form-input" value={formData.state} onChange={handleInputChange}/>
                 </div>
                 <div className="form-group">
                   <label className="form-label" htmlFor="zipCode">Código Postal</label>
-                  <input
-                    type="text"
-                    id="zipCode"
-                    name="zipCode"
-                    className="form-input"
-                    value={formData.zipCode}
-                    onChange={handleInputChange}
-                  />
+                  <input type="text" id="zipCode" name="zipCode" className="form-input" value={formData.zipCode} onChange={handleInputChange}/>
                 </div>
               </div>
             </div>
@@ -155,14 +127,7 @@ export default function Checkout() {
               <div className="shipping-methods">
                 {SHIPPING_METHODS.map((method) => (
                   <div key={method.id} className="shipping-method">
-                    <input
-                      type="radio"
-                      id={method.id}
-                      name="shippingMethod"
-                      value={method.id}
-                      checked={shippingMethod === method.id}
-                      onChange={(e) => setShippingMethod(e.target.value)}
-                    />
+                    <input type="radio" id={method.id} name="shippingMethod" value={method.id} checked={shippingMethod === method.id} onChange={(e) => setShippingMethod(e.target.value)}/>
                     <label htmlFor={method.id}>
                       <span className="method-name">{method.name}</span>
                       <span className="method-price">${method.price.toFixed(2)}</span>
@@ -177,25 +142,11 @@ export default function Checkout() {
               <h2 className="section-title">Método de Pago</h2>
               <div className="payment-methods">
                 <div className="payment-method">
-                  <input
-                    type="radio"
-                    id="credit"
-                    name="paymentMethod"
-                    value="credit"
-                    checked={paymentMethod === 'credit'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                  />
+                  <input type="radio" id="credit" name="paymentMethod" value="credit" checked={paymentMethod === 'credit'} onChange={(e) => setPaymentMethod(e.target.value)}/>
                   <label htmlFor="credit">Tarjeta de Crédito</label>
                 </div>
                 <div className="payment-method">
-                  <input
-                    type="radio"
-                    id="qr"
-                    name="paymentMethod"
-                    value="qr"
-                    checked={paymentMethod === 'qr'}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                  />
+                  <input type="radio" id="qr" name="paymentMethod" value="qr" checked={paymentMethod === 'qr'} onChange={(e) => setPaymentMethod(e.target.value)}/>
                   <label htmlFor="qr">Código QR</label>
                 </div>
               </div>
@@ -204,16 +155,7 @@ export default function Checkout() {
                 <div className="credit-card-fields">
                   <div className="form-group">
                     <label className="form-label" htmlFor="cardNumber">Número de Tarjeta *</label>
-                    <input
-                      type="text"
-                      id="cardNumber"
-                      name="cardNumber"
-                      className={`form-input ${formErrors.cardNumber ? 'input-error' : ''}`}
-                      value={formData.cardNumber}
-                      onChange={handleInputChange}
-                      placeholder="1234567890123456"
-                      required
-                    />
+                    <input type="text" id="cardNumber" name="cardNumber" className={`form-input ${formErrors.cardNumber ? 'input-error' : ''}`} value={formData.cardNumber} onChange={handleInputChange} placeholder="1234567890123456" required/>
                     {formErrors.cardNumber && (
                       <span className="error-message">{formErrors.cardNumber}</span>
                     )}
@@ -221,32 +163,14 @@ export default function Checkout() {
                   <div className="form-row">
                     <div className="form-group">
                       <label className="form-label" htmlFor="cardExpiry">Fecha de Vencimiento *</label>
-                      <input
-                        type="text"
-                        id="cardExpiry"
-                        name="cardExpiry"
-                        placeholder="MM/YY"
-                        className={`form-input ${formErrors.cardExpiry ? 'input-error' : ''}`}
-                        value={formData.cardExpiry}
-                        onChange={handleInputChange}
-                        required
-                      />
+                      <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" className={`form-input ${formErrors.cardExpiry ? 'input-error' : ''}`} value={formData.cardExpiry} onChange={handleInputChange} required/>
                       {formErrors.cardExpiry && (
                         <span className="error-message">{formErrors.cardExpiry}</span>
                       )}
                     </div>
                     <div className="form-group">
                       <label className="form-label" htmlFor="cardCVC">CVC *</label>
-                      <input
-                        type="text"
-                        id="cardCVC"
-                        name="cardCVC"
-                        className="form-input"
-                        value={formData.cardCVC}
-                        onChange={handleInputChange}
-                        maxLength="3"
-                        required
-                      />
+                      <input type="text" id="cardCVC" name="cardCVC" className="form-input" value={formData.cardCVC} onChange={handleInputChange} maxLength="3" required/>
                     </div>
                   </div>
                 </div>

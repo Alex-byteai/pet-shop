@@ -8,22 +8,18 @@ export function CartProvider({ children }) {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // Guardar cambios en localStorage
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Obtener el total de items en el carrito
   const getCartItemCount = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  // Obtener el total del carrito
   const getTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Agregar item al carrito
   const addToCart = (product, quantity = 1) => {
     setCart(currentCart => {
       const existingItem = currentCart.find(item => item.id === product.id);
@@ -40,7 +36,6 @@ export function CartProvider({ children }) {
     });
   };
 
-  // Actualizar cantidad de un item
   const updateQuantity = (productId, newQuantity) => {
     if (newQuantity < 1) return;
     
@@ -53,22 +48,18 @@ export function CartProvider({ children }) {
     );
   };
 
-  // Remover item del carrito
   const removeFromCart = (productId) => {
     setCart(currentCart => currentCart.filter(item => item.id !== productId));
   };
 
-  // Limpiar carrito
   const clearCart = () => {
     setCart([]);
   };
 
-  // Verificar si un producto está en el carrito
   const isInCart = (productId) => {
     return cart.some(item => item.id === productId);
   };
 
-  // Obtener la cantidad de un producto en el carrito
   const getItemQuantity = (productId) => {
     const item = cart.find(item => item.id === productId);
     return item ? item.quantity : 0;
@@ -87,16 +78,14 @@ export function CartProvider({ children }) {
   };
 
   return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={value}> {children} </CartContext.Provider>
   );
 }
 
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error('error... se presenta fuera de contexto');
   }
   return context;
 } 

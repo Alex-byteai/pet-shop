@@ -32,7 +32,7 @@ const OrderComplete = () => {
           </div>
         </div>
 
-        <div className="next-steps">
+        <div className="next">
           <button onClick={() => navigate('/')} className="continue-shopping-btn">
             Continuar comprando
           </button>
