@@ -5,6 +5,9 @@ import Footer from './components/footer/Footer';
 import HomePage from './pages/home/HomePage';
 import SearchResults from './pages/searchResult/SearchResults';
 import ProductDetail from './pages/productDetail/ProductDetail';
+import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
+import Checkout from './pages/Checkout/Checkout';
+import OrderComplete from './pages/OrderComplete/OrderComplete';
 
 // Importando páginas del footer
 import About from './pages/footer/About';
@@ -24,7 +27,6 @@ import UserDetail from "./pages/admin/UserDetail";
 import OrdersList from "./pages/admin/OrdersList";
 import OrderDetail from "./pages/admin/OrderDetail";
 
-
 function App() {
   return (
     <Router>
@@ -33,10 +35,13 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
-              {/*Rutas principales de home-search-product*/}
+              {/*Rutas principales*/}
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
+              <Route path="/cart" element={<ShoppingCart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-complete" element={<OrderComplete />} />
               
               {/* Rutas del footer */}
               <Route path="/about" element={<About />} />

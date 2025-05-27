@@ -1,17 +1,16 @@
 import { Link } from 'react-router-dom';
 import './Header.css'; 
-import { FaHeart, FaUser, FaShoppingBag, FaSearch  } from 'react-icons/fa';
+import { FaHeart, FaUser, FaSearch } from 'react-icons/fa';
 import SearchBar from '../search/SearchBar';
 import CategoryMenu from '../categoryMenu/CategoryMenu';
 import ProductMenu from '../productMenu/ProductMenu';
+import CartIcon from '../CartIcon/CartIcon';
 
 const Header = () => {
   return (
     <header>
       {/* Barra superior */}
-
       <div className="top-bar">
-
         <div className="top-bar-left">
           {/* Aqui van los contactos */}
         </div>
@@ -19,10 +18,10 @@ const Header = () => {
         <div className="top-bar-right">
           <span><FaHeart />Deseados</span>
           <span><FaUser />Mi cuenta</span>
-          <span><FaShoppingBag />Mi carrito</span>
+          <CartIcon />
         </div>
-
       </div>
+
       {/* Barra principal */}
       <div className="main-header">
         <div className="logo">
