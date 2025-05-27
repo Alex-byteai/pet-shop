@@ -33,11 +33,9 @@ export default function Checkout() {
     const { name, value } = e.target;
     
     if (name === 'cardNumber') {
-      // Solo permitir números y limitar a 16 dígitos
       const numericValue = value.replace(/\D/g, '').slice(0, 16);
       setFormData(prev => ({ ...prev, [name]: numericValue }));
       
-      // Validar longitud
       if (numericValue.length > 0 && numericValue.length < 16) {
         setFormErrors(prev => ({ 
           ...prev, 
@@ -47,10 +45,8 @@ export default function Checkout() {
         setFormErrors(prev => ({ ...prev, cardNumber: '' }));
       }
     } else if (name === 'cardExpiry') {
-      // Solo permitir números y limitar a 4 dígitos
       const numericValue = value.replace(/\D/g, '').slice(0, 4);
-      
-      // Formatear automáticamente con /
+
       if (numericValue.length >= 2) {
         const month = numericValue.slice(0, 2);
         const year = numericValue.slice(2);
@@ -62,7 +58,6 @@ export default function Checkout() {
         setFormData(prev => ({ ...prev, [name]: numericValue }));
       }
       
-      // Validar longitud
       if (numericValue.length > 0 && numericValue.length < 4) {
         setFormErrors(prev => ({ 
           ...prev, 
@@ -80,33 +75,23 @@ export default function Checkout() {
     e.preventDefault();
 
     if (paymentMethod === 'credit') {
-      // Validar número de tarjeta
       if (formData.cardNumber.length !== 16) {
         alert('El número de tarjeta debe tener 16 dígitos');
         return;
       }
-
-      // Validar fecha de vencimiento
       if (!formData.cardExpiry.includes('/') || formData.cardExpiry.length !== 5) {
         alert('La fecha de vencimiento debe estar en formato MM/YY');
         return;
       }
-
-      // Validar CVC
       if (formData.cardCVC.length !== 3) {
         alert('El CVC debe tener 3 dígitos');
         return;
       }
     }
-
-    // Generar número de orden
     const orderId = Date.now();
     localStorage.setItem('lastOrderId', orderId.toString());
-
-    // Limpiar el carrito
     clearCart();
 
-    // Redirigir a la página de orden completada
     navigate('/order-complete');
   };
 
@@ -115,7 +100,6 @@ export default function Checkout() {
       <div className="checkout-grid">
         <div className="checkout-form">
           <form onSubmit={handleSubmit}>
-            {/* Información de Envío */}
             <div className="form-section">
               <h2 className="section-title">Información de Envío</h2>
               <div className="form-grid">
@@ -166,7 +150,6 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Método de Envío */}
             <div className="form-section">
               <h2 className="section-title">Método de Envío</h2>
               <div className="shipping-methods">
@@ -190,7 +173,6 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Método de Pago */}
             <div className="form-section">
               <h2 className="section-title">Método de Pago</h2>
               <div className="payment-methods">
@@ -281,7 +263,6 @@ export default function Checkout() {
               )}
             </div>
 
-            {/* Resumen del Pedido */}
             <div className="order-summary">
               <h2 className="section-title">Resumen del Pedido</h2>
               <div className="summary-row">

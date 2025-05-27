@@ -9,7 +9,6 @@ import CartIcon from '../CartIcon/CartIcon';
 const Header = () => {
   return (
     <header>
-      {/* Barra superior */}
       <div className="top-bar">
         <div className="top-bar-left">
           {/* Aqui van los contactos */}
@@ -22,7 +21,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Barra principal */}
       <div className="main-header">
         <div className="logo">
           <Link to="/">PetShop</Link>
