@@ -5,7 +5,9 @@ import Footer from './components/footer/Footer';
 import HomePage from './pages/home/HomePage';
 import SearchResults from './pages/searchResult/SearchResults';
 import ProductDetail from './pages/productDetail/ProductDetail';
-import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
+
+// Importando páginas del Carrito
+import CartPage from './pages/cart/CartPage';
 import Checkout from './pages/Checkout/Checkout';
 import OrderComplete from './pages/OrderComplete/OrderComplete';
 
@@ -39,7 +41,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
-              <Route path="/cart" element={<ShoppingCart />} />
+              <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-complete" element={<OrderComplete />} />
               

@@ -15,9 +15,17 @@ const Header = () => {
         </div>
 
         <div className="top-bar-right">
-          <span><FaHeart />Deseados</span>
-          <span><FaUser />Mi cuenta</span>
-          <CartIcon />
+          <div className="top-bar-item">
+            <FaHeart className='top-bar-icon' />
+            <span>Deseados</span>
+          </div>
+          <div className="top-bar-item">
+            <FaUser className='top-bar-icon' />
+            <span>Mi cuenta</span>
+          </div>
+          <div className="top-bar-item">
+            <CartIcon />
+          </div>
         </div>
       </div>
 

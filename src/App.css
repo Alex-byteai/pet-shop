@@ -1,0 +1,29 @@
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto;
+  width: 100%;
+  padding: 2rem 0;
+
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 200px); /* Ajusta este valor según la altura de tu header */
+}
+
+/* Estilos generales */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #fff;
+}

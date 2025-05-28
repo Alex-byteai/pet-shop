@@ -9,12 +9,12 @@
 }
 
 .cart-icon-svg {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .cart-count {
   position: absolute;
-  top: -8px;
+  top: -4px;
   right: -8px;
   background-color: #ff4444;
   color: white;

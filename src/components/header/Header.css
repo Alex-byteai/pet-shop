@@ -21,12 +21,33 @@ header {
   align-items: center;
 }
 
-.top-bar-right span {
-  margin-left: 15px;
+.top-bar-right {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 20px;
+}
+
+.top-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.top-bar-item:hover {
+  opacity: 0.8;
+}
+
+.top-bar-icon { 
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+.top-bar-item span {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 /* Main header */
