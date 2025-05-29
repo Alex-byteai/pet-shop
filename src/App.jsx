@@ -25,11 +25,12 @@ import OrdersList from "./pages/admin/OrdersList";
 import OrderDetail from "./pages/admin/OrderDetail";
 
 //Importando para el login
-import LoginPage from './pages/login/LoginPage';
-import InicioC from './pages/login/InicioC';
-import Register from './pages/login/Register';
-import Recover from './pages/login/Recover';
-import VerificarCodigo from './pages/login/Codigo';
+import LoginPage from './pages/auth/login/LoginPage';
+import LoginSuccessPage from './pages/auth/loginSuccess/LoginSuccessPage';
+import Register from './pages/auth/register/RegisterPage';
+import Recover from './pages/auth/recover/RecoverPage';
+import VerificationCodePage from './pages/auth/verificationCode/VerificationCodePage';
+import DashboardPage from './pages/auth/dashboard/DashboardPage';
 
 function App() {
   return (
@@ -63,13 +64,13 @@ function App() {
               <Route path="/admin/orders" element={<OrdersList />} />
               <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
 
-
               {/* Login */}
-              <Route path="/login/LoginPage" element={<LoginPage/>} />
-              <Route path="/login/InicioC" element={<InicioC/>} />
-              <Route path="/login/Register" element={<Register/>} />
-              <Route path="/login/Recover" element={<Recover/>} />
-              <Route path="/login/Codigo" element={<VerificarCodigo/>} />
+              <Route path="/auth/login" element={<LoginPage/>} />
+              <Route path="/auth/loginSuccess" element={<LoginSuccessPage/>} />
+              <Route path="/auth/register" element={<Register/>} />
+              <Route path="/auth/recover" element={<Recover/>} />
+              <Route path="/auth/verificationCode" element={<VerificationCodePage/>} />
+              <Route path="/auth/dashboard" element={<DashboardPage/>} />
               </Route>
             </Routes>
           </main>

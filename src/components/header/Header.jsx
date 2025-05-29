@@ -20,7 +20,7 @@ const Header = () => {
           <span className="custom-link" onClick={() => navigate('/deseados')}>
             <FaHeart /> Deseados
           </span>
-          <span className="custom-link" onClick={() => navigate('/login/LoginPage')}>
+          <span className="custom-link" onClick={() => navigate('/auth/login')}>
             <FaUser /> Mi cuenta
           </span>
           <span className="custom-link" onClick={() => navigate('/mi-carrito')}>
@@ -31,7 +31,7 @@ const Header = () => {
 
       {/* Barra principal */}
         <div className="main-header">
-        <div className="logo">
+        <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           PetShop
         </div>
 
