@@ -71,17 +71,29 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="user-profile-page">
-      <div className="profile-header">
-        <button onClick={() => navigate('/user/dashboard')} className="back-button">
-          ← Volver al dashboard
+    <div className="up-user-profile-page">
+      <div className="up-profile-header">
+        <button onClick={() => navigate('/user/dashboard')} className="up-back-button">
+          ← Volver
         </button>
         <h1>Mi Perfil</h1>
       </div>
 
-      <div className="profile-container">
-        <form onSubmit={handleSubmit} className="profile-form">
-          <div className="form-group">
+      <div className="up-profile-container">
+        <form onSubmit={handleSubmit} className="up-profile-form">
+          <div className="up-form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              disabled
+              className="up-profile-input"
+            />
+          </div>
+
+          <div className="up-form-group">
             <label htmlFor="firstName">Nombre</label>
             <input
               type="text"
@@ -89,49 +101,53 @@ export default function UserProfile() {
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              readOnly={!isEditing}
-              className={`profile-input ${isEditing ? 'editing' : ''}`}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="lastName">Apellido</label>
+          <div className="up-form-group">
+            <label htmlFor="lastName">Apellidos</label>
             <input
               type="text"
               id="lastName"
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              readOnly={!isEditing}
-              className={`profile-input ${isEditing ? 'editing' : ''}`}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
+          <div className="up-form-group">
+            <label htmlFor="phone">Teléfono</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
-              readOnly={!isEditing}
-              className={`profile-input ${isEditing ? 'editing' : ''}`}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
             />
           </div>
 
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
+          {error && <div className="up-error-message">{error}</div>}
+          {success && <div className="up-success-message">{success}</div>}
 
-          <div className="profile-actions">
-            {isEditing ? (
+          <div className="up-profile-actions">
+            {!isEditing ? (
+              <button type="button" onClick={() => setIsEditing(true)} className="up-edit-button">
+                Editar Perfil
+              </button>
+            ) : (
               <>
                 <button
                   type="submit"
-                  className="save-button"
-                  disabled={isLoading}
+                  className="up-save-button"
+                  disabled={!hasChanges || isSubmitting}
                 >
-                  {isLoading ? 'Guardando...' : 'Guardar cambios'}
+                  {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
                 </button>
                 <button
                   type="button"
@@ -144,28 +160,20 @@ export default function UserProfile() {
                     });
                     setError('');
                   }}
-                  className="cancel-button"
-                  disabled={isLoading}
+                  className="up-cancel-button"
+                  disabled={isSubmitting}
                 >
                   Cancelar
                 </button>
               </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="edit-button"
-              >
-                Editar perfil
-              </button>
             )}
           </div>
         </form>
 
-        <div className="profile-links">
+        <div className="up-profile-links">
           <button
             onClick={() => navigate('/user/change-password')}
-            className="change-password-button"
+            className="up-change-password-button"
           >
             Cambiar contraseña
           </button>

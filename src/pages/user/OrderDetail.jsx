@@ -10,6 +10,7 @@ export default function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   useEffect(() => {
     loadOrder();
@@ -36,6 +37,7 @@ export default function OrderDetail() {
 
   const handleCancelOrder = () => {
     try {
+      setIsCancelling(true);
       const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
       const updatedOrders = allOrders.map(o => {
         if (o.orderid === parseInt(orderId)) {
@@ -49,6 +51,8 @@ export default function OrderDetail() {
     } catch (error) {
       console.error('Error al cancelar el pedido:', error);
       setError('Error al cancelar el pedido');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -83,94 +87,123 @@ export default function OrderDetail() {
     }).format(price);
   };
 
-  if (loading) {
-    return <div className="loading-spinner"></div>;
-  }
+  const handleBack = () => {
+    navigate('/user/orders');
+  };
 
-  if (error) {
-    return (
-      <div className="error-container">
-        <h2>{error}</h2>
-        <button onClick={() => navigate('/user/orders')} className="back-button">
-          Volver a mis pedidos
-        </button>
-      </div>
-    );
-  }
+  const getStatusClass = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pendiente':
+        return 'od-status-badge-pending';
+      case 'enviado':
+        return 'od-status-badge-sent';
+      case 'cancelado':
+        return 'od-status-badge-canceled';
+      default:
+        return 'od-status-badge-unknown';
+    }
+  };
+
+  const getDefaultProductImage = () => {
+    // Implement the logic to return a default product image
+    return 'https://via.placeholder.com/150';
+  };
 
   return (
-    <div className="order-detail-page">
-      <div className="order-detail-header">
-        <button onClick={() => navigate('/user/orders')} className="back-button">
-          ← Volver a mis pedidos
+    <div className="od-order-detail-page">
+      <div className="od-order-detail-header">
+        <button onClick={handleBack} className="od-back-button">
+          ← Volver
         </button>
-        <h1>Detalles del Pedido #{order.orderid}</h1>
+        <h1>Detalles del Pedido #{orderId}</h1>
       </div>
 
-      <div className="order-detail-container">
-        <div className="order-info-section">
-          <div className="order-status-info">
-            <h3>Estado del Pedido</h3>
-            <div 
-              className="status-badge"
-              style={{ backgroundColor: getStatusColor(order.status) }}
-            >
-              {order.status}
+      {loading ? (
+        <div className="od-loading-spinner">Cargando detalles del pedido...</div>
+      ) : error ? (
+        <div className="od-error-container">
+          <h2>Error al cargar el pedido</h2>
+          <p>{error}</p>
+        </div>
+      ) : order ? (
+        <div className="od-order-detail-container">
+          <div className="od-order-info-section">
+            <div className="od-order-status-info">
+              <h3>Estado del Pedido</h3>
+              <span className={`od-status-badge ${getStatusClass(order.status)}`}>
+                {order.status}
+              </span>
+            </div>
+            <div className="od-order-date-info">
+              <h3>Fecha del Pedido</h3>
+              <p>{formatDate(order.date)}</p>
             </div>
           </div>
 
-          <div className="order-date-info">
-            <h3>Fecha del Pedido</h3>
-            <p>{formatDate(order.date)}</p>
-          </div>
-        </div>
-
-        <div className="order-items-section">
-          <h3>Productos</h3>
-          <div className="items-list">
-            {order.items.map((item, index) => (
-              <div key={index} className="item-card">
-                <img src={item.images[0]} alt={item.name} className="item-image" />
-                <div className="item-info">
-                  <h4>{item.name}</h4>
-                  <p className="item-description">{item.description}</p>
-                  <div className="item-price-info">
-                    <span className="item-quantity">Cantidad: {item.quantity}</span>
-                    <span className="item-price">Precio: {formatPrice(item.price)}</span>
-                    <span className="item-subtotal">Subtotal: {formatPrice(item.price * item.quantity)}</span>
+          <div className="od-order-items-section">
+            <h3>Productos</h3>
+            <div className="od-items-list">
+              {order.items.map((item, index) => (
+                <div key={index} className="od-item-card">
+                  <img
+                    src={item.images?.[0] || getDefaultProductImage()}
+                    alt={item.name}
+                    className="od-item-image"
+                    onError={(e) => {
+                      e.target.src = getDefaultProductImage();
+                    }}
+                  />
+                  <div className="od-item-info">
+                    <h4>{item.name}</h4>
+                    <p className="od-item-description">{item.description}</p>
+                    <div className="od-item-price-info">
+                      <span className="od-item-quantity">
+                        Cantidad: {item.quantity}
+                      </span>
+                      <span className="od-item-price">
+                        Precio: {formatPrice(item.price)}
+                      </span>
+                      <span className="od-item-subtotal">
+                        Subtotal: {formatPrice(item.price * item.quantity)}
+                      </span>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="od-order-summary-section">
+            <h3>Resumen del Pedido</h3>
+            <div className="od-summary-details">
+              <div className="od-summary-row">
+                <span>Subtotal</span>
+                <span>{formatPrice(order.subtotal)}</span>
               </div>
-            ))}
+              <div className="od-summary-row">
+                <span>Envío</span>
+                <span>{formatPrice(order.shipping)}</span>
+              </div>
+              <div className="od-summary-row total">
+                <span>Total</span>
+                <span>{formatPrice(order.total)}</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="order-summary-section">
-          <h3>Resumen del Pedido</h3>
-          <div className="summary-details">
-            <div className="summary-row">
-              <span>Subtotal:</span>
-              <span>{formatPrice(order.total)}</span>
+          {order.status === 'pendiente' && (
+            <div className="od-order-actions">
+              <button
+                onClick={handleCancelOrder}
+                className="od-cancel-button"
+                disabled={isCancelling}
+              >
+                {isCancelling ? 'Cancelando...' : 'Cancelar Pedido'}
+              </button>
             </div>
-            <div className="summary-row">
-              <span>IVA (21%):</span>
-              <span>{formatPrice(order.total * 0.21)}</span>
-            </div>
-            <div className="summary-row total">
-              <span>Total:</span>
-              <span>{formatPrice(order.total * 1.21)}</span>
-            </div>
-          </div>
+          )}
         </div>
-
-        {order.status === 'pendiente' && (
-          <div className="order-actions">
-            <button onClick={handleCancelOrder} className="cancel-button">
-              Cancelar Pedido
-            </button>
-          </div>
-        )}
-      </div>
+      ) : null}
     </div>
   );
 } 

@@ -68,17 +68,17 @@ export default function ProductList() {
   };
 
   const ConfirmationModal = () => (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="pl-modal-overlay">
+      <div className="pl-modal-content">
         <h3>{selectedProduct?.active ? 'Desactivar' : 'Activar'} Producto</h3>
         <p>¿Estás seguro de que deseas {selectedProduct?.active ? 'desactivar' : 'activar'} el producto "{selectedProduct?.name}"?</p>
         {selectedProduct?.active && (
-          <p className="warning">El producto no se mostrará en la tienda después de ser desactivado.</p>
+          <p className="pl-warning">El producto no se mostrará en la tienda después de ser desactivado.</p>
         )}
-        <div className="modal-actions">
+        <div className="pl-modal-actions">
           <button 
             onClick={() => handleToggleProductStatus(selectedProduct.id)}
-            className="confirm-button"
+            className="pl-confirm-button"
           >
             Sí, {selectedProduct?.active ? 'desactivar' : 'activar'} producto
           </button>
@@ -87,7 +87,7 @@ export default function ProductList() {
               setShowConfirmModal(false);
               setSelectedProduct(null);
             }}
-            className="cancel-button"
+            className="pl-cancel-button"
           >
             Cancelar
           </button>
@@ -97,16 +97,16 @@ export default function ProductList() {
   );
 
   return (
-    <div className="product-list-page">
-      <div className="page-header">
-        <div className="header-main">
+    <div className="pl-product-list-page">
+      <div className="pl-page-header">
+        <div className="pl-header-main">
           <h1>Productos</h1>
-          <Link to="/admin/products/new" className="add-product-button">
+          <Link to="/admin/products/new" className="pl-add-product-button">
             <FaPlus /> Agregar Producto
           </Link>
         </div>
-        <div className="search-box">
-          <FaSearch className="search-icon" />
+        <div className="pl-search-box">
+          <FaSearch className="pl-search-icon" />
           <input
             type="text"
             placeholder="Buscar por nombre, serie o ID..."
@@ -117,42 +117,42 @@ export default function ProductList() {
       </div>
 
       {loading ? (
-        <div className="loading">Cargando productos...</div>
+        <div className="pl-loading">Cargando productos...</div>
       ) : currentProducts.length === 0 ? (
-        <div className="no-results">
+        <div className="pl-no-results">
           <p>No se encontraron productos{searchTerm && ' que coincidan con la búsqueda'}.</p>
-          <Link to="/admin/products/new" className="add-product-link">
+          <Link to="/admin/products/new" className="pl-add-product-link">
             Agregar nuevo producto
           </Link>
         </div>
       ) : (
         <>
-          <div className="products-grid">
+          <div className="pl-products-grid">
             {currentProducts.map(product => (
-              <div key={product.id} className={`product-card ${!product.active ? 'inactive' : ''}`}>
-                <div className="product-image">
+              <div key={product.id} className={`pl-product-card ${!product.active ? 'pl-inactive' : ''}`}>
+                <div className="pl-product-image">
                   <img 
                     src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/200'} 
                     alt={product.name} 
                   />
                   {!product.active && (
-                    <div className="inactive-overlay">
+                    <div className="pl-inactive-overlay">
                       <span>Inactivo</span>
                     </div>
                   )}
                 </div>
-                <div className="product-info">
+                <div className="pl-product-info">
                   <h3>{product.name}</h3>
-                  <p className="product-series">{product.series || 'Sin serie'}</p>
-                  <p className="product-price">{formatPrice(product.price)}</p>
-                  <p className="product-stock">Stock: {product.stock}</p>
+                  <p className="pl-product-series">{product.series || 'Sin serie'}</p>
+                  <p className="pl-product-price">{formatPrice(product.price)}</p>
+                  <p className="pl-product-stock">Stock: {product.stock}</p>
                 </div>
-                <div className="product-actions">
-                  <Link to={`/admin/products/${product.id}`} className="view-button">
+                <div className="pl-product-actions">
+                  <Link to={`/admin/products/${product.id}`} className="pl-view-button">
                     <FaEye /> Ver detalle
                   </Link>
                   <button
-                    className={`toggle-status-button ${product.active ? 'deactivate' : 'activate'}`}
+                    className={`pl-toggle-status-button ${product.active ? 'pl-deactivate' : 'pl-activate'}`}
                     onClick={() => {
                       setSelectedProduct(product);
                       setShowConfirmModal(true);
@@ -176,21 +176,21 @@ export default function ProductList() {
           </div>
 
           {totalPages > 1 && (
-            <div className="pagination">
+            <div className="pl-pagination">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="page-button"
+                className="pl-page-button"
               >
                 Anterior
               </button>
-              <span className="page-info">
+              <span className="pl-page-info">
                 Página {currentPage} de {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="page-button"
+                className="pl-page-button"
               >
                 Siguiente
               </button>

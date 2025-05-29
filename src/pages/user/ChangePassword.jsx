@@ -78,17 +78,17 @@ export default function ChangePassword() {
   };
 
   return (
-    <div className="change-password-page">
-      <div className="password-header">
-        <button onClick={() => navigate('/user/dashboard')} className="back-button">
+    <div className="cp-change-password-page">
+      <div className="cp-password-header">
+        <button onClick={() => navigate('/user/dashboard')} className="cp-back-button">
           ← Volver al dashboard
         </button>
         <h1>Cambiar Contraseña</h1>
       </div>
 
-      <div className="password-container">
-        <form onSubmit={handleSubmit} className="password-form">
-          <div className="form-group">
+      <div className="cp-password-container">
+        <form onSubmit={handleSubmit} className="cp-password-form">
+          <div className="cp-form-group">
             <label htmlFor="currentPassword">Contraseña actual</label>
             <input
               type="password"
@@ -96,12 +96,13 @@ export default function ChangePassword() {
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
-              className="password-input"
+              className="cp-password-input"
               placeholder="Ingresa tu contraseña actual"
+              required
             />
           </div>
 
-          <div className="form-group">
+          <div className="cp-form-group">
             <label htmlFor="newPassword">Nueva contraseña</label>
             <input
               type="password"
@@ -109,12 +110,13 @@ export default function ChangePassword() {
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
-              className="password-input"
+              className="cp-password-input"
               placeholder="Mínimo 6 caracteres"
+              required
             />
           </div>
 
-          <div className="form-group">
+          <div className="cp-form-group">
             <label htmlFor="confirmPassword">Confirmar nueva contraseña</label>
             <input
               type="password"
@@ -122,18 +124,19 @@ export default function ChangePassword() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="password-input"
+              className="cp-password-input"
               placeholder="Repite tu nueva contraseña"
+              required
             />
           </div>
 
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
+          {error && <div className="cp-error-message">{error}</div>}
+          {success && <div className="cp-success-message">{success}</div>}
 
-          <div className="password-actions">
+          <div className="cp-password-actions">
             <button
               type="submit"
-              className="save-button"
+              className="cp-save-button"
               disabled={isLoading}
             >
               {isLoading ? 'Cambiando contraseña...' : 'Cambiar contraseña'}
@@ -141,7 +144,7 @@ export default function ChangePassword() {
             <button
               type="button"
               onClick={() => navigate('/user/dashboard')}
-              className="cancel-button"
+              className="cp-cancel-button"
               disabled={isLoading}
             >
               Cancelar

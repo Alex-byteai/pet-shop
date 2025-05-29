@@ -87,72 +87,72 @@ export default function UserDashboard() {
   };
 
   return (
-    <div className="user-dashboard">
-      <div className="dashboard-header">
+    <div className="ud-user-dashboard">
+      <div className="ud-dashboard-header">
         <h1>Mi Cuenta</h1>
-        <div className="user-info">
-          <span className="user-name">{user.firstName} {user.lastName}</span>
-          <span className="user-email">{user.email}</span>
+        <div className="ud-user-info">
+          <span className="ud-user-name">{user.firstName} {user.lastName}</span>
+          <span className="ud-user-email">{user.email}</span>
         </div>
       </div>
 
-      <div className="dashboard-nav">
-        <Link to="/user/profile" className="nav-link">
+      <div className="ud-dashboard-nav">
+        <Link to="/user/profile" className="ud-nav-link">
           Datos personales
         </Link>
-        <Link to="/user/change-password" className="nav-link">
+        <Link to="/user/change-password" className="ud-nav-link">
           Cambiar contraseña
         </Link>
-        <Link to="/user/orders" className="nav-link">
+        <Link to="/user/orders" className="ud-nav-link">
           Ver todos mis pedidos
         </Link>
       </div>
 
-      <div className="orders-section">
+      <div className="ud-orders-section">
         <h2>Pedidos Recientes</h2>
         
         {isLoading ? (
-          <div className="loading-spinner"></div>
+          <div className="ud-loading-spinner"></div>
         ) : userOrders.length > 0 ? (
           <>
-            <div className="orders-list">
+            <div className="ud-orders-list">
               {userOrders.map(order => (
-                <div key={order.orderid} className="order-card" onClick={() => navigate(`/user/orders`)}>
-                  <div className="order-header">
-                    <span className="order-number">Pedido #{order.orderid}</span>
-                    <span className={`order-status ${getStatusClass(order.status)}`}>
+                <div key={order.orderid} className="ud-order-card" onClick={() => navigate(`/user/orders`)}>
+                  <div className="ud-order-header">
+                    <span className="ud-order-number">Pedido #{order.orderid}</span>
+                    <span className={`ud-order-status ${getStatusClass(order.status)}`}>
                       {order.status}
                     </span>
                   </div>
                   
-                  <div className="order-details">
-                    <div className="order-info">
-                      <span className="order-date">
+                  <div className="ud-order-details">
+                    <div className="ud-order-info">
+                      <span className="ud-order-date">
                         {formatDate(order.date)}
                       </span>
-                      <span className="order-items">
+                      <span className="ud-order-items">
                         {order.items.length} {order.items.length === 1 ? 'producto' : 'productos'}
                       </span>
                     </div>
-                    <div className="order-total">
+                    <div className="ud-order-total">
                       {formatPrice(order.total)}
                     </div>
                   </div>
 
-                  <div className="order-items-preview">
+                  <div className="ud-order-items-preview">
                     {order.items.map((item, index) => (
-                      <div key={index} className="preview-item">
+                      <div key={index} className="ud-preview-item">
                         <img 
                           src={item.images && item.images.length > 0 ? item.images[0] : getDefaultProductImage()} 
                           alt={item.name || 'Producto'} 
-                          className="preview-image" 
+                          className="ud-preview-image" 
                           onError={(e) => {
                             e.target.src = getDefaultProductImage();
                           }}
                         />
-                        <div className="preview-details">
-                          <span className="item-name">{item.name || 'Producto sin nombre'}</span>
-                          <span className="item-quantity">x{item.quantity}</span>
+                        <div className="ud-preview-details">
+                          <span className="ud-item-name">{item.name || 'Producto sin nombre'}</span>
+                          <span className="ud-item-quantity">x{item.quantity}</span>
                         </div>
                       </div>
                     ))}
@@ -162,23 +162,23 @@ export default function UserDashboard() {
             </div>
 
             {totalPages > 1 && (
-              <div className="pagination">
+              <div className="ud-pagination">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="page-button"
+                  className="ud-page-button"
                 >
                   Anterior
                 </button>
                 
-                <span className="page-info">
+                <span className="ud-page-info">
                   Página {currentPage} de {totalPages}
                 </span>
                 
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="page-button"
+                  className="ud-page-button"
                 >
                   Siguiente
                 </button>
@@ -186,9 +186,9 @@ export default function UserDashboard() {
             )}
           </>
         ) : (
-          <div className="no-orders">
+          <div className="ud-no-orders">
             <p>No tienes pedidos recientes</p>
-            <Link to="/" className="shop-link">
+            <Link to="/" className="ud-shop-link">
               Ir a comprar
             </Link>
           </div>

@@ -1,27 +1,27 @@
-.product-list-page {
+.pl-product-list-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-.page-header {
+.pl-page-header {
   margin-bottom: 2rem;
 }
 
-.header-main {
+.pl-header-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
-.header-main h1 {
+.pl-header-main h1 {
   margin: 0;
   color: #333;
   font-size: 2rem;
 }
 
-.add-product-button {
+.pl-add-product-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -35,18 +35,18 @@
   transition: all 0.2s;
 }
 
-.add-product-button:hover {
+.pl-add-product-button:hover {
   background-color: #8a5c32;
 }
 
-.search-box {
+.pl-search-box {
   position: relative;
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
 }
 
-.search-icon {
+.pl-search-icon {
   position: absolute;
   left: 1rem;
   top: 50%;
@@ -54,7 +54,7 @@
   color: #666;
 }
 
-.search-box input {
+.pl-search-box input {
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 2.5rem;
   border: 1px solid #ddd;
@@ -63,19 +63,19 @@
   color: #333;
 }
 
-.search-box input:focus {
+.pl-search-box input:focus {
   outline: none;
   border-color: #a26e3c;
 }
 
-.products-grid {
+.pl-products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.product-card {
+.pl-product-card {
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -83,27 +83,27 @@
   transition: transform 0.2s;
 }
 
-.product-card:hover {
+.pl-product-card:hover {
   transform: translateY(-2px);
 }
 
-.product-card.inactive {
+.pl-product-card.pl-inactive {
   opacity: 0.7;
 }
 
-.product-image {
+.pl-product-image {
   position: relative;
   width: 100%;
   height: 200px;
 }
 
-.product-image img {
+.pl-product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.inactive-overlay {
+.pl-inactive-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -117,11 +117,11 @@
   font-weight: 500;
 }
 
-.product-info {
+.pl-product-info {
   padding: 1rem;
 }
 
-.product-info h3 {
+.pl-product-info h3 {
   margin: 0 0 0.5rem;
   color: #333;
   font-size: 1.1rem;
@@ -130,33 +130,33 @@
   text-overflow: ellipsis;
 }
 
-.product-series {
+.pl-product-series {
   margin: 0 0 0.5rem;
   color: #666;
   font-size: 0.9rem;
 }
 
-.product-price {
+.pl-product-price {
   margin: 0 0 0.5rem;
   color: #a26e3c;
   font-size: 1.1rem;
   font-weight: 500;
 }
 
-.product-stock {
+.pl-product-stock {
   margin: 0;
   color: #666;
   font-size: 0.9rem;
 }
 
-.product-actions {
+.pl-product-actions {
   padding: 1rem;
   border-top: 1px solid #eee;
   display: flex;
   gap: 0.5rem;
 }
 
-.view-button {
+.pl-view-button {
   flex: 1;
   display: flex;
   align-items: center;
@@ -172,12 +172,12 @@
   transition: all 0.2s;
 }
 
-.view-button:hover {
+.pl-view-button:hover {
   background-color: #f5f5f5;
   color: #333;
 }
 
-.toggle-status-button {
+.pl-toggle-status-button {
   flex: 1;
   display: flex;
   align-items: center;
@@ -191,28 +191,28 @@
   transition: all 0.2s;
 }
 
-.toggle-status-button.deactivate {
+.pl-toggle-status-button.pl-deactivate {
   background-color: #dc3545;
   color: white;
 }
 
-.toggle-status-button.activate {
+.pl-toggle-status-button.pl-activate {
   background-color: #28a745;
   color: white;
 }
 
-.toggle-status-button:hover {
+.pl-toggle-status-button:hover {
   opacity: 0.9;
 }
 
-.pagination {
+.pl-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
 }
 
-.page-button {
+.pl-page-button {
   padding: 0.5rem 1rem;
   border: 1px solid #ddd;
   background: none;
@@ -222,27 +222,27 @@
   transition: all 0.2s;
 }
 
-.page-button:hover:not(:disabled) {
+.pl-page-button:hover:not(:disabled) {
   background-color: #f5f5f5;
   color: #333;
 }
 
-.page-button:disabled {
+.pl-page-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.page-info {
+.pl-page-info {
   color: #666;
 }
 
-.loading {
+.pl-loading {
   text-align: center;
   padding: 3rem;
   color: #666;
 }
 
-.no-results {
+.pl-no-results {
   text-align: center;
   padding: 3rem;
   color: #666;
@@ -251,7 +251,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.add-product-link {
+.pl-add-product-link {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
@@ -262,11 +262,11 @@
   transition: all 0.2s;
 }
 
-.add-product-link:hover {
+.pl-add-product-link:hover {
   background-color: #8a5c32;
 }
 
-.modal-overlay {
+.pl-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -279,7 +279,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.pl-modal-content {
   background: white;
   padding: 2rem;
   border-radius: 8px;
@@ -287,29 +287,29 @@
   width: 90%;
 }
 
-.modal-content h3 {
+.pl-modal-content h3 {
   margin: 0 0 1rem;
   color: #333;
 }
 
-.modal-content p {
+.pl-modal-content p {
   margin: 0 0 1rem;
   color: #666;
 }
 
-.modal-content .warning {
+.pl-modal-content .warning {
   color: #dc3545;
   font-weight: 500;
 }
 
-.modal-actions {
+.pl-modal-actions {
   display: flex;
   gap: 1rem;
   margin-top: 1.5rem;
 }
 
-.confirm-button,
-.cancel-button {
+.pl-confirm-button,
+.pl-cancel-button {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
@@ -318,58 +318,58 @@
   transition: all 0.2s;
 }
 
-.confirm-button {
+.pl-confirm-button {
   background-color: #dc3545;
   color: white;
 }
 
-.confirm-button:hover {
+.pl-confirm-button:hover {
   background-color: #c82333;
 }
 
-.cancel-button {
+.pl-cancel-button {
   background-color: #6c757d;
   color: white;
 }
 
-.cancel-button:hover {
+.pl-cancel-button:hover {
   background-color: #5a6268;
 }
 
 @media (max-width: 768px) {
-  .product-list-page {
+  .pl-product-list-page {
     padding: 1rem;
   }
 
-  .header-main {
+  .pl-header-main {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
   }
 
-  .add-product-button {
+  .pl-add-product-button {
     width: 100%;
     justify-content: center;
   }
 
-  .search-box {
+  .pl-search-box {
     max-width: none;
   }
 
-  .products-grid {
+  .pl-products-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
-  .product-actions {
+  .pl-product-actions {
     flex-direction: column;
   }
 
-  .modal-content {
+  .pl-modal-content {
     margin: 1rem;
     padding: 1.5rem;
   }
 
-  .modal-actions {
+  .pl-modal-actions {
     flex-direction: column;
   }
 } 

@@ -102,27 +102,36 @@ export default function OrdersPage() {
   const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
   const CancelConfirmationModal = () => (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h3>Cancelar Pedido</h3>
-        <p>¿Estás seguro de que deseas cancelar el pedido #{selectedOrder?.orderid}?</p>
-        <p>Esta acción no se puede deshacer.</p>
-        <div className="modal-actions">
-          <button 
-            onClick={() => handleCancelOrder(selectedOrder.orderid)}
-            className="confirm-button"
-          >
-            Sí, cancelar pedido
-          </button>
-          <button 
-            onClick={() => {
-              setShowCancelModal(false);
-              setSelectedOrder(null);
-            }}
-            className="cancel-button"
-          >
-            No, mantener pedido
-          </button>
+    <div className="op-modal-overlay">
+      <div className="op-modal-content">
+        <div className="op-detail-modal">
+          <div className="op-modal-header">
+            <h2>Confirmar Cancelación</h2>
+            <button
+              onClick={() => setShowCancelModal(false)}
+              className="op-close-button"
+            >
+              ×
+            </button>
+          </div>
+          <p>¿Estás seguro de que deseas cancelar el pedido #{selectedOrder?.orderid}?</p>
+          <div className="op-modal-actions">
+            <button
+              onClick={() => handleCancelOrder(selectedOrder.orderid)}
+              className="op-confirm-button"
+            >
+              Sí, cancelar pedido
+            </button>
+            <button
+              onClick={() => {
+                setShowCancelModal(false);
+                setSelectedOrder(null);
+              }}
+              className="op-cancel-button"
+            >
+              No, mantener pedido
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -198,18 +207,18 @@ export default function OrdersPage() {
   );
 
   return (
-    <div className="orders-page">
-      <div className="orders-header">
-        <button onClick={() => navigate('/user/dashboard')} className="back-button">
+    <div className="op-orders-page">
+      <div className="op-orders-header">
+        <button onClick={() => navigate('/user/dashboard')} className="op-back-button">
           ← Volver al dashboard
         </button>
         <h1>Mis Pedidos</h1>
       </div>
 
-      <div className="orders-container">
-        <div className="orders-toolbar">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
+      <div className="op-orders-container">
+        <div className="op-orders-toolbar">
+          <div className="op-search-box">
+            <FaSearch className="op-search-icon" />
             <input
               type="text"
               placeholder="Buscar por número de pedido o producto..."
@@ -218,8 +227,8 @@ export default function OrdersPage() {
             />
           </div>
 
-          <div className="filter-box">
-            <FaFilter className="filter-icon" />
+          <div className="op-filter-box">
+            <FaFilter className="op-filter-icon" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -233,37 +242,37 @@ export default function OrdersPage() {
         </div>
 
         {loading ? (
-          <div className="loading">Cargando pedidos...</div>
+          <div className="op-loading">Cargando pedidos...</div>
         ) : currentOrders.length === 0 ? (
-          <div className="no-orders">
+          <div className="op-no-orders">
             <p>No se encontraron pedidos{statusFilter !== 'todos' ? ` en estado "${statusFilter}"` : ''}.</p>
-            <button onClick={() => navigate('/')} className="shop-button">
+            <button onClick={() => navigate('/')} className="op-shop-button">
               Ir a comprar
             </button>
           </div>
         ) : (
           <>
-            <div className="orders-list">
+            <div className="op-orders-list">
               {currentOrders.map(order => (
-                <div key={order.orderid} className="order-card">
-                  <div className="order-header">
-                    <div className="order-info">
+                <div key={order.orderid} className="op-order-card">
+                  <div className="op-order-header">
+                    <div className="op-order-info">
                       <h3>Pedido #{order.orderid}</h3>
-                      <p className="order-date">{formatDate(order.date)}</p>
+                      <p className="op-order-date">{formatDate(order.date)}</p>
                     </div>
                     <div 
-                      className="order-status"
+                      className="op-order-status"
                       style={{ backgroundColor: getStatusColor(order.status) }}
                     >
                       {order.status}
                     </div>
                   </div>
 
-                  <div className="order-items">
+                  <div className="op-order-items">
                     {order.items.slice(0, 2).map((item, index) => (
-                      <div key={index} className="order-item">
-                        <img src={item.images[0]} alt={item.name} className="item-image" />
-                        <div className="item-details">
+                      <div key={index} className="op-order-item">
+                        <img src={item.images[0]} alt={item.name} className="op-item-image" />
+                        <div className="op-item-details">
                           <h4>{item.name}</h4>
                           <p>Cantidad: {item.quantity}</p>
                           <p>Precio: {formatPrice(item.price)}</p>
@@ -271,20 +280,20 @@ export default function OrdersPage() {
                       </div>
                     ))}
                     {order.items.length > 2 && (
-                      <div className="more-items">
+                      <div className="op-more-items">
                         Y {order.items.length - 2} productos más...
                       </div>
                     )}
                   </div>
 
-                  <div className="order-footer">
-                    <div className="order-total">
+                  <div className="op-order-footer">
+                    <div className="op-order-total">
                       <span>Total:</span>
-                      <span className="total-amount">{formatPrice(order.total)}</span>
+                      <span className="op-total-amount">{formatPrice(order.total)}</span>
                     </div>
-                    <div className="order-actions">
+                    <div className="op-order-actions">
                       <button 
-                        className="view-details-button"
+                        className="op-view-details-button"
                         onClick={() => {
                           setSelectedOrder(order);
                           setShowDetailModal(true);
@@ -294,7 +303,7 @@ export default function OrdersPage() {
                       </button>
                       {order.status.toLowerCase() === 'pendiente' && (
                         <button 
-                          className="cancel-order-button"
+                          className="op-cancel-order-button"
                           onClick={() => {
                             setSelectedOrder(order);
                             setShowCancelModal(true);
@@ -310,21 +319,21 @@ export default function OrdersPage() {
             </div>
 
             {totalPages > 1 && (
-              <div className="pagination">
+              <div className="op-pagination">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="pagination-button"
+                  className="op-pagination-button"
                 >
                   Anterior
                 </button>
-                <span className="page-info">
+                <span className="op-page-info">
                   Página {currentPage} de {totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="pagination-button"
+                  className="op-pagination-button"
                 >
                   Siguiente
                 </button>
@@ -334,8 +343,74 @@ export default function OrdersPage() {
         )}
       </div>
 
+      {showDetailModal && (
+        <div className="op-modal-overlay">
+          <div className="op-modal-content op-detail-modal">
+            <div className="op-modal-header">
+              <h3>Detalles del Pedido #{selectedOrder?.orderid}</h3>
+              <button 
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setSelectedOrder(null);
+                }}
+                className="op-close-button"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            
+            <div className="op-detail-section">
+              <h4>Información del Pedido</h4>
+              <p><strong>Fecha:</strong> {formatDate(selectedOrder?.date)}</p>
+              <p><strong>Estado:</strong> 
+                <span 
+                  className="op-status-badge"
+                  style={{ backgroundColor: getStatusColor(selectedOrder?.status) }}
+                >
+                  {selectedOrder?.status}
+                </span>
+              </p>
+            </div>
+
+            <div className="op-detail-section">
+              <h4>Productos</h4>
+              <div className="op-detail-items">
+                {selectedOrder?.items.map((item, index) => (
+                  <div key={index} className="op-detail-item">
+                    <img src={item.images[0]} alt={item.name} />
+                    <div className="op-detail-item-info">
+                      <h5>{item.name}</h5>
+                      <p>Cantidad: {item.quantity}</p>
+                      <p>Precio unitario: {formatPrice(item.price)}</p>
+                      <p>Subtotal: {formatPrice(item.price * item.quantity)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="op-detail-section">
+              <h4>Resumen</h4>
+              <div className="op-order-summary">
+                <div className="op-summary-row">
+                  <span>Subtotal:</span>
+                  <span>{formatPrice(selectedOrder?.total)}</span>
+                </div>
+                <div className="op-summary-row">
+                  <span>IVA (21%):</span>
+                  <span>{formatPrice(selectedOrder?.total * 0.21)}</span>
+                </div>
+                <div className="op-summary-row total">
+                  <span>Total:</span>
+                  <span>{formatPrice(selectedOrder?.total * 1.21)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showCancelModal && <CancelConfirmationModal />}
-      {showDetailModal && <OrderDetailModal />}
     </div>
   );
 } 

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaShoppingBag, FaMoneyBillWave } from 'react-icons/fa';
+import { products } from '../../data/products';
+import { categories } from '../../data/categories';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -12,7 +14,7 @@ export default function AdminDashboard() {
 
   const [dateRange, setDateRange] = useState(() => {
     // Establecer el rango para marzo 2024
-    const startDate = new Date(2024, 2, 1); // Marzo es 2 (0-based)
+    const startDate = new Date(2024, 2, 1); 
     const endDate = new Date(2024, 2, 31);
     
     return {
@@ -22,6 +24,18 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
+
+    if (!localStorage.getItem('products')) {
+      localStorage.setItem('products', JSON.stringify(products.map(product => ({
+        ...product,
+        active: true 
+      }))));
+    }
+    
+    if (!localStorage.getItem('categories')) {
+      localStorage.setItem('categories', JSON.stringify(categories));
+    }
+
     loadSummaryData();
   }, [dateRange]);
 
@@ -31,7 +45,7 @@ export default function AdminDashboard() {
       const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
       console.log('Todas las órdenes:', allOrders);
 
-      const startDate = new Date(dateRange.startDate + 'T00:00:00-05:00'); // Usar zona horaria de Perú
+      const startDate = new Date(dateRange.startDate + 'T00:00:00-05:00'); 
       const endDate = new Date(dateRange.endDate + 'T23:59:59-05:00');
 
       console.log('Rango de fechas:', {

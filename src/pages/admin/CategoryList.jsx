@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaSearch, FaPlus, FaEye } from 'react-icons/fa';
+import { FaSearch, FaPlus, FaEye, FaBox } from 'react-icons/fa';
+import { products } from '../../data/products';
 import './CategoryList.css';
 
 export default function CategoryList() {
@@ -8,11 +9,21 @@ export default function CategoryList() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [productCountByCategory, setProductCountByCategory] = useState({});
   
   const categoriesPerPage = 10;
 
   useEffect(() => {
     loadCategories();
+  }, []);
+
+  useEffect(() => {
+    // Calcular el conteo de productos por categoría
+    const countByCategory = products.reduce((acc, product) => {
+      acc[product.category] = (acc[product.category] || 0) + 1;
+      return acc;
+    }, {});
+    setProductCountByCategory(countByCategory);
   }, []);
 
   const loadCategories = () => {
@@ -41,16 +52,16 @@ export default function CategoryList() {
   const currentCategories = filteredCategories.slice(indexOfFirstCategory, indexOfLastCategory);
 
   return (
-    <div className="category-list-page">
-      <div className="page-header">
-        <div className="header-main">
+    <div className="cl-category-list-page">
+      <div className="cl-page-header">
+        <div className="cl-header-main">
           <h1>Categorías</h1>
-          <Link to="/admin/categories/new" className="add-category-button">
+          <Link to="/admin/categories/new" className="cl-add-category-button">
             <FaPlus /> Agregar Categoría
           </Link>
         </div>
-        <div className="search-box">
-          <FaSearch className="search-icon" />
+        <div className="cl-search-box">
+          <FaSearch className="cl-search-icon" />
           <input
             type="text"
             placeholder="Buscar por nombre, descripción o ID..."
@@ -61,34 +72,34 @@ export default function CategoryList() {
       </div>
 
       {loading ? (
-        <div className="loading">Cargando categorías...</div>
+        <div className="cl-loading">Cargando categorías...</div>
       ) : currentCategories.length === 0 ? (
-        <div className="no-results">
+        <div className="cl-no-results">
           <p>No se encontraron categorías{searchTerm && ' que coincidan con la búsqueda'}.</p>
-          <Link to="/admin/categories/new" className="add-category-link">
+          <Link to="/admin/categories/new" className="cl-add-category-link">
             Agregar nueva categoría
           </Link>
         </div>
       ) : (
         <>
-          <div className="categories-grid">
+          <div className="cl-categories-grid">
             {currentCategories.map(category => (
-              <div key={category.id} className="category-card">
-                <div className="category-image">
+              <div key={category.id} className="cl-category-card">
+                <div className="cl-category-image">
                   <img 
                     src={category.image || 'https://via.placeholder.com/200?text=Categoría'} 
                     alt={category.name} 
                   />
                 </div>
-                <div className="category-info">
+                <div className="cl-category-info">
                   <h3>{category.name}</h3>
-                  <p className="category-description">{category.description}</p>
-                  <p className="product-count">
-                    {category.products?.length || 0} productos
+                  <p className="cl-category-description">{category.description}</p>
+                  <p className="cl-product-count">
+                    <FaBox /> {productCountByCategory[category.id] || 0} productos
                   </p>
                 </div>
-                <div className="category-actions">
-                  <Link to={`/admin/categories/${category.id}`} className="view-button">
+                <div className="cl-category-actions">
+                  <Link to={`/admin/categories/${category.id}`} className="cl-view-button">
                     <FaEye /> Ver detalle
                   </Link>
                 </div>
@@ -97,21 +108,21 @@ export default function CategoryList() {
           </div>
 
           {totalPages > 1 && (
-            <div className="pagination">
+            <div className="cl-pagination">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="page-button"
+                className="cl-page-button"
               >
                 Anterior
               </button>
-              <span className="page-info">
+              <span className="cl-page-info">
                 Página {currentPage} de {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="page-button"
+                className="cl-page-button"
               >
                 Siguiente
               </button>
