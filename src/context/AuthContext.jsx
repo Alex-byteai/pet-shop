@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       // Buscar usuario por email y contraseña
       const foundUser = currentUsers.find(u => 
         u.email === email && 
-        u.contra === password && 
+        u.password === password && 
         u.active === true
       );
 
@@ -42,13 +42,29 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Credenciales incorrectas o usuario inactivo');
       }
 
+      // Actualizar último acceso
+      const updatedUsers = currentUsers.map(u => {
+        if (u.id === foundUser.id) {
+          return {
+            ...u,
+            lastLogin: new Date().toISOString()
+          };
+        }
+        return u;
+      });
+      localStorage.setItem('users', JSON.stringify(updatedUsers));
+
       // Crear objeto de usuario sin la contraseña
       const userToStore = {
         id: foundUser.id,
-        firstName: foundUser.name,
-        lastName: foundUser.surname,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
         email: foundUser.email,
-        role: foundUser.role
+        role: foundUser.role,
+        phone: foundUser.phone,
+        address: foundUser.address,
+        registerDate: foundUser.registerDate,
+        lastLogin: foundUser.lastLogin
       };
 
       setUser(userToStore);
@@ -63,6 +79,7 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true };
     } catch (error) {
+      console.error('Error en login:', error);
       return { success: false, error: error.message };
     }
   };
@@ -80,12 +97,22 @@ export const AuthProvider = ({ children }) => {
       // Crear nuevo usuario
       const newUser = {
         id: currentUsers.length + 1,
-        name: userData.firstName,
-        surname: userData.lastName,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         email: userData.email,
-        contra: userData.password,
+        password: userData.password,
         role: 'cliente',
-        active: true
+        active: true,
+        registerDate: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        phone: userData.phone || '',
+        address: userData.address || {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'España'
+        }
       };
 
       // Agregar nuevo usuario a la lista
@@ -95,10 +122,14 @@ export const AuthProvider = ({ children }) => {
       // Crear objeto de usuario para la sesión
       const userToStore = {
         id: newUser.id,
-        firstName: newUser.name,
-        lastName: newUser.surname,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
         email: newUser.email,
-        role: newUser.role
+        role: newUser.role,
+        phone: newUser.phone,
+        address: newUser.address,
+        registerDate: newUser.registerDate,
+        lastLogin: newUser.lastLogin
       };
 
       setUser(userToStore);
@@ -168,7 +199,7 @@ export const AuthProvider = ({ children }) => {
       const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
       const updatedUsers = currentUsers.map(u => {
         if (u.email === email) {
-          return { ...u, contra: newPassword };
+          return { ...u, password: newPassword };
         }
         return u;
       });
@@ -191,8 +222,8 @@ export const AuthProvider = ({ children }) => {
         if (u.id === user.id) {
           return {
             ...u,
-            name: updates.firstName,
-            surname: updates.lastName,
+            firstName: updates.firstName,
+            lastName: updates.lastName,
             email: updates.email
           };
         }
@@ -225,14 +256,14 @@ export const AuthProvider = ({ children }) => {
       const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
       const currentUser = currentUsers.find(u => u.id === user.id);
 
-      if (currentUser.contra !== currentPassword) {
+      if (currentUser.password !== currentPassword) {
         throw new Error('La contraseña actual es incorrecta');
       }
 
       // Actualizar contraseña
       const updatedUsers = currentUsers.map(u => {
         if (u.id === user.id) {
-          return { ...u, contra: newPassword };
+          return { ...u, password: newPassword };
         }
         return u;
       });

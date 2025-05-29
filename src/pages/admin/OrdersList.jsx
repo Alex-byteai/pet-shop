@@ -10,10 +10,10 @@ function OrdersList() {
 
   // Combinar orden con datos de usuario
   const orders = ordersData.map((order) => {
-    const user = users.find((u) => u.id === order.userId);
+    const user = users.find((u) => u.id === order.userid);
     return {
       ...order,
-      userName: user ? `${user.name} ${user.surname}` : "Usuario no encontrado",
+      userName: user ? `${user.firstName} ${user.lastName}` : "Usuario no encontrado",
     };
   });
 
@@ -21,10 +21,41 @@ function OrdersList() {
   const filteredOrders = orders.filter((order) => {
     const searchTerm = search.toLowerCase();
     return (
-      order.id.toString().includes(searchTerm) ||
+      order.orderid.toString().includes(searchTerm) ||
       order.userName.toLowerCase().includes(searchTerm)
     );
   });
+
+  const formatDate = (dateString) => {
+    const options = { 
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pendiente':
+        return '#ffc107';
+      case 'enviado':
+        return '#28a745';
+      case 'cancelado':
+        return '#dc3545';
+      default:
+        return '#6c757d';
+    }
+  };
 
   return (
     <div className="orders-list-container">
@@ -51,16 +82,29 @@ function OrdersList() {
         </thead>
         <tbody>
           {filteredOrders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
+            <tr key={order.orderid}>
+              <td>{order.orderid}</td>
               <td>{order.userName}</td>
-              <td>{order.date}</td>
-              <td>S/ {order.total.toFixed(2)}</td>
-              <td>{order.status}</td>
+              <td>{formatDate(order.date)}</td>
+              <td>{formatPrice(order.total)}</td>
+              <td>
+                <span 
+                  className="status-badge"
+                  style={{ 
+                    backgroundColor: getStatusColor(order.status),
+                    color: 'white',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '1rem',
+                    display: 'inline-block'
+                  }}
+                >
+                  {order.status}
+                </span>
+              </td>
               <td>
                 <button
                   className="view-detail-button"
-                  onClick={() => navigate(`/admin/orders/${order.id}`)}
+                  onClick={() => navigate(`/admin/orders/${order.orderid}`)}
                 >
                   Ver Detalle
                 </button>
@@ -69,6 +113,12 @@ function OrdersList() {
           ))}
         </tbody>
       </table>
+
+      {filteredOrders.length === 0 && (
+        <div className="no-orders-message">
+          No se encontraron órdenes que coincidan con la búsqueda
+        </div>
+      )}
     </div>
   );
 }

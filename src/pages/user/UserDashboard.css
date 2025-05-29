@@ -156,32 +156,38 @@
 .preview-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   background-color: #f8f9fa;
   padding: 0.5rem;
   border-radius: 4px;
   flex: 1;
   min-width: 200px;
   max-width: calc(50% - 0.5rem);
+  overflow: hidden;
 }
 
 .preview-image {
-  width: 50px;
-  height: 50px;
+  width: 50px !important;
+  height: 50px !important;
   object-fit: cover;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .preview-details {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  overflow: hidden;
 }
 
 .item-name {
   font-size: 0.9rem;
   color: #333;
   font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .item-quantity {

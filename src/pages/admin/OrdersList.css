@@ -1,48 +1,103 @@
 .orders-list-container {
-    padding: 1rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
     background-color: #f9f9f9;
     border-radius: 8px;
 }
 
 .orders-list-title {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
     color: #333;
+    margin-bottom: 2rem;
+    font-size: 2rem;
 }
 
 .orders-search-input {
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.orders-search-input:focus {
+    outline: none;
+    border-color: #a26e3c;
 }
 
 .orders-table {
     width: 100%;
     border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .orders-table th,
 .orders-table td {
-    padding: 0.75rem;
+    padding: 1rem;
     text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 .orders-table th {
-    background-color: #f3f3f3;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.orders-table tr:last-child td {
+    border-bottom: none;
+}
+
+.orders-table tbody tr:hover {
+    background-color: #f8f9fa;
 }
 
 .view-detail-button {
-    padding: 0.4rem 0.8rem;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #007bff;
+    padding: 0.5rem 1rem;
+    background-color: #a26e3c;
     color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .view-detail-button:hover {
-    background-color: #0056b3;
+    background-color: #8a5c32;
+}
+
+.no-orders-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    background: white;
+    border-radius: 8px;
+    margin-top: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .orders-list-container {
+        padding: 1rem;
+    }
+
+    .orders-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .view-detail-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
 }

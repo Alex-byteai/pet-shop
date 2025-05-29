@@ -8,16 +8,16 @@ function OrderDetail() {
   const { orderId } = useParams();
   const [ordenes, setOrdenes] = useState(ordersData);
 
-  const orderIndex = ordenes.findIndex((o) => o.id === parseInt(orderId));
+  const orderIndex = ordenes.findIndex((o) => o.orderid === parseInt(orderId));
   const order = ordenes[orderIndex];
 
   if (!order) {
     return <p>Orden no encontrada</p>;
   }
 
-  const user = users.find((u) => u.id === order.userId);
+  const user = users.find((u) => u.id === order.userid);
   const userName = user
-    ? `${user.name} ${user.surname}`
+    ? `${user.firstName} ${user.lastName}`
     : "Usuario no encontrado";
 
   const cancelarOrden = () => {
@@ -35,7 +35,7 @@ function OrderDetail() {
       <h2 className="order-detail-title">Detalle de Orden</h2>
       <div className="order-info">
         <p>
-          <strong>ID:</strong> {order.id}
+          <strong>ID:</strong> {order.orderid}
         </p>
         <p>
           <strong>Cliente:</strong> {userName}
@@ -62,10 +62,10 @@ function OrderDetail() {
           <tbody>
             {order.items.map((item, idx) => (
               <tr key={idx}>
-                <td>{item.nombre}</td>
-                <td>{item.cantidad}</td>
-                <td>S/ {item.precio.toFixed(2)}</td>
-                <td>S/ {(item.cantidad * item.precio).toFixed(2)}</td>
+                <td>{item.name}</td>
+                <td>{item.quantity}</td>
+                <td>S/ {item.price.toFixed(2)}</td>
+                <td>S/ {(item.quantity * item.price).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

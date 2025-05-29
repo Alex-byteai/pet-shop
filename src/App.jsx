@@ -30,6 +30,12 @@ import UserList from "./pages/admin/UserList";
 import UserDetail from "./pages/admin/UserDetail";
 import OrdersList from "./pages/admin/OrdersList";
 import OrderDetail from "./pages/admin/OrderDetail";
+import ProductList from "./pages/admin/ProductList";
+import AddProduct from "./pages/admin/AddProduct";
+import EditProduct from "./pages/admin/EditProduct";
+import CategoryList from "./pages/admin/CategoryList";
+import AddCategory from "./pages/admin/AddCategory";
+import EditCategory from "./pages/admin/EditCategory";
 
 // Páginas de autenticación
 import LoginPage from './pages/auth/login/LoginPage';
@@ -106,6 +112,36 @@ function App() {
                   <Route path="/admin/orders/:orderId" element={
                     <ProtectedRoute adminOnly>
                       <OrderDetail />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/products" element={
+                    <ProtectedRoute adminOnly>
+                      <ProductList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/products/new" element={
+                    <ProtectedRoute adminOnly>
+                      <AddProduct />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/products/:productId" element={
+                    <ProtectedRoute adminOnly>
+                      <EditProduct />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/categories" element={
+                    <ProtectedRoute adminOnly>
+                      <CategoryList />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/categories/new" element={
+                    <ProtectedRoute adminOnly>
+                      <AddCategory />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin/categories/:categoryId" element={
+                    <ProtectedRoute adminOnly>
+                      <EditCategory />
                     </ProtectedRoute>
                   } />
 

@@ -4,6 +4,16 @@ const calculateTotal = (items) => {
   return items.reduce((total, item) => total + (item.price * item.quantity), 0);
 };
 
+// Asegurarse de que los productos estén cargados
+const getProduct = (id) => {
+  const product = products.find(p => p.id === id);
+  if (!product) {
+    console.error(`Producto con ID ${id} no encontrado`);
+    return null;
+  }
+  return product;
+};
+
 const ordersprev = [
   {
     orderid: 101,
@@ -16,7 +26,7 @@ const ordersprev = [
         quantity: 1
       },
       {
-        ...products.find(p => p.id === 2),
+        ...products.find(p => p.id === 4),
         quantity: 2
       }
     ]
@@ -28,12 +38,12 @@ const ordersprev = [
     status: "enviado",
     items: [
       {
-        ...products.find(p => p.id === 4),
-        quantity: 1
+        ...products.find(p => p.id === 1),
+        quantity: 2
       },
       {
         ...products.find(p => p.id === 6),
-        quantity: 2
+        quantity: 1
       }
     ]
   },
@@ -45,11 +55,11 @@ const ordersprev = [
     items: [
       {
         ...products.find(p => p.id === 7),
-        quantity: 1
+        quantity: 2
       },
       {
-        ...products.find(p => p.id === 3),
-        quantity: 1
+        ...products.find(p => p.id === 2),
+        quantity: 5
       }
     ]
   },
@@ -60,8 +70,12 @@ const ordersprev = [
     status: "pendiente",
     items: [
       {
-        ...products.find(p => p.id === 6),
-        quantity: 2
+        ...products.find(p => p.id === 5),
+        quantity: 1
+      },
+      {
+        ...products.find(p => p.id === 8),
+        quantity: 1
       }
     ]
   },
@@ -72,8 +86,12 @@ const ordersprev = [
     status: "cancelado",
     items: [
       {
-        ...products.find(p => p.id === 1),
-        quantity: 3
+        ...products.find(p => p.id === 9),
+        quantity: 1
+      },
+      {
+        ...products.find(p => p.id === 10),
+        quantity: 1
       }
     ]
   },
@@ -154,10 +172,22 @@ const ordersprev = [
   total: calculateTotal(order.items)
 }));
 
-export const orders = JSON.parse(localStorage.getItem("orders")) || ordersprev;
-
-if (!localStorage.getItem("orders")) {
-  localStorage.setItem("orders", JSON.stringify(ordersprev));
+// Limpiar localStorage antes de inicializar
+try {
+  localStorage.removeItem("orders");
+  localStorage.removeItem("users");
+  console.log("localStorage limpiado correctamente");
+} catch (error) {
+  console.error("Error al limpiar localStorage:", error);
 }
 
+// Guardar órdenes predefinidas
+try {
+  localStorage.setItem("orders", JSON.stringify(ordersprev));
+  console.log("Órdenes iniciales guardadas en localStorage");
+} catch (error) {
+  console.error("Error al guardar órdenes en localStorage:", error);
+}
+
+export const orders = ordersprev;
 export default orders;
