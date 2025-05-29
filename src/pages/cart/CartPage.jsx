@@ -13,10 +13,10 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="cart-empty">
+      <div className="cart-page-empty">
         <h2>Tu carrito está vacío</h2>
         <p>¡Agrega algunos productos a tu carrito para verlos aquí!</p>
-        <Link to="/" className="continue-shopping">
+        <Link to="/" className="cart-page-continue-shopping">
           Seguir comprando
         </Link>
       </div>
@@ -24,29 +24,29 @@ export default function CartPage() {
   }
 
   return (
-    <div className="shopping-cart-container">
-      <div className="cart-header">
+    <div className="cart-page-container">
+      <div className="cart-page-header">
         <h2>Carrito de Compras</h2>
       </div>
 
-      <div className="cart-items-container">
+      <div className="cart-page-items-container">
         {cart.map(item => (
-          <div key={item.id} className="cart-item">
+          <div key={item.id} className="cart-page-item">
             <img 
               src={item.images[0]} 
               alt={item.name} 
-              className="cart-item-image"
+              className="cart-page-item-image"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = '/placeholder-image.jpg';
               }}
             />
-            <div className="cart-item-details">
+            <div className="cart-page-item-details">
               <h3>{item.name}</h3>
               <p>${item.price.toFixed(2)}</p>
             </div>
-            <div className="cart-item-actions">
-              <div className="quantity-controls">
+            <div className="cart-page-item-actions">
+              <div className="cart-page-quantity-controls">
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   disabled={item.quantity <= 1}
@@ -62,7 +62,7 @@ export default function CartPage() {
               </div>
               <button 
                 onClick={() => removeFromCart(item.id)} 
-                className="remove-button"
+                className="cart-page-remove-button"
               >
                 Eliminar
               </button>
@@ -71,20 +71,20 @@ export default function CartPage() {
         ))}
       </div>
 
-      <div className="cart-summary">
-        <div className="summary-row">
+      <div className="cart-page-summary">
+        <div className="cart-page-summary-row">
           <span>Subtotal:</span>
           <span>${getTotal().toFixed(2)}</span>
         </div>
-        <div className="summary-row">
+        <div className="cart-page-summary-row">
           <span>Envío:</span>
           <span>Gratis</span>
         </div>
-        <div className="summary-row total">
+        <div className="cart-page-summary-row cart-page-total">
           <span>Total:</span>
           <span>${getTotal().toFixed(2)}</span>
         </div>
-        <Link to="/checkout" className="checkout-button">
+        <Link to="/checkout" className="cart-page-checkout-button">
           Proceder al pago
         </Link>
       </div>

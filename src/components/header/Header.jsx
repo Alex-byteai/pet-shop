@@ -11,17 +11,17 @@ const Header = () => {
     <header>
       <div className="top-bar">
         <div className="top-bar-left">
-          {/* Aqui van los contactos */}
+          {/* Aquí van los contactos */}
         </div>
 
         <div className="top-bar-right">
           <div className="top-bar-item">
             <FaHeart className='top-bar-icon' />
-            <span>Deseados</span>
+            <Link to="/deseados" className="top-bar-link">Deseados</Link>
           </div>
           <div className="top-bar-item">
             <FaUser className='top-bar-icon' />
-            <span><Link to='/auth/login'>Mi cuenta</Link></span>
+            <Link to="/auth/login" className="top-bar-link">Mi cuenta</Link>
           </div>
           <div className="top-bar-item">
             <CartIcon />
@@ -31,7 +31,7 @@ const Header = () => {
 
       <div className="main-header">
         <div className="logo">
-          <Link to="/">PetShop</Link>
+          <Link to="/" className="logo-link">PetShop</Link>
         </div>
 
         <nav className="nav-links">
@@ -39,11 +39,6 @@ const Header = () => {
           <CategoryMenu />
           <ProductMenu />
         </nav>
-
-        {/* <div className="search-bar">
-          <input type="text" placeholder="Buscar productos..." />
-          <button type="submit"><FaSearch  /></button>
-        </div> */}
 
         <div className="search-bar">
           <SearchBar />
