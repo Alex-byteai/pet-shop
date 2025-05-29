@@ -2,6 +2,7 @@
 import HomeSlider from '../../components/homeSlider/HomeSlider';
 import { featuredCategories } from '../../data/feacturedCategories';
 import { topProducts } from '../../data/topProducts';
+import { newProducts } from '../../data/newProducts';
 import CardSlider from '../../components/cardSlider/CardSlider';
 import Card from '../../components/card/Card';
 import { useNavigate } from 'react-router-dom';
@@ -51,7 +52,20 @@ const HomePage = () => {
           </div>
       </section>
 
-      
+      {/* Productos Nuevos */}
+      <section className='new-products'>
+        <h2>Productos Nuevos</h2>
+        <div className='products-slider'>
+          <CardSlider>
+            {newProducts.map((product) => (
+              <Card
+                key={product.id}
+                {...product}
+              />
+            ))}
+          </CardSlider>
+        </div>
+      </section>
 
     </div>
   );
