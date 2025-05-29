@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import './RegisterPage.css';
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,11 +15,15 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { register, user } = useAuth();
-
+  const [registro, setRegistro] = useState(false);
   // Si el usuario ya está autenticado, redirigir al dashboard
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
+  useEffect(() => {
+  if (user && !registro) {
+    alert('Registrado correctamente');
+    setRegistro(true);
+    navigate('/');
   }
+}, [user, registro, navigate]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -185,7 +190,7 @@ export default function RegisterPage() {
               className="auth-button register-button"
               disabled={isLoading}
             >
-              {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
+              Crear Cuenta
             </button>
 
             <div className="auth-links register-links">
