@@ -21,7 +21,7 @@ const Header = () => {
           </div>
           <div className="top-bar-item">
             <FaUser className='top-bar-icon' />
-            <span>Mi cuenta</span>
+            <span><Link to='/auth/login'>Mi cuenta</Link></span>
           </div>
           <div className="top-bar-item">
             <CartIcon />

@@ -1,0 +1,119 @@
+.login-success-page {
+  min-height: 100vh;
+  background-color: #faf7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-success-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.login-success-box {
+  background: white;
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e1d9;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 3rem;
+  color: #15803d;
+  margin-bottom: 1.5rem;
+  height: 80px;
+  width: 80px;
+  line-height: 80px;
+  border-radius: 50%;
+  background-color: #f0fdf4;
+  margin: 0 auto 1.5rem;
+  animation: scaleIn 0.5s ease-out;
+  border: 2px solid #dcfce7;
+}
+
+.login-success-title {
+  color: #2d2418;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+.login-success-message {
+  color: #6b4423;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-out 0.6s both;
+}
+
+.login-success-button {
+  background-color: #8b6b4d;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out 0.9s both;
+  width: 100%;
+}
+
+.login-success-button:hover {
+  background-color: #6b4423;
+  transform: translateY(-1px);
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .login-success-page {
+    padding: 1rem;
+  }
+
+  .login-success-box {
+    padding: 2rem;
+  }
+
+  .success-icon {
+    font-size: 2.5rem;
+    height: 70px;
+    width: 70px;
+    line-height: 70px;
+  }
+
+  .login-success-title {
+    font-size: 1.5rem;
+  }
+
+  .login-success-message {
+    font-size: 0.95rem;
+  }
+}

@@ -61,11 +61,12 @@ header {
 }
 
 /* Logo */
-.logo a {
+.logo {
   font-size: 34px;
   font-weight: bold;
   color: #333;
   text-decoration: none;
+  margin-right: 20px;
 }
 
 /* Nav links */
@@ -75,13 +76,14 @@ header {
   gap: 20px;
 }
 
-.nav-links a {
+.a {
   color: #333;
   text-decoration: none;
   font-weight: 500;
+  margin-right: 10px;
 }
 
-.nav-links a:hover {
+.a:hover {
   color: #a26e3c;
 }
 
@@ -107,4 +109,9 @@ header {
   cursor: pointer;
   font-size: 14px;
   color: #333;
+}
+
+.custom-link {
+  color: white; 
+  text-decoration: none;
 }

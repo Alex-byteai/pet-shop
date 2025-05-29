@@ -1,0 +1,141 @@
+.verification-page {
+  min-height: 100vh;
+  background-color: #faf7f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.verification-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.verification-box {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e1d9;
+}
+
+.verification-title {
+  color: #2d2418;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.verification-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #8b6b4d;
+  border-radius: 2px;
+}
+
+.verification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  position: relative;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e8e1d9;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  color: #2d2418;
+  background-color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.25em;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #8b6b4d;
+  box-shadow: 0 0 0 4px rgba(139, 107, 77, 0.1);
+}
+
+.verification-input::placeholder {
+  color: #a39689;
+  letter-spacing: normal;
+}
+
+.verification-button {
+  background-color: #8b6b4d;
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.verification-button:hover {
+  background-color: #6b4423;
+  transform: translateY(-1px);
+}
+
+.verification-button:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.verification-error {
+  color: #dc2626;
+  text-align: center;
+  font-size: 0.875rem;
+  background-color: #fef2f2;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fee2e2;
+  margin-top: 1rem;
+}
+
+.verification-success {
+  color: #15803d;
+  text-align: center;
+  font-size: 0.875rem;
+  background-color: #f0fdf4;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dcfce7;
+  margin-top: 1rem;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .verification-page {
+    padding: 1rem;
+  }
+
+  .verification-box {
+    padding: 1.5rem;
+  }
+
+  .verification-title {
+    font-size: 1.75rem;
+  }
+
+  .verification-input {
+    font-size: 0.95rem;
+  }
+}
