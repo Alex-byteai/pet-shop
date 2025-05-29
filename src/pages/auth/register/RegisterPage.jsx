@@ -1,106 +1,202 @@
 import { useState } from 'react';
-import { users, indice } from '../../../data/users';
-import { useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 import './RegisterPage.css';
 
-function RegisterPage() {
-  const [nombre, setnombre] = useState('');
-  const [apellido, setapellido] = useState('');
-  const [email, setEmail] = useState('');
-  const [contras, setContra] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+export default function RegisterPage() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const { register, user } = useAuth();
 
-  const handleSubmit = (e) => {
+  // Si el usuario ya está autenticado, redirigir al dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'El nombre es requerido';
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'El apellido es requerido';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'El email es requerido';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email inválido';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'La contraseña es requerida';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = validateForm();
 
-    if (!nombre || !apellido || !email || !contras) {
-      setError('Rellenar todos los campos es obligatorio');
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
-    if (users.some(user => user.email === email)) {
-      setError('El correo ya está registrado.');
-      return;
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      const result = await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result.success) {
+        setErrors({ submit: result.error });
+      }
+    } catch (err) {
+      setErrors({ submit: 'Error al registrar usuario. Por favor intenta de nuevo.' });
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    const newUser = {
-      id: users.length + 1,
-      nombre,
-      apellido,
-      email,
-      contra: contras,
-      role: 'cliente',
-      active: false,
-    };
-
-    indice.ind = newUser.id - 1;
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    console.log('Nuevo usuario:', newUser);
-    navigate("/");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Limpiar error del campo cuando el usuario empieza a escribir
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <div className="register-box">
-          <h2 className="register-title">Registro de Usuario</h2>
-          <form className="register-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <input
-                type="text"
-                className="register-input"
-                placeholder="Nombre"
-                value={nombre}
-                onChange={(e) => setnombre(e.target.value)}
-                required
-              />
+    <div className="auth-page register-page">
+      <div className="auth-container register-container">
+        <div className="auth-box register-box">
+          <h2 className="auth-title register-title">Crear cuenta</h2>
+          
+          <form className="auth-form register-form" onSubmit={handleSubmit}>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="firstName" className="form-label">Nombre</label>
+                <input
+                  id="firstName"
+                  type="text"
+                  name="firstName"
+                  className={`auth-input register-input ${errors.firstName ? 'error' : ''}`}
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="Tu nombre"
+                />
+                {errors.firstName && <span className="error-message">{errors.firstName}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="lastName" className="form-label">Apellido</label>
+                <input
+                  id="lastName"
+                  type="text"
+                  name="lastName"
+                  className={`auth-input register-input ${errors.lastName ? 'error' : ''}`}
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Tu apellido"
+                />
+                {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+              </div>
             </div>
-            
+
             <div className="form-group">
+              <label htmlFor="email" className="form-label">Email</label>
               <input
-                type="text"
-                className="register-input"
-                placeholder="Apellido"
-                value={apellido}
-                onChange={(e) => setapellido(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <input
+                id="email"
                 type="email"
-                className="register-input"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                name="email"
+                className={`auth-input register-input ${errors.email ? 'error' : ''}`}
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="tu@email.com"
               />
+              {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
-            
+
             <div className="form-group">
+              <label htmlFor="password" className="form-label">Contraseña</label>
               <input
+                id="password"
                 type="password"
-                className="register-input"
-                placeholder="Contraseña"
-                value={contras}
-                onChange={(e) => setContra(e.target.value)}
-                required
+                name="password"
+                className={`auth-input register-input ${errors.password ? 'error' : ''}`}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Mínimo 6 caracteres"
               />
+              {errors.password && <span className="error-message">{errors.password}</span>}
             </div>
-            
-            <button type="submit" className="register-button">
-              Registrarse
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                name="confirmPassword"
+                className={`auth-input register-input ${errors.confirmPassword ? 'error' : ''}`}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Repite tu contraseña"
+              />
+              {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+            </div>
+
+            {errors.submit && (
+              <div className="auth-error register-error">
+                {errors.submit}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="auth-button register-button"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
             </button>
-            
-            {error && <p className="register-error">{error}</p>}
+
+            <div className="auth-links register-links">
+              <div className="auth-separator">¿Ya tienes una cuenta?</div>
+              <Link to="/auth/login" className="auth-link register-link login-link">
+                Iniciar sesión
+              </Link>
+            </div>
           </form>
         </div>
       </div>
     </div>
   );
 }
-
-export default RegisterPage;

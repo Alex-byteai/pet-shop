@@ -1,8 +1,51 @@
-import product1 from '../assets/images/product/product-1.jpg'
-import product2 from '../assets/images/product/product-2.jpg'
-import product3 from '../assets/images/product/product-3.jpg'
-// import product4 from '../assets/images/product/product-4.jpg'
+import royalCanin1 from '../assets/images/product/royal-canin-1.jpg'
+import royalCanin2 from '../assets/images/product/royal-canin-2.jpg'
+import royalCanin3 from '../assets/images/product/royal-canin-3.jpg'
 
+import whiskas1 from '../assets/images/product/whiskas-1.jpg'
+import whiskas2 from '../assets/images/product/whiskas-2.jpg'
+import whiskas3 from '../assets/images/product/whiskas-3.jpg'
+
+
+import petStyle1 from '../assets/images/product/petStyle-1.jpg'
+import petStyle2 from '../assets/images/product/petStyle-2.jpg'
+import petStyle3 from '../assets/images/product/petStyle-3.jpg'
+
+import comfortPet1 from '../assets/images/product/comfortPet-1.jpg'
+import comfortPet2 from '../assets/images/product/comfortPet-2.jpg'
+import comfortPet3 from '../assets/images/product/comfortPet-3.jpg'
+
+import naturePet1 from '../assets/images/product/naturePet-1.jpg'
+import naturePet2 from '../assets/images/product/naturePet-2.jpg'
+import naturePet3 from '../assets/images/product/naturePet-3.jpg'
+
+import playfulPets1 from '../assets/images/product/playfulPets-1.jpg'
+import playfulPets2 from '../assets/images/product/playfulPets-2.jpg'
+import playfulPets3 from '../assets/images/product/playfulPets-3.jpg'
+
+import cleanCat1 from '../assets/images/product/cleanCat-1.jpg'
+import cleanCat2 from '../assets/images/product/cleanCat-2.jpg'
+import cleanCat3 from '../assets/images/product/cleanCat-3.jpg'
+
+import vetCare1 from '../assets/images/product/vetCare-1.jpg'
+import vetCare2 from '../assets/images/product/vetCare-2.jpg'
+import vetCare3 from '../assets/images/product/vetCare-3.jpg'
+
+import petFashion1 from '../assets/images/product/petFashion-1.jpg'
+import petFashion2 from '../assets/images/product/petFashion-2.jpg'
+import petFashion3 from '../assets/images/product/petFashion-3.jpg'
+
+import travelPet1 from '../assets/images/product/travelPet-1.jpg'
+import travelPet2 from '../assets/images/product/travelPet-2.jpg'
+import travelPet3 from '../assets/images/product/travelPet-3.jpg'
+
+import dentalCare1 from '../assets/images/product/dentalCare-1.jpg'
+import dentalCare2 from '../assets/images/product/dentalCare-2.jpg'
+import dentalCare3 from '../assets/images/product/dentalCare-3.jpg'
+
+import groomPro1 from '../assets/images/product/groomPro-1.jpg'
+import groomPro2 from '../assets/images/product/groomPro-2.jpg'
+import groomPro3 from '../assets/images/product/groomPro-3.jpg'
 
 
 export const products = [
@@ -16,7 +59,7 @@ export const products = [
     brand: 'Royal Canin',
     rating: 4.8,
     stock: 50,
-    images: [product1, product2, product3],
+    images: [royalCanin1, royalCanin2, royalCanin3],
     isNew: false,
     isBestSeller: true
   },
@@ -30,7 +73,7 @@ export const products = [
     brand: 'Whiskas',
     rating: 4.5,
     stock: 100,
-    images: [product1, product2, product3],
+    images: [whiskas1, whiskas2, whiskas3],
     isNew: false,
     isBestSeller: true
   },
@@ -44,7 +87,7 @@ export const products = [
     brand: 'PetStyle',
     rating: 4.7,
     stock: 30,
-    images: [product1, product2, product3],
+    images: [petStyle1, petStyle2, petStyle3],
     isNew: true,
     isBestSeller: false
   },
@@ -58,7 +101,7 @@ export const products = [
     brand: 'ComfortPet',
     rating: 4.9,
     stock: 15,
-    images: [product1, product2, product3],
+    images: [comfortPet1, comfortPet2, comfortPet3],
     isNew: true,
     isBestSeller: true
   },
@@ -72,7 +115,7 @@ export const products = [
     brand: 'NaturePet',
     rating: 4.6,
     stock: 40,
-    images: [product1, product2, product3],
+    images: [naturePet1, naturePet2, naturePet3],
     isNew: false,
     isBestSeller: true
   },
@@ -86,7 +129,7 @@ export const products = [
     brand: 'PlayfulPets',
     rating: 4.4,
     stock: 60,
-    images: [product1, product2, product3],
+    images: [playfulPets1, playfulPets2, playfulPets3],
     isNew: true,
     isBestSeller: false
   },
@@ -100,13 +143,13 @@ export const products = [
     brand: 'CleanCat',
     rating: 4.7,
     stock: 80,
-    images: [product1, product2, product3],
+    images: [cleanCat1, cleanCat2, cleanCat3],
     isNew: false,
     isBestSeller: true
   },
   {
     id: 8,
-    name: 'Suplemento Vitamínico Complete',
+    name: 'Suplemento Vitamínico Completo',
     description: 'Complejo vitamínico completo para perros y gatos.',
     price: 29.99,
     category: 4,
@@ -114,7 +157,7 @@ export const products = [
     brand: 'VetCare',
     rating: 4.8,
     stock: 45,
-    images: [product1, product2, product3],
+    images: [vetCare1, vetCare2, vetCare3],
     isNew: true,
     isBestSeller: false
   },
@@ -128,7 +171,7 @@ export const products = [
     brand: 'PetFashion',
     rating: 4.5,
     stock: 25,
-    images: [product1, product2, product3],
+    images: [petFashion1, petFashion2, petFashion3],
     isNew: true,
     isBestSeller: false
   },
@@ -142,7 +185,7 @@ export const products = [
     brand: 'TravelPet',
     rating: 4.6,
     stock: 20,
-    images: [product1, product2, product3],
+    images: [travelPet1, travelPet2, travelPet3],
     isNew: false,
     isBestSeller: true
   },
@@ -156,7 +199,7 @@ export const products = [
     brand: 'DentalCare',
     rating: 4.4,
     stock: 70,
-    images: [product1, product2, product3],
+    images: [dentalCare1, dentalCare2, dentalCare3],
     isNew: false,
     isBestSeller: true
   },
@@ -170,7 +213,7 @@ export const products = [
     brand: 'GroomPro',
     rating: 4.7,
     stock: 35,
-    images: [product1, product2, product3],
+    images: [groomPro1, groomPro2, groomPro3],
     isNew: true,
     isBestSeller: false
   }

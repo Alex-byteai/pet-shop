@@ -10,8 +10,13 @@ const SearchBar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm('');
     }
+  };
+
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -20,13 +25,18 @@ const SearchBar = () => {
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Buscar productos, marcas y más..."
+          onChange={handleChange}
+          placeholder="Buscar productos..."
           className="search-input"
+          aria-label="Buscar productos"
         />
       </div>
-      <button type="submit" className="search-button">
-        <FaSearch  className='search-icon' />
+      <button 
+        type="submit" 
+        className="search-button"
+        aria-label="Buscar"
+      >
+        <FaSearch />
       </button>
     </form>
   );
