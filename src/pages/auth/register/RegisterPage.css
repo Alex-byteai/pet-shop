@@ -1,40 +1,39 @@
-.register-page {
+.auth-page.register-page {
   min-height: 100vh;
-  background-color: #faf7f5;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #faf7f5;
   padding: 2rem;
 }
 
-.register-container {
+.auth-container.register-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
 }
 
-.register-box {
-  background: white;
+.auth-box.register-box {
+  background-color: white;
   padding: 2.5rem;
   border-radius: 1rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e8e1d9;
 }
 
-.register-title {
+.auth-title.register-title {
   color: #2d2418;
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 2rem;
+  font-size: 1.75rem;
   font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: center;
   position: relative;
-  padding-bottom: 1rem;
 }
 
-.register-title::after {
+.auth-title.register-title::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -0.75rem;
   left: 50%;
   transform: translateX(-50%);
   width: 60px;
@@ -43,41 +42,77 @@
   border-radius: 2px;
 }
 
-.register-form {
+.auth-form.register-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.form-group {
-  position: relative;
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
-.register-input {
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  color: #4a4038;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.auth-input.register-input {
   width: 100%;
-  padding: 0.875rem 1rem;
-  border: 2px solid #e8e1d9;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e8e1d9;
   border-radius: 0.75rem;
   font-size: 1rem;
-  transition: all 0.3s ease;
   color: #2d2418;
-  background-color: #ffffff;
+  transition: all 0.3s ease;
 }
 
-.register-input:focus {
+.auth-input.register-input:focus {
   outline: none;
   border-color: #8b6b4d;
-  box-shadow: 0 0 0 4px rgba(139, 107, 77, 0.1);
+  box-shadow: 0 0 0 2px rgba(139, 107, 77, 0.1);
 }
 
-.register-input::placeholder {
-  color: #a39689;
+.auth-input.register-input::placeholder {
+  color: #a8a29e;
 }
 
-.register-button {
+.auth-input.register-input.error {
+  border-color: #dc2626;
+  background-color: #fff5f5;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: -0.25rem;
+}
+
+.auth-error.register-error {
+  color: #dc2626;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  text-align: center;
+  background-color: #fff5f5;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fecaca;
+}
+
+.auth-button.register-button {
+  width: 100%;
+  padding: 1rem;
   background-color: #8b6b4d;
   color: white;
-  padding: 1rem;
   border: none;
   border-radius: 0.75rem;
   font-size: 1rem;
@@ -87,43 +122,68 @@
   margin-top: 0.5rem;
 }
 
-.register-button:hover {
+.auth-button.register-button:hover:not(:disabled) {
   background-color: #6b4423;
   transform: translateY(-1px);
 }
 
-.register-button:disabled {
-  background-color: #d4c4b7;
+.auth-button.register-button:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
-  transform: none;
 }
 
-.register-error {
-  color: #dc2626;
+.auth-links.register-links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-link.register-link {
+  color: #8b6b4d;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.auth-link.register-link:hover {
+  color: #6b4423;
+}
+
+.auth-separator {
+  color: #4a4038;
+  font-size: 0.9rem;
   text-align: center;
-  font-size: 0.875rem;
-  background-color: #fef2f2;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid #fee2e2;
-  margin-top: 0.5rem;
+  width: 100%;
+  margin: 0.5rem 0;
 }
 
-/* Responsive styles */
+.auth-link.register-link.login-link {
+  color: #2d2418;
+  font-weight: 600;
+}
+
+.auth-link.register-link.login-link:hover {
+  color: #8b6b4d;
+}
+
+/* Responsive */
 @media (max-width: 640px) {
-  .register-page {
+  .auth-page.register-page {
     padding: 1rem;
   }
 
-  .register-box {
-    padding: 1.5rem;
+  .auth-box.register-box {
+    padding: 2rem 1.5rem;
   }
 
-  .register-title {
-    font-size: 1.75rem;
+  .auth-title.register-title {
+    font-size: 1.5rem;
   }
 
-  .register-input {
-    font-size: 0.95rem;
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,0 +1,272 @@
+.cl-category-list-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.cl-page-header {
+  margin-bottom: 2rem;
+}
+
+.cl-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cl-header-main h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2rem;
+}
+
+.cl-add-category-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #a26e3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cl-add-category-button:hover {
+  background-color: #8a5c32;
+}
+
+.cl-search-box {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cl-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.cl-search-box input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.cl-search-box input:focus {
+  outline: none;
+  border-color: #a26e3c;
+}
+
+.cl-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+}
+
+.cl-category-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 400px;
+}
+
+.cl-category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.cl-category-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.cl-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cl-category-card:hover .cl-category-image img {
+  transform: scale(1.05);
+}
+
+.cl-category-info {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cl-category-info h3 {
+  margin: 0 0 0.75rem;
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.cl-category-description {
+  margin: 0 0 1rem;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.cl-product-count {
+  margin: 0.5rem 0;
+  color: #a26e3c;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cl-product-count::before {
+  content: '•';
+  color: #a26e3c;
+}
+
+.cl-category-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #eee;
+  background-color: #f8f8f8;
+}
+
+.cl-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.cl-view-button:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.cl-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cl-page-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: none;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cl-page-button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.cl-page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cl-page-info {
+  color: #666;
+}
+
+.cl-loading {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.cl-no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cl-add-category-link {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #a26e3c;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.cl-add-category-link:hover {
+  background-color: #8a5c32;
+}
+
+@media (max-width: 768px) {
+  .cl-category-list-page {
+    padding: 1rem;
+  }
+
+  .cl-header-main {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cl-add-category-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cl-search-box {
+    max-width: none;
+  }
+
+  .cl-categories-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+
+  .cl-category-card {
+    min-height: 350px;
+  }
+} 

@@ -1,0 +1,203 @@
+.up-user-profile-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.up-profile-header {
+  margin-bottom: 2rem;
+}
+
+.up-back-button {
+  background: none;
+  border: none;
+  color: #8b6b4d;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.up-back-button:hover {
+  color: #6b4423;
+}
+
+.up-profile-header h1 {
+  color: #2d2418;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.up-profile-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e8e1d9;
+}
+
+.up-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.up-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.up-form-group label {
+  color: #4a4038;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.up-profile-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e8e1d9;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  color: #2d2418;
+  background-color: #faf7f5;
+  transition: all 0.3s ease;
+}
+
+.up-profile-input:disabled {
+  background-color: #f8f6f4;
+  color: #6b4423;
+  cursor: not-allowed;
+}
+
+.up-profile-input.editing {
+  background-color: white;
+}
+
+.up-profile-input.editing:focus {
+  outline: none;
+  border-color: #8b6b4d;
+  box-shadow: 0 0 0 2px rgba(139, 107, 77, 0.1);
+}
+
+.up-error-message {
+  color: #dc2626;
+  font-size: 0.9rem;
+  background-color: #fee2e2;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fecaca;
+}
+
+.up-success-message {
+  color: #166534;
+  font-size: 0.9rem;
+  background-color: #dcfce7;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #bbf7d0;
+}
+
+.up-profile-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.up-edit-button,
+.up-save-button,
+.up-cancel-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.up-edit-button {
+  background-color: #8b6b4d;
+  color: white;
+  border: none;
+}
+
+.up-edit-button:hover {
+  background-color: #6b4423;
+  transform: translateY(-1px);
+}
+
+.up-save-button {
+  background-color: #8b6b4d;
+  color: white;
+  border: none;
+  flex: 1;
+}
+
+.up-save-button:hover:not(:disabled) {
+  background-color: #6b4423;
+  transform: translateY(-1px);
+}
+
+.up-cancel-button {
+  background-color: white;
+  color: #dc2626;
+  border: 1px solid #fee2e2;
+}
+
+.up-cancel-button:hover:not(:disabled) {
+  background-color: #fee2e2;
+  transform: translateY(-1px);
+}
+
+.up-save-button:disabled,
+.up-cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.up-profile-links {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e8e1d9;
+}
+
+.up-change-password-button {
+  background: none;
+  border: none;
+  color: #8b6b4d;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.up-change-password-button:hover {
+  color: #6b4423;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .up-user-profile-page {
+    padding: 1rem;
+  }
+
+  .up-profile-container {
+    padding: 1.5rem;
+  }
+
+  .up-profile-actions {
+    flex-direction: column;
+  }
+
+  .up-save-button,
+  .up-cancel-button,
+  .up-edit-button {
+    width: 100%;
+  }
+} 
