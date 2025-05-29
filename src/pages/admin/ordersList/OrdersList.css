@@ -83,3 +83,17 @@
     color: gray;
     font-weight: bold;
 }
+
+.cancel-button {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #dc3545;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.cancel-button:hover {
+    background-color: #a71d2a;
+}

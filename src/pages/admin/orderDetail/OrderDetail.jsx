@@ -1,8 +1,6 @@
-// src/pages/admin/orders/OrderDetail.jsx
-
 import { useParams, useNavigate } from "react-router-dom";
-import ordersPrev from "../../../data/orders"; // default export: LS or defaults
-import users from "../../../data/users"; // default export: LS or defaults
+import ordersPrev from "../../../data/orders";
+import users from "../../../data/users";
 import { useState, useEffect } from "react";
 import "./OrderDetail.css";
 
@@ -10,26 +8,21 @@ function OrderDetail() {
   const { orderId } = useParams();
   const navigate = useNavigate();
 
-  // 1️⃣ Estado local para órdenes
   const [ordenes, setOrdenes] = useState([]);
 
-  // 2️⃣ Carga inicial desde localStorage o fallback a ordersPrev
   useEffect(() => {
     const stored = localStorage.getItem("orders");
     setOrdenes(stored ? JSON.parse(stored) : ordersPrev);
   }, []);
 
-  // 3️⃣ Buscar la orden actual
   const order = ordenes.find((o) => o.orderid === parseInt(orderId, 10));
   if (!order) return <p>Orden no encontrada</p>;
 
-  // 4️⃣ Obtener nombre de cliente
   const user = users.find((u) => u.id === order.userid);
   const userName = user
     ? `${user.name} ${user.surname}`
     : "Usuario no encontrado";
 
-  // 5️⃣ Cancelar y persistir
   const cancelarOrden = () => {
     if (!window.confirm("¿Estás seguro de cancelar esta orden?")) return;
     const updated = ordenes.map((o) =>

@@ -21,10 +21,10 @@ const usersData = [
 ];
 
 const AdminDashboard = () => {
-  const navigate = useNavigate(); // <-- Hook para navegar
+  const navigate = useNavigate();
 
   const handleVerUsuarios = () => {
-    navigate("/admin/users"); // Ajusta la ruta si es diferente
+    navigate("/admin/users");
   };
 
   const handleVerProductos = () => {
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
   };
 
   const handleVerOrdenes = () => {
-    navigate("/admin/orders"); // Ajusta la ruta si es diferente
+    navigate("/admin/orders");
   };
 
   return (

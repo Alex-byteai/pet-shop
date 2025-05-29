@@ -1,5 +1,3 @@
-// src/pages/admin/UserList.jsx
-
 import { useState, useEffect } from "react";
 import { users as usersData } from "../../../data/users"; // módulo sin modificar
 import { useNavigate } from "react-router-dom";
@@ -10,20 +8,17 @@ function UserList() {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
 
-  // 1️⃣ Carga inicial desde localStorage ("users") o fallback a usersData
   useEffect(() => {
     const stored = localStorage.getItem("users");
     setUsuarios(stored ? JSON.parse(stored) : usersData);
   }, []);
 
-  // 2️⃣ Guarda cada cambio de 'usuarios' en la misma clave "users"
   useEffect(() => {
     if (usuarios.length) {
       localStorage.setItem("users", JSON.stringify(usuarios));
     }
   }, [usuarios]);
 
-  // 3️⃣ Filtrado
   const filteredUsers = usuarios.filter((user) => {
     const term = search.toLowerCase();
     return (
@@ -33,7 +28,6 @@ function UserList() {
     );
   });
 
-  // 4️⃣ Desactivar y persistir
   const desactivarUsuario = (id) => {
     if (!window.confirm("¿Seguro que deseas desactivar este usuario?")) return;
     setUsuarios((prev) =>

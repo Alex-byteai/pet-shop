@@ -1,8 +1,6 @@
-// src/pages/admin/UserDetail.jsx
-
 import { useParams, useNavigate } from "react-router-dom";
-import { users as usersData } from "../../../data/users"; // fallback estático
-import { orders as ordersData } from "../../../data/orders"; // fallback estático
+import { users as usersData } from "../../../data/users";
+import { orders as ordersData } from "../../../data/orders";
 import { useState, useEffect } from "react";
 import "./UserDetail.css";
 
@@ -10,11 +8,9 @@ function UserDetail() {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  // 1️⃣ Estado local para usuarios y órdenes
   const [usuarios, setUsuarios] = useState([]);
   const [ordenes, setOrdenes] = useState([]);
 
-  // 2️⃣ Al montar, cargamos desde localStorage o caemos en los módulos estáticos
   useEffect(() => {
     const storedUsers = localStorage.getItem("users");
     setUsuarios(storedUsers ? JSON.parse(storedUsers) : usersData);
@@ -23,11 +19,9 @@ function UserDetail() {
     setOrdenes(storedOrders ? JSON.parse(storedOrders) : ordersData);
   }, []);
 
-  // 3️⃣ Buscamos al usuario
   const user = usuarios.find((u) => u.id === parseInt(userId, 10));
   if (!user) return <p>Usuario no encontrado</p>;
 
-  // 4️⃣ Filtramos sus últimas 10 órdenes
   const userOrders = ordenes
     .filter((o) => o.userid === user.id)
     .sort((a, b) => new Date(b.date) - new Date(a.date))

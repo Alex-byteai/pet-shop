@@ -1,8 +1,6 @@
-// src/pages/admin/orders/OrdersList.jsx
-
 import { useState, useEffect } from "react";
-import ordersPrev from "../../../data/orders"; // default export de orders.js
-import users from "../../../data/users"; // default export de users.js
+import ordersPrev from "../../../data/orders";
+import users from "../../../data/users";
 import { useNavigate } from "react-router-dom";
 import "./OrdersList.css";
 
@@ -11,20 +9,17 @@ function OrdersList() {
   const [ordersState, setOrdersState] = useState([]);
   const navigate = useNavigate();
 
-  // 1️⃣ Carga inicial desde localStorage ("orders") o fallback a ordersPrev
   useEffect(() => {
     const stored = localStorage.getItem("orders");
     setOrdersState(stored ? JSON.parse(stored) : ordersPrev);
   }, []);
 
-  // 2️⃣ Sincronizar cambios en localStorage
   useEffect(() => {
     if (ordersState.length) {
       localStorage.setItem("orders", JSON.stringify(ordersState));
     }
   }, [ordersState]);
 
-  // 3️⃣ Combina cada orden con nombre de usuario
   const ordersWithUser = ordersState.map((o) => {
     const u = users.find((usr) => usr.id === o.userid);
     return {
@@ -33,7 +28,6 @@ function OrdersList() {
     };
   });
 
-  // 4️⃣ Filtrado en memoria
   const filteredOrders = ordersWithUser.filter((order) => {
     const term = search.toLowerCase();
     return (
@@ -42,7 +36,6 @@ function OrdersList() {
     );
   });
 
-  // 5️⃣ Cancelar y persistir
   const cancelarOrden = (orderid) => {
     if (!window.confirm("¿Seguro que deseas cancelar esta orden?")) return;
     const updated = ordersState.map((o) =>

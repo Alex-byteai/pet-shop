@@ -4,7 +4,7 @@
     border-radius: 8px;
 }
 
-/* Header con Flexbox */
+
 .user-header {
     display: flex;
     justify-content: space-between;
@@ -26,13 +26,13 @@
     background-color: #5a6268;
 }
 
-/* Título */
+
 .user-detail-title {
     font-size: 2rem;
     color: #333;
 }
 
-/* Bloque de info: párrafos separados */
+
 .user-info {
     background-color: #fff;
     padding: 1rem;
@@ -50,18 +50,17 @@
 .user-info p strong {
     display: inline-block;
     width: 120px;
-    /* ancho acorde al texto más largo */
     color: #222;
 }
 
-/* Subtítulo de órdenes */
+
 .user-detail-subtitle {
     font-size: 1.5rem;
     margin-bottom: 0.75rem;
     color: #333;
 }
 
-/* Tabla de órdenes */
+
 .user-orders-table {
     width: 100%;
     border-collapse: collapse;
