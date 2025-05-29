@@ -92,12 +92,20 @@
 }
 
 .feactured-categories h2, 
-.top-products h2 {
+.top-products h2,
+.new-products h2
+{
   font-family: 'Playwrite DK Loopet', cursive;
   font-size: 28px;
   font-weight: bold;
 }
 
-.top-products h2 {
+.top-products h2,
+.new-products h2 {
   margin-bottom: 20px;
+}
+
+.new-products {
+  margin: 30px;
+  text-align: center;
 }
