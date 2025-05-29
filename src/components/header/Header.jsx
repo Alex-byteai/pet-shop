@@ -1,42 +1,41 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Header.css'; 
-import { FaHeart, FaUser, FaShoppingBag, FaSearch } from 'react-icons/fa';
+import { FaHeart, FaUser, FaSearch } from 'react-icons/fa';
 import SearchBar from '../search/SearchBar';
 import CategoryMenu from '../categoryMenu/CategoryMenu';
 import ProductMenu from '../productMenu/ProductMenu';
+import CartIcon from '../CartIcon/CartIcon';
 
 const Header = () => {
-  const navigate = useNavigate();
-
   return (
     <header>
-      {/* Barra superior */}
       <div className="top-bar">
         <div className="top-bar-left">
           {/* Aqui van los contactos */}
         </div>
 
         <div className="top-bar-right">
-          <span className="custom-link" onClick={() => navigate('/deseados')}>
-            <FaHeart /> Deseados
-          </span>
-          <span className="custom-link" onClick={() => navigate('/auth/login')}>
-            <FaUser /> Mi cuenta
-          </span>
-          <span className="custom-link" onClick={() => navigate('/mi-carrito')}>
-            <FaShoppingBag /> Mi carrito
-          </span>
+          <div className="top-bar-item">
+            <FaHeart className='top-bar-icon' />
+            <span>Deseados</span>
+          </div>
+          <div className="top-bar-item">
+            <FaUser className='top-bar-icon' />
+            <span><Link to='/auth/login'>Mi cuenta</Link></span>
+          </div>
+          <div className="top-bar-item">
+            <CartIcon />
+          </div>
         </div>
       </div>
 
-      {/* Barra principal */}
-        <div className="main-header">
-        <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-          PetShop
+      <div className="main-header">
+        <div className="logo">
+          <Link to="/">PetShop</Link>
         </div>
 
         <nav className="nav-links">
-          <span className='a' onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Inicio</span>
+          <Link to="/">Inicio</Link>
           <CategoryMenu />
           <ProductMenu />
         </nav>
@@ -55,4 +54,3 @@ const Header = () => {
 };
 
 export default Header;
-

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { products } from '../../data/products';
 import { categories } from '../../data/categories';
+import { FaCartPlus } from "react-icons/fa6";
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -22,11 +23,11 @@ const ProductDetail = () => {
 
   if (!product) { 
     return (
-      <div className="product-detail">
-        <h1 className="product-title">Producto no encontrado</h1>
+      <div className="pd-container">
+        <h1 className="pd-title">Producto no encontrado</h1>
         <button
           onClick={() => navigate('/')}
-          className="add-to-cart-button"
+          className="pd-button"
         >
           Volver al inicio
         </button>
@@ -42,27 +43,27 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="product-detail">
-      <div className="product-grid">
+    <div className="pd-container">
+      <div className="pd-grid">
         {/* Galería de imágenes */}
-        <div className="product-image-container">
-          <div className="main-image">
+        <div className="pd-image-container">
+          <div className="pd-main-image">
             <img
               src={mainImage}
               alt={product.name}
-              className="product-image"
+              className="pd-image"
             />
             {product.isNew && (
-              <span className="new-badge">
+              <span className="pd-new-badge">
                 Nuevo
               </span>
             )}
           </div>
-          <div className="thumbnail-images">
+          <div className="pd-thumbnail-images">
             {product.images.map((image, index) => (
               <div 
                 key={index} 
-                className={`thumbnail ${mainImage === image ? 'active' : ''}`}
+                className={`pd-thumbnail ${mainImage === image ? 'pd-active' : ''}`}
                 onClick={() => setMainImage(image)}
               >
                 <img
@@ -75,73 +76,74 @@ const ProductDetail = () => {
         </div>
 
         {/* Información del producto */}
-        <div className="product-info">
-          <nav className="product-category">
+        <div className="pd-info">
+          <nav className="pd-category">
             {category?.name} / {product.subcategory}
           </nav>
-
-          <h1 className="product-title">{product.name}</h1>
-          <p className="product-brand">{product.brand}</p>
+          <div className="pd-title-container">
+            <h1 className="pd-title">{product.name}</h1>
+            <p className="pd-brand">{product.brand}</p>
+          </div>
           
-          <div className="product-price-container">
-            <span className="product-price">
+          <div className="pd-price-container">
+            <span className="pd-price">
               ${product.price.toFixed(2)}
             </span>
             {product.stock > 0 && (
-              <span className="stock-info">
+              <span className="pd-stock-info">
                 Stock disponible: {product.stock}
               </span>
             )}
           </div>
 
-          <div className="quantity-container">
-            <div className="quantity-controls">
+          <div className="pd-quantity-container">
+            <div className="pd-quantity-controls">
               <button
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="quantity-button"
+                className="pd-quantity-button"
               >
                 -
               </button>
-              <span className="quantity-value">{quantity}</span>
+              <span className="pd-quantity-value">{quantity}</span>
               <button
                 onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
-                className="quantity-button"
+                className="pd-quantity-button"
               >
                 +
               </button>
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={product.stock === 0}
-              className="add-to-cart-button"
+            <div 
+              onClick={product.stock === 0 ? undefined : handleAddToCart}
+              className={`pd-cart-icon-wrapper ${product.stock === 0 ? 'pd-disabled' : ''}`}
+              title={product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
             >
-              {product.stock === 0 ? 'Sin stock' : 'Agregar al carrito'}
-            </button>
+              <FaCartPlus className="pd-cart-icon" />
+            </div>
           </div>
 
-          <div className="product-description">
-            <h2 className="section-title">Descripción</h2>
-            <p className="description-text">{product.description}</p>
+          <div className="pd-description">
+            <h2 className="pd-section-title">Descripción</h2>
+            <p className="pd-description-text">{product.description}</p>
           </div>
 
-          <div className="characteristics">
-            <h2 className="section-title">Características</h2>
-            <div className="characteristics-grid">
-              <div className="characteristic-item">
-                <span>Categoría:</span>
-                <p>{category?.name}</p>
+          <div className="pd-characteristics">
+            <h2 className="pd-section-title">Características</h2>
+            <div className="pd-characteristics-grid">
+              <div className="pd-characteristic-item">
+                <span className="pd-characteristic-label">Categoría:</span>
+                <p className="pd-characteristic-value">{category?.name}</p>
               </div>
-              <div className="characteristic-item">
-                <span>Subcategoría:</span>
-                <p>{product.subcategory}</p>
+              <div className="pd-characteristic-item">
+                <span className="pd-characteristic-label">Subcategoría:</span>
+                <p className="pd-characteristic-value">{product.subcategory}</p>
               </div>
-              <div className="characteristic-item">
-                <span>Marca:</span>
-                <p>{product.brand}</p>
+              <div className="pd-characteristic-item">
+                <span className="pd-characteristic-label">Marca:</span>
+                <p className="pd-characteristic-value">{product.brand}</p>
               </div>
-              <div className="characteristic-item">
-                <span>Calificación:</span>
-                <p>{product.rating} / 5</p>
+              <div className="pd-characteristic-item">
+                <span className="pd-characteristic-label">Calificación:</span>
+                <p className="pd-characteristic-value">{product.rating} / 5</p>
               </div>
             </div>
           </div>
