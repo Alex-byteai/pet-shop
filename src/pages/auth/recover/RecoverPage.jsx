@@ -123,7 +123,7 @@ export default function RecoverPage() {
                 className="recover-button"
                 disabled={isLoading}
               >
-                {isLoading ? 'Enviando...' : 'Enviar código'}
+                Enviar código
               </button>
             </form>
           )}
@@ -149,7 +149,7 @@ export default function RecoverPage() {
                 className="recover-button"
                 disabled={isLoading}
               >
-                {isLoading ? 'Verificando...' : 'Verificar código'}
+              Verificar código
               </button>
             </form>
           )}

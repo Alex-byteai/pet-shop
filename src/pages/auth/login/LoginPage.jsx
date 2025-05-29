@@ -13,7 +13,7 @@ function LoginPage() {
 
   // Si el usuario ya está autenticado, redirigir según su rol
   if (user) {
-    return <Navigate to={user.role === 'admin' ? '/admin' : '/user/dashboard'} replace />;
+    return navigate(user.role === 'admin' ? '/admin' : '/user/dashboard');
   }
 
   const handleSubmit = async (e) => {
@@ -90,7 +90,7 @@ function LoginPage() {
               className="auth-button login-button"
               disabled={isLoading}
             >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+              Iniciar Sesión
             </button>
 
             <div className="auth-links login-links">
