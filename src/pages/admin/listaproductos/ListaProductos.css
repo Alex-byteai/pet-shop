@@ -1,0 +1,150 @@
+.lista-productos-container {
+  padding: 2rem;
+  font-family: 'Arial', sans-serif;
+  background: #fff;
+}
+
+.productos-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.productos-barra-superior {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.input-busqueda {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.btn-buscar,
+.btn-agregar {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-buscar {
+  background-color: #d2691e;
+  color: white;
+}
+
+.btn-agregar {
+  background-color: #b65424;
+  color: white;
+}
+
+.productos-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.productos-tabla th,
+.productos-tabla td {
+  vertical-align: middle;
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.producto-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.id {
+  font-weight: bold;
+  color: #333;
+}
+
+.descripcion {
+  font-size: 0.9rem;
+  color: #444;
+  max-width: 300px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.acciones {
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.acciones button {
+  margin: 0 4px;
+}
+
+.btn-icono {
+  margin: 0;
+  padding: 0.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editar {
+  color: #d2691e;
+}
+
+.eliminar {
+  color: #d9534f;
+}
+
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.pagina-burbuja {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f3f3;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.pagina-burbuja:hover {
+  background-color: #e0e0e0;
+}
+
+.pagina-activa {
+  background-color: #b65424;
+  color: white;
+}
+
+.btn-icono svg {
+  display: block;
+  margin: auto;
+  height: 20px;
+  width: 20px;
+}
+
+.productos-tabla td {
+  line-height: 1.5;
+}

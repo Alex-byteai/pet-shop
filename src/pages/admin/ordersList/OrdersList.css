@@ -1,16 +1,16 @@
-.user-list-container {
+.orders-list-container {
     padding: 1rem;
     background-color: #f9f9f9;
     border-radius: 8px;
 }
 
-.user-list-title {
+.orders-list-title {
     font-size: 1.8rem;
     margin-bottom: 1rem;
     color: #333;
 }
 
-.user-search-input {
+.orders-search-input {
     padding: 0.5rem;
     margin-bottom: 1rem;
     width: 300px;
@@ -18,19 +18,19 @@
     border-radius: 5px;
 }
 
-.user-table {
+.orders-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.user-table th,
-.user-table td {
+.orders-table th,
+.orders-table td {
     padding: 0.75rem;
     text-align: left;
     border: 1px solid #ddd;
 }
 
-.user-table th {
+.orders-table th {
     background-color: #f3f3f3;
 }
 
@@ -41,22 +41,45 @@
     border-radius: 5px;
     background-color: #007bff;
     color: white;
-    margin-right: 0.5rem;
 }
 
 .view-detail-button:hover {
     background-color: #0056b3;
 }
 
-.deactivate-button {
-    padding: 0.4rem 0.8rem;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #d9534f;
-    color: white;
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-.deactivate-button:hover {
-    background-color: #c9302c;
+.back-dashboard-button {
+    background-color: #777;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.back-dashboard-button:hover {
+    background-color: #555;
+}
+
+
+.status-active {
+    color: green;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: red;
+    font-weight: bold;
+}
+
+.status-cancelled {
+    color: gray;
+    font-weight: bold;
 }
