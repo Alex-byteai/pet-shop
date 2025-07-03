@@ -1,29 +1,26 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
+import { sequelize } from './config/database.js';
+import { Usuario } from './models/Usuario.js';
+import { Address } from './models/Address.js';
+import { Producto } from './models/producto.js';
+import { Category } from './models/category.js';
+import { Subcategory } from './models/Subcategory.js';
+import { Order } from './models/order.js';
+import { Item } from './models/Item.js';
 import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // __dirname en ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Inicializar app
 const app = express();
+const PORT = process.env.PORT || 3001;
+
 app.use(express.json());
 app.use(cors());
-
-// Utilidades para leer y escribir archivos JSON
-function readJSON(file) {
-  return JSON.parse(fs.readFileSync(path.join(__dirname, file), 'utf-8'));
-}
-function writeJSON(file, data) {
-  fs.writeFileSync(path.join(__dirname, file), JSON.stringify(data, null, 2));
-}
-
-// Servir imágenes estáticas
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 // Configuración de multer para subir imágenes de productos
 const storageProducts = multer.diskStorage({
@@ -41,7 +38,6 @@ const uploadProducts = multer({ storage: storageProducts });
 // Configuración de multer para subir imágenes de categorías
 const storageCategories = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Asegúrate de que esta carpeta exista: backend/public/images/categories
     cb(null, path.join(__dirname, 'public/images/categories'));
   },
   filename: function (req, file, cb) {
@@ -52,278 +48,368 @@ const storageCategories = multer.diskStorage({
 });
 const uploadCategories = multer({ storage: storageCategories });
 
-// Endpoints para productos
-app.get('/api/products', (req, res) => {
-  const products = readJSON('products.json');
-  // Filtrar solo productos activos para el frontend general
-  const activeProducts = products.filter(p => p.active !== false);
-  res.json(activeProducts);
-});
+// Servir imágenes estáticas
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-app.get('/api/products/top', (req, res) => {
-  const products = readJSON('products.json');
-  // Si hay productos marcados como isBestSeller, devolver solo esos
-  const bestSellers = products.filter(p => p.isBestSeller);
-  if (bestSellers.length > 0) {
-    return res.json(bestSellers);
+// Sincronizar modelos
+(async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync();
+    console.log('Conexión y sincronización con la BD exitosa');
+  } catch (error) {
+    console.error('Error al conectar/sincronizar la BD:', error);
   }
-  // Si no, usar soldCount como fallback
-  const topProducts = products
-    .sort((a, b) => (b.soldCount || 0) - (a.soldCount || 0))
-    .slice(0, 10);
-  res.json(topProducts);
-});
+})();
 
-app.get('/api/products/new', (req, res) => {
-  const products = readJSON('products.json');
-  // Si hay productos marcados como isNew, devolver solo esos
-  const newOnes = products.filter(p => p.isNew);
-  if (newOnes.length > 0) {
-    return res.json(newOnes);
+// --- PRODUCTS ---
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Producto.findAll({ where: { active: true } });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos' });
   }
-  // Si no, usar createdAt como fallback
-  const newProducts = products
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 10);
-  res.json(newProducts);
 });
 
-// Nuevo endpoint para obtener TODOS los productos (activos e inactivos) para el admin
-app.get('/api/products/all', (req, res) => {
-  const products = readJSON('products.json');
-  res.json(products);
+app.get('/api/products/all', async (req, res) => {
+  try {
+    const products = await Producto.findAll();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos' });
+  }
 });
 
-app.get('/api/products/:id', (req, res) => {
-  const products = readJSON('products.json');
-  const product = products.find(p => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
-  res.json(product);
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await Producto.findByPk(req.params.id);
+    if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener producto' });
+  }
 });
 
-app.post('/api/products', (req, res) => {
-  const products = readJSON('products.json');
-  const newProduct = { ...req.body, id: Date.now() };
-  products.push(newProduct);
-  writeJSON('products.json', products);
-  res.status(201).json(newProduct);
+app.post('/api/products', async (req, res) => {
+  try {
+    const newProduct = await Producto.create(req.body);
+    res.status(201).json(newProduct);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al crear producto' });
+  }
 });
 
-app.put('/api/products/:id', (req, res) => {
-  const products = readJSON('products.json');
-  const idx = products.findIndex(p => p.id === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Producto no encontrado' });
-  products[idx] = { ...products[idx], ...req.body };
-  writeJSON('products.json', products);
-  res.json(products[idx]);
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const [updated] = await Producto.update(req.body, { where: { id: req.params.id } });
+    if (!updated) return res.status(404).json({ error: 'Producto no encontrado' });
+    const product = await Producto.findByPk(req.params.id);
+    res.json(product);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al actualizar producto' });
+  }
 });
 
-app.delete('/api/products/:id', (req, res) => {
-  let products = readJSON('products.json');
-  const idx = products.findIndex(p => p.id === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Producto no encontrado' });
-  const deleted = products.splice(idx, 1);
-  writeJSON('products.json', products);
-  res.json(deleted[0]);
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const deleted = await Producto.destroy({ where: { id: req.params.id } });
+    if (!deleted) return res.status(404).json({ error: 'Producto no encontrado' });
+    res.json({ message: 'Producto eliminado' });
+  } catch (err) {
+    res.status(400).json({ error: 'Error al eliminar producto' });
+  }
 });
 
-// Endpoints para categorías
-app.get('/api/categories', (req, res) => {
-  const categories = readJSON('categories.json');
-  res.json(categories);
+// --- CATEGORIES ---
+app.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await Category.findAll({ include: [{ model: Subcategory, as: "subcategories" }] });
+    res.json(categories);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener categorías' });
+  }
 });
 
-app.get('/api/categories/featured', (req, res) => {
-  const categories = readJSON('categories.json');
-  const featuredCategories = categories.filter(cat => cat.featured === true);
-  res.json(featuredCategories);
+app.get('/api/categories/:id', async (req, res) => {
+  try {
+    const category = await Category.findByPk(req.params.id, { include: [{ model: Subcategory, as: "subcategories" }] });
+    if (!category) return res.status(404).json({ error: 'Categoría no encontrada' });
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener categoría' });
+  }
 });
 
-app.get('/api/categories/:id', (req, res) => {
-  const categories = readJSON('categories.json');
-  const category = categories.find(c => c.id === parseInt(req.params.id));
-  if (!category) return res.status(404).json({ error: 'Categoría no encontrada' });
-  res.json(category);
+app.post('/api/categories', async (req, res) => {
+  try {
+    const newCategory = await Category.create(req.body);
+    res.status(201).json(newCategory);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al crear categoría' });
+  }
 });
 
-// Endpoints para usuarios
-app.get('/api/users', (req, res) => {
-  const users = readJSON('users.json');
-  res.json(users);
+app.put('/api/categories/:id', async (req, res) => {
+  try {
+    const [updated] = await Category.update(req.body, { where: { id: req.params.id } });
+    if (!updated) return res.status(404).json({ error: 'Categoría no encontrada' });
+    const category = await Category.findByPk(req.params.id);
+    res.json(category);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al actualizar categoría' });
+  }
 });
 
-app.get('/api/users/:id', (req, res) => {
-  const users = readJSON('users.json');
-  const user = users.find(u => u.id === parseInt(req.params.id));
-  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-  res.json(user);
+app.delete('/api/categories/:id', async (req, res) => {
+  try {
+    const deleted = await Category.destroy({ where: { id: req.params.id } });
+    if (!deleted) return res.status(404).json({ error: 'Categoría no encontrada' });
+    res.json({ message: 'Categoría eliminada' });
+  } catch (err) {
+    res.status(400).json({ error: 'Error al eliminar categoría' });
+  }
 });
 
-app.post('/api/users', (req, res) => {
-  const users = readJSON('users.json');
-  const newUser = { ...req.body, id: Date.now(), registerDate: new Date().toISOString() };
-  users.push(newUser);
-  writeJSON('users.json', users);
-  res.status(201).json(newUser);
+// --- USERS ---
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await Usuario.findAll({ include: [{ model: Address, as: "address" }] });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
 });
 
-app.get('/api/users/search', (req, res) => {
+app.get('/api/users/:id', async (req, res) => {
+  try {
+    const user = await Usuario.findByPk(req.params.id, { include: [{ model: Address, as: "address" }] });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener usuario' });
+  }
+});
+
+app.post('/api/users', async (req, res) => {
+  try {
+    const user = await Usuario.create(req.body, { include: [{ model: Address, as: "address" }] });
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al crear usuario' });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const [updated] = await Usuario.update(req.body, { where: { id: req.params.id } });
+    if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const user = await Usuario.findByPk(req.params.id, { include: [{ model: Address, as: "address" }] });
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al actualizar usuario' });
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const deleted = await Usuario.destroy({ where: { id: req.params.id } });
+    if (!deleted) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json({ message: 'Usuario eliminado' });
+  } catch (err) {
+    res.status(400).json({ error: 'Error al eliminar usuario' });
+  }
+});
+
+// --- ORDERS ---
+app.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await Order.findAll({ include: [{ model: Item, as: "items" }] });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener órdenes' });
+  }
+});
+
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.id, { include: [{ model: Item, as: "items" }] });
+    if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener orden' });
+  }
+});
+
+app.get('/api/orders/user/:userid', async (req, res) => {
+  try {
+    const orders = await Order.findAll({ where: { userid: req.params.userid }, include: [{ model: Item, as: "items" }] });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener órdenes del usuario' });
+  }
+});
+
+app.post('/api/orders', async (req, res) => {
+  try {
+    const order = await Order.create(req.body, { include: [{ model: Item, as: "items" }] });
+    res.status(201).json(order);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al crear orden' });
+  }
+});
+
+app.put('/api/orders/:id', async (req, res) => {
+  try {
+    const [updated] = await Order.update(req.body, { where: { orderid: req.params.id } });
+    if (!updated) return res.status(404).json({ error: 'Orden no encontrada' });
+    const order = await Order.findByPk(req.params.id, { include: [{ model: Item, as: "items" }] });
+    res.json(order);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al actualizar orden' });
+  }
+});
+
+app.delete('/api/orders/:id', async (req, res) => {
+  try {
+    const deleted = await Order.destroy({ where: { orderid: req.params.id } });
+    if (!deleted) return res.status(404).json({ error: 'Orden no encontrada' });
+    res.json({ message: 'Orden eliminada' });
+  } catch (err) {
+    res.status(400).json({ error: 'Error al eliminar orden' });
+  }
+});
+
+app.get('/api/products/top', async (req, res) => {
+  try {
+    const bestSellers = await Producto.findAll({ where: { isBestSeller: true } });
+    if (bestSellers.length > 0) return res.json(bestSellers);
+    const topProducts = await Producto.findAll({
+      order: [['soldCount', 'DESC']],
+      limit: 10
+    });
+    res.json(topProducts);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos top' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor backend escuchando en puerto ${PORT}`);
+});
+
+// --- LOGIN ---
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await Usuario.findOne({ where: { email } });
+    if (!user || user.password !== password) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error en login' });
+  }
+});
+
+// --- CATEGORÍAS DESTACADAS ---
+app.get('/api/categories/featured', async (req, res) => {
+  try {
+    const featured = await Category.findAll({ where: { featured: true } });
+    res.json(featured);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener categorías destacadas' });
+  }
+});
+
+// --- PRODUCTOS NUEVOS ---
+app.get('/api/products/new', async (req, res) => {
+  try {
+    const newOnes = await Producto.findAll({ where: { isNew: true } });
+    if (newOnes.length > 0) return res.json(newOnes);
+    const newProducts = await Producto.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 10
+    });
+    res.json(newProducts);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos nuevos' });
+  }
+});
+
+// --- RECUPERACIÓN DE CONTRASEÑA (básico, requiere campos en modelo Usuario) ---
+app.post('/api/users/recover-password-request', async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await Usuario.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    // Simulación: agrega campos recoveryCode y recoveryExpires si no existen en el modelo
+    user.recoveryCode = Math.floor(100000 + Math.random() * 900000);
+    user.recoveryExpires = Date.now() + 3600000;
+    await user.save();
+
+    res.json({ message: 'Código de recuperación enviado (simulado)', recoveryCode: user.recoveryCode });
+  } catch (err) {
+    res.status(500).json({ error: 'Error en recuperación de contraseña' });
+  }
+});
+
+app.post('/api/users/verify-recovery-code', async (req, res) => {
+  const { email, code } = req.body;
+  try {
+    const user = await Usuario.findOne({ where: { email } });
+    if (!user || user.recoveryCode !== parseInt(code) || Date.now() > user.recoveryExpires) {
+      return res.status(400).json({ error: 'Código inválido o expirado' });
+    }
+    res.json({ message: 'Código verificado correctamente' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al verificar código' });
+  }
+});
+
+app.post('/api/users/reset-password', async (req, res) => {
+  const { email, newPassword, code } = req.body;
+  try {
+    const user = await Usuario.findOne({ where: { email } });
+    if (!user || user.recoveryCode !== parseInt(code) || Date.now() > user.recoveryExpires) {
+      return res.status(400).json({ error: 'Código de verificación inválido o expirado' });
+    }
+    user.password = newPassword;
+    user.recoveryCode = null;
+    user.recoveryExpires = null;
+    await user.save();
+    res.json({ message: 'Contraseña actualizada correctamente' });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al actualizar contraseña' });
+  }
+});
+
+// --- BUSCAR USUARIO POR EMAIL ---
+app.get('/api/users/search', async (req, res) => {
   const { email } = req.query;
   if (!email) {
     return res.status(400).json({ error: 'Email es requerido' });
   }
-
-  const users = readJSON('users.json');
-  const user = users.find(
-    u => u.email.toLowerCase() === String(email).toLowerCase()
-  );
-
-  if (!user) {
-    return res.status(404).json({ error: 'Usuario no encontrado' });
+  try {
+    const user = await Usuario.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al buscar usuario' });
   }
-
-  res.json(user);
 });
 
-app.put('/api/users/:id', (req, res) => {
-  const users = readJSON('users.json');
-  const idx = users.findIndex(u => u.id === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Usuario no encontrado' });
-  users[idx] = { ...users[idx], ...req.body };
-  writeJSON('users.json', users);
-  res.json(users[idx]);
-});
-
-app.delete('/api/users/:id', (req, res) => {
-  let users = readJSON('users.json');
-  const idx = users.findIndex(u => u.id === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Usuario no encontrado' });
-  const deleted = users.splice(idx, 1);
-  writeJSON('users.json', users);
-  res.json(deleted[0]);
-});
-
-// Endpoints para recuperación de contraseña
-app.post('/api/users/recover-password-request', (req, res) => {
-  const { email } = req.body;
-  let users = readJSON('users.json');
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-  if (!user) {
-    return res.status(404).json({ error: 'Usuario no encontrado' });
-  }
-
-  const recoveryCode = Math.floor(100000 + Math.random() * 900000); // 6 dígitos
-  const recoveryExpires = Date.now() + 3600000; // 1 hora de validez
-
-  user.recoveryCode = recoveryCode;
-  user.recoveryExpires = recoveryExpires;
-  writeJSON('users.json', users);
-
-  // En una aplicación real, aquí enviarías el código por email.
-  // Por ahora, lo enviamos en la respuesta para propósito de demostración/depuración.
-  res.json({ message: 'Código de recuperación enviado (simulado)', recoveryCode });
-});
-
-app.post('/api/users/verify-recovery-code', (req, res) => {
-  const { email, code } = req.body;
-  let users = readJSON('users.json');
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-  if (!user || user.recoveryCode !== parseInt(code) || Date.now() > user.recoveryExpires) {
-    return res.status(400).json({ error: 'Código inválido o expirado' });
-  }
-
-  res.json({ message: 'Código verificado correctamente' });
-});
-
-app.post('/api/users/reset-password', (req, res) => {
-  const { email, newPassword, code } = req.body; // Incluir el código para una verificación final
-  let users = readJSON('users.json');
-  const userIdx = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-
-  if (userIdx === -1) {
-    return res.status(404).json({ error: 'Usuario no encontrado' });
-  }
-
-  const user = users[userIdx];
-  if (user.recoveryCode !== parseInt(code) || Date.now() > user.recoveryExpires) {
-    return res.status(400).json({ error: 'Código de verificación inválido o expirado' });
-  }
-
-  user.password = newPassword;
-  // Limpiar el código de recuperación después de usarlo
-  delete user.recoveryCode;
-  delete user.recoveryExpires;
-  writeJSON('users.json', users);
-
-  res.json({ message: 'Contraseña actualizada correctamente' });
-});
-
-app.post('/api/login', (req, res) => {
-  const users = readJSON('users.json');
-  const { email, password } = req.body;
-  const user = users.find(u => u.email === email && u.password === password);
-  if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
-  res.json(user);
-});
-
-// Endpoints para órdenes
-app.get('/api/orders', (req, res) => {
-  const orders = readJSON('orders.json');
-  res.json(orders);
-});
-
-app.get('/api/orders/:id', (req, res) => {
-  const orders = readJSON('orders.json');
-  const order = orders.find(o => o.orderid === parseInt(req.params.id));
-  if (!order) return res.status(404).json({ error: 'Orden no encontrada' });
-  res.json(order);
-});
-
-app.get('/api/orders/user/:userid', (req, res) => {
-  const orders = readJSON('orders.json');
-  const userOrders = orders.filter(o => o.userid === parseInt(req.params.userid));
-  res.json(userOrders);
-});
-
-app.post('/api/orders', (req, res) => {
-  const orders = readJSON('orders.json');
-  const newOrder = { ...req.body, orderid: Date.now(), date: new Date().toISOString() };
-  orders.push(newOrder);
-  writeJSON('orders.json', orders);
-  res.status(201).json(newOrder);
-});
-
-app.put('/api/orders/:id', (req, res) => {
-  const orders = readJSON('orders.json');
-  const idx = orders.findIndex(o => o.orderid === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Orden no encontrada' });
-  orders[idx] = { ...orders[idx], ...req.body };
-  writeJSON('orders.json', orders);
-  res.json(orders[idx]);
-});
-
-app.delete('/api/orders/:id', (req, res) => {
-  let orders = readJSON('orders.json');
-  const idx = orders.findIndex(o => o.orderid === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Orden no encontrada' });
-  const deleted = orders.splice(idx, 1);
-  writeJSON('orders.json', orders);
-  res.json(deleted[0]);
-});
-
-// Endpoint para subir imagen de producto
+// --- SUBIDA DE IMÁGENES DE PRODUCTO ---
 app.post('/api/products/upload-image', uploadProducts.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No se subió ninguna imagen' });
   }
-  // Devolver la URL relativa para guardar en el producto
   const imageUrl = `/images/products/${req.file.filename}`;
   res.json({ imageUrl });
 });
 
-// Nuevo Endpoint para subir imagen de categoría
+// --- SUBIDA DE IMÁGENES DE CATEGORÍA ---
 app.post('/api/categories/upload-image', uploadCategories.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No se subió ninguna imagen' });
@@ -332,18 +418,19 @@ app.post('/api/categories/upload-image', uploadCategories.single('image'), (req,
   res.json({ imageUrl });
 });
 
-// Endpoint para marcar/desmarcar una categoría como featured
-app.put('/api/categories/:id/featured', (req, res) => {
+// --- MARCAR/DESMARCAR CATEGORÍA COMO FEATURED ---
+app.put('/api/categories/:id/featured', async (req, res) => {
   const { featured } = req.body;
-  const categories = readJSON('categories.json');
-  const idx = categories.findIndex(c => c.id === parseInt(req.params.id));
-  if (idx === -1) return res.status(404).json({ error: 'Categoría no encontrada' });
-  categories[idx].featured = !!featured;
-  writeJSON('categories.json', categories);
-  res.json(categories[idx]);
+  try {
+    const [updated] = await Category.update({ featured: !!featured }, { where: { id: req.params.id } });
+    if (!updated) return res.status(404).json({ error: 'Categoría no encontrada' });
+    const category = await Category.findByPk(req.params.id);
+    res.json(category);
+  } catch (err) {
+    res.status(400).json({ error: 'Error al actualizar categoría destacada' });
+  }
 });
 
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en puerto ${PORT}`);
 });
