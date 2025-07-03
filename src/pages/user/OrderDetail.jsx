@@ -12,6 +12,8 @@ export default function OrderDetail() {
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
   useEffect(() => {
     loadOrder();
   }, [orderId, user.id]);
@@ -146,7 +148,7 @@ export default function OrderDetail() {
               {order.items.map((item, index) => (
                 <div key={index} className="od-item-card">
                   <img
-                    src={item.images?.[0] || getDefaultProductImage()}
+                    src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()}
                     alt={item.name}
                     className="od-item-image"
                     onError={(e) => {

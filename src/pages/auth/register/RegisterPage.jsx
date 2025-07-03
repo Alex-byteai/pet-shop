@@ -15,15 +15,6 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { register, user } = useAuth();
-  const [registro, setRegistro] = useState(false);
-  // Si el usuario ya está autenticado, redirigir al dashboard
-  useEffect(() => {
-  if (user && !registro) {
-    alert('Registrado correctamente');
-    setRegistro(true);
-    navigate('/');
-  }
-}, [user, registro, navigate]);
 
   const validateForm = () => {
     const newErrors = {};

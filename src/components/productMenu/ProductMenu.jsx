@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { topProducts } from '../../data/topProducts';
-import { newProducts } from '../../data/newProducts';
+import { getTopProducts, getNewProducts } from '../../services/api';
 import './ProductMenu.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const ProductMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [topProducts, setTopProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getTopProducts().then(setTopProducts);
+    getNewProducts().then(setNewProducts);
+  }, []);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -43,7 +51,7 @@ const ProductMenu = () => {
                     className="product-highlight"
                     onClick={() => handleNavigate(`/product/${product.id}`)}
                   >
-                    <img src={product.images[0]} alt={product.name} />
+                    <img src={API_BASE_URL + product.images[0]} alt={product.name} />
                     <div className="highlight-info">
                       <span className="highlight-name">{product.name}</span>
                       <span className="highlight-price">${product.price.toFixed(2)}</span>
@@ -62,7 +70,7 @@ const ProductMenu = () => {
                     className="product-highlight"
                     onClick={() => handleNavigate(`/product/${product.id}`)}
                   >
-                    <img src={product.images[0]} alt={product.name} />
+                    <img src={API_BASE_URL + product.images[0]} alt={product.name} />
                     <div className="highlight-info">
                       <span className="highlight-name">{product.name}</span>
                       <span className="highlight-price">${product.price.toFixed(2)}</span>

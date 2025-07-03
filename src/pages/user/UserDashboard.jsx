@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import orders from '../../data/orders';
+import { getOrdersByUserId, getProductById } from '../../services/api';
 import './UserDashboard.css';
 
 const ORDERS_PER_PAGE = 5;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function UserDashboard() {
   const [userOrders, setUserOrders] = useState([]);
@@ -15,31 +16,41 @@ export default function UserDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadUserOrders();
-  }, [user, currentPage]);
+    if (user?.id) {
+      loadUserOrders();
+    }
+  }, [user?.id, currentPage]);
 
-  const loadUserOrders = () => {
+  const loadUserOrders = async () => {
+    setIsLoading(true);
     try {
-      // Obtener órdenes del localStorage o del archivo por defecto
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || orders;
+      // Obtener órdenes del backend
+      const fetchedOrders = await getOrdersByUserId(user.id);
       
-      // Filtrar órdenes del usuario actual
-      const userOrders = allOrders.filter(order => order.userid === user.id);
-      
+      // Enriquecer los pedidos con los detalles del producto (igual que en OrdersPage)
+      const enrichedOrders = await Promise.all(fetchedOrders.map(async (order) => {
+        const enrichedItems = await Promise.all(order.items.map(async (item) => {
+          const productDetail = await getProductById(item.productId);
+          // Asegurarse de que productDetail no sea null/undefined y tenga las propiedades esperadas
+          return { ...item, ...productDetail };
+        }));
+        return { ...order, items: enrichedItems };
+      }));
+
       // Ordenar por fecha más reciente
-      userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedOrders = enrichedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
       
       // Calcular total de páginas
-      const total = Math.ceil(userOrders.length / ORDERS_PER_PAGE);
+      const total = Math.ceil(sortedOrders.length / ORDERS_PER_PAGE);
       setTotalPages(total);
 
       // Obtener órdenes para la página actual
       const start = (currentPage - 1) * ORDERS_PER_PAGE;
-      const ordersToShow = userOrders.slice(start, start + ORDERS_PER_PAGE);
+      const ordersToShow = sortedOrders.slice(start, start + ORDERS_PER_PAGE);
       
       setUserOrders(ordersToShow);
     } catch (error) {
-      console.error('Error al cargar las órdenes:', error);
+      console.error('Error al cargar las órdenes del dashboard:', error);
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +94,7 @@ export default function UserDashboard() {
   };
 
   const getDefaultProductImage = () => {
-    return 'https://via.placeholder.com/50x50?text=Producto';
+    return '/src/assets/placeholder.png';
   };
 
   return (
@@ -143,7 +154,7 @@ export default function UserDashboard() {
                     {order.items.map((item, index) => (
                       <div key={index} className="ud-preview-item">
                         <img 
-                          src={item.images && item.images.length > 0 ? item.images[0] : getDefaultProductImage()} 
+                          src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()} 
                           alt={item.name || 'Producto'} 
                           className="ud-preview-image" 
                           onError={(e) => {

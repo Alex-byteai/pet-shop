@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import { createOrder } from '../../services/api';
 import qrImage from '../../assets/images/qr/qr_code.jpg';
 import './Checkout.css';
 
@@ -12,7 +14,8 @@ const SHIPPING_METHODS = [
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const { clearCart } = useCart();
+  const { cart, getTotal, clearCart } = useCart();
+  const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState('credit');
   const [shippingMethod, setShippingMethod] = useState('standard');
   const [formData, setFormData] = useState({
@@ -71,7 +74,7 @@ export default function Checkout() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (paymentMethod === 'credit') {
@@ -88,11 +91,33 @@ export default function Checkout() {
         return;
       }
     }
-    const orderId = Date.now();
-    localStorage.setItem('lastOrderId', orderId.toString());
-    clearCart();
 
-    navigate('/order-complete');
+    if (!user) {
+      alert('Debes iniciar sesión para completar la compra.');
+      navigate('/auth/login');
+      return;
+    }
+
+    try {
+      const orderData = {
+        userid: user.id,
+        date: new Date().toISOString(),
+        status: 'pendiente',
+        items: cart.map(item => ({
+          productId: item.id,
+          quantity: item.quantity
+        })),
+        total: getTotal(),
+      };
+
+      await createOrder(orderData);
+      alert('¡Orden completada con éxito!');
+      clearCart();
+      navigate('/order-complete');
+    } catch (error) {
+      console.error('Error al crear la orden:', error);
+      alert('Hubo un error al procesar tu orden. Por favor, inténtalo de nuevo.');
+    }
   };
 
   return (

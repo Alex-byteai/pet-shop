@@ -1,21 +1,41 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { products } from '../../data/products';
-import { categories } from '../../data/categories';
+import { getProducts, getCategories } from '../../services/api';
 import Card from '../../components/card/Card';
 import './SearchResults.css';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [allProducts, setAllProducts] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [sortBy, setSortBy] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const query = searchParams.get('q') || '';
   const categoryFromUrl = searchParams.get('category') || '';
   const subcategoryFromUrl = searchParams.get('subcategory') || '';
+
+  // Fetch products and categories on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedProducts = await getProducts();
+        setAllProducts(fetchedProducts);
+        const fetchedCategories = await getCategories();
+        setAllCategories(fetchedCategories);
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Establecer la categoría y subcategoría inicial desde la URL
   useEffect(() => {
@@ -25,24 +45,25 @@ const SearchResults = () => {
     if (subcategoryFromUrl) {
       setSelectedSubcategory(subcategoryFromUrl);
     }
-  }, [categoryFromUrl, subcategoryFromUrl]);
+  }, [categoryFromUrl, subcategoryFromUrl, allCategories]); // Add allCategories to dependencies
 
   // Obtener subcategorías de la categoría seleccionada
   const getSubcategories = () => {
     if (!selectedCategory) return [];
-    const category = categories.find(c => c.id === parseInt(selectedCategory));
+    const category = allCategories.find(c => c.id === parseInt(selectedCategory));
     return category ? category.subcategories : [];
   };
 
-  // Filtrar productos
+  // Filtrar y ordenar productos cada vez que cambian los productos, filtros o orden
   useEffect(() => {
-    let results = [...products];
+    let results = [...allProducts];
 
     // Filtrar por búsqueda si existe
     if (query) {
       results = results.filter(product => 
         product.name.toLowerCase().includes(query.toLowerCase()) ||
-        product.brand.toLowerCase().includes(query.toLowerCase())
+        product.brand.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase())
       );
     }
 
@@ -70,7 +91,7 @@ const SearchResults = () => {
     }
 
     setFilteredProducts(results);
-  }, [query, selectedCategory, selectedSubcategory, sortBy]);
+  }, [query, selectedCategory, selectedSubcategory, sortBy, allProducts]);
 
   // Actualizar la URL cuando cambien los filtros
   const handleCategoryChange = (categoryId) => {
@@ -98,11 +119,14 @@ const SearchResults = () => {
     setSelectedSubcategory(subcategory);
   };
 
+  if (loading) return <div className="search-results">Cargando productos...</div>;
+  if (error) return <div className="search-results">Error: {error.message}</div>;
+
   return (
     <div className="search-results">
       <h1 className="search-results-title">
         {query ? `Resultados para: ${query}` : 'Todos los productos'}
-        {selectedCategory && ` en ${categories.find(c => c.id === parseInt(selectedCategory))?.name}`}
+        {selectedCategory && ` en ${allCategories.find(c => c.id === parseInt(selectedCategory))?.name}`}
         {selectedSubcategory && ` > ${selectedSubcategory}`}
       </h1>
 
@@ -117,7 +141,7 @@ const SearchResults = () => {
               className="filter-select"
             >
               <option value="">Todas las categorías</option>
-              {categories.map(category => (
+              {allCategories.map(category => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>

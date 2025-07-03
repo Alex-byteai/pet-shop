@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
+import { getOrdersByUserId, updateOrder, getProductById } from '../../services/api';
 import './OrdersPage.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function OrdersPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,14 +23,30 @@ export default function OrdersPage() {
   const ordersPerPage = 5;
 
   useEffect(() => {
-    loadOrders();
-  }, [user.id]);
+    if (user?.id) {
+      console.log('Fetching orders for user ID:', user.id);
+      loadOrders();
+    } else {
+      console.log('No user ID available, not fetching orders.');
+    }
+  }, [user?.id, location.pathname]);
 
-  const loadOrders = () => {
+  const loadOrders = async () => {
+    setLoading(true);
     try {
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const userOrders = allOrders.filter(order => order.userid === user.id);
-      const sortedOrders = userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const fetchedOrders = await getOrdersByUserId(user.id);
+      console.log('Fetched orders raw:', fetchedOrders);
+      
+      // Enriquecer los pedidos con los detalles del producto
+      const enrichedOrders = await Promise.all(fetchedOrders.map(async (order) => {
+        const enrichedItems = await Promise.all(order.items.map(async (item) => {
+          const productDetail = await getProductById(item.productId);
+          return { ...item, ...productDetail };
+        }));
+        return { ...order, items: enrichedItems };
+      }));
+
+      const sortedOrders = enrichedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
       setOrders(sortedOrders);
     } catch (error) {
       console.error('Error al cargar los pedidos:', error);
@@ -35,18 +55,10 @@ export default function OrdersPage() {
     }
   };
 
-  const handleCancelOrder = (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     try {
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const updatedOrders = allOrders.map(order => {
-        if (order.orderid === orderId) {
-          return { ...order, status: 'cancelado' };
-        }
-        return order;
-      });
-      
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
-      loadOrders();
+      await updateOrder(orderId, { status: 'cancelado' });
+      loadOrders(); // Recargar pedidos después de la actualización
       setShowCancelModal(false);
       setSelectedOrder(null);
     } catch (error) {
@@ -89,11 +101,13 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.orderid.toString().includes(searchTerm) ||
                          order.items.some(item => 
-                           item.name.toLowerCase().includes(searchTerm.toLowerCase())
+                           item.name?.toLowerCase().includes(searchTerm.toLowerCase())
                          );
     const matchesStatus = statusFilter === 'todos' || order.status.toLowerCase() === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  console.log('Filtered orders:', filteredOrders);
 
   // Calcular paginación
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
@@ -172,7 +186,7 @@ export default function OrdersPage() {
             <div className="detail-items">
               {selectedOrder?.items.map((item, index) => (
                 <div key={index} className="detail-item">
-                  <img src={item.images[0]} alt={item.name} />
+                  <img src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : '/src/assets/placeholder.png'} alt={item.name} />
                   <div className="detail-item-info">
                     <h5>{item.name}</h5>
                     <p>Cantidad: {item.quantity}</p>
@@ -271,7 +285,7 @@ export default function OrdersPage() {
                   <div className="op-order-items">
                     {order.items.slice(0, 2).map((item, index) => (
                       <div key={index} className="op-order-item">
-                        <img src={item.images[0]} alt={item.name} className="op-item-image" />
+                        <img src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : '/src/assets/placeholder.png'} alt={item.name} className="op-item-image" />
                         <div className="op-item-details">
                           <h4>{item.name}</h4>
                           <p>Cantidad: {item.quantity}</p>
@@ -377,7 +391,7 @@ export default function OrdersPage() {
               <div className="op-detail-items">
                 {selectedOrder?.items.map((item, index) => (
                   <div key={index} className="op-detail-item">
-                    <img src={item.images[0]} alt={item.name} />
+                    <img src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : '/src/assets/placeholder.png'} alt={item.name} />
                     <div className="op-detail-item-info">
                       <h5>{item.name}</h5>
                       <p>Cantidad: {item.quantity}</p>

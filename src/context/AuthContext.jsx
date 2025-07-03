@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import users from '../data/users';
+import { login as apiLogin, createUser as apiRegister, getUserByEmail ,getUserById, updateUser as apiUpdateUser, changePassword as apiChangePassword, requestPasswordRecovery, verifyPasswordRecoveryCode, resetUserPassword } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Verificar si hay un usuario en localStorage al cargar
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -28,56 +27,29 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // Obtener usuarios actualizados del localStorage
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      
-      // Buscar usuario por email y contraseña
-      const foundUser = currentUsers.find(u => 
-        u.email === email && 
-        u.password === password && 
-        u.active === true
-      );
-
-      if (!foundUser) {
-        throw new Error('Credenciales incorrectas o usuario inactivo');
-      }
-
-      // Actualizar último acceso
-      const updatedUsers = currentUsers.map(u => {
-        if (u.id === foundUser.id) {
-          return {
-            ...u,
-            lastLogin: new Date().toISOString()
-          };
+      const response = await apiLogin({ email, password });
+      if (response) {
+        const userToStore = {
+          id: response.id,
+          firstName: response.firstName,
+          lastName: response.lastName,
+          email: response.email,
+          role: response.role,
+          phone: response.phone,
+          address: response.address,
+          registerDate: response.registerDate,
+          lastLogin: response.lastLogin
+        };
+        setUser(userToStore);
+        localStorage.setItem('currentUser', JSON.stringify(userToStore));
+        
+        if (response.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/user/dashboard');
         }
-        return u;
-      });
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-
-      // Crear objeto de usuario sin la contraseña
-      const userToStore = {
-        id: foundUser.id,
-        firstName: foundUser.firstName,
-        lastName: foundUser.lastName,
-        email: foundUser.email,
-        role: foundUser.role,
-        phone: foundUser.phone,
-        address: foundUser.address,
-        registerDate: foundUser.registerDate,
-        lastLogin: foundUser.lastLogin
-      };
-
-      setUser(userToStore);
-      localStorage.setItem('currentUser', JSON.stringify(userToStore));
-      
-      // Redirigir según el rol
-      if (foundUser.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/user/dashboard');
+        return { success: true };
       }
-      
-      return { success: true };
     } catch (error) {
       console.error('Error en login:', error);
       return { success: false, error: error.message };
@@ -86,40 +58,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // Obtener usuarios actuales
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      
-      // Verificar si el email ya existe
-      if (currentUsers.some(u => u.email === userData.email)) {
-        throw new Error('El email ya está registrado');
-      }
+      const newUser = await apiRegister(userData);
 
-      // Crear nuevo usuario
-      const newUser = {
-        id: currentUsers.length + 1,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        password: userData.password,
-        role: 'cliente',
-        active: true,
-        registerDate: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        phone: userData.phone || '',
-        address: userData.address || {
-          street: '',
-          city: '',
-          state: '',
-          zipCode: '',
-          country: 'España'
-        }
-      };
-
-      // Agregar nuevo usuario a la lista
-      const updatedUsers = [...currentUsers, newUser];
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-
-      // Crear objeto de usuario para la sesión
       const userToStore = {
         id: newUser.id,
         firstName: newUser.firstName,
@@ -137,6 +77,7 @@ export const AuthProvider = ({ children }) => {
       navigate('/user/dashboard');
       return { success: true };
     } catch (error) {
+      console.error('Error en registro:', error);
       return { success: false, error: error.message };
     }
   };
@@ -149,66 +90,38 @@ export const AuthProvider = ({ children }) => {
 
   const recoverPassword = async (email) => {
     try {
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      const user = currentUsers.find(u => u.email === email && u.active === true);
-      
-      if (!user) {
-        throw new Error('No se encontró un usuario activo con ese email');
-      }
-
-      // Generar código de recuperación (6 dígitos)
-      const recoveryCode = Math.floor(100000 + Math.random() * 900000);
-      
-      // Almacenar el código en localStorage
-      const recoveryData = {
-        email,
-        code: recoveryCode,
-        timestamp: Date.now()
-      };
-      localStorage.setItem('passwordRecovery', JSON.stringify(recoveryData));
-
-      // En un caso real, aquí se enviaría el email
-      // Como es frontend, mostramos el código en una alerta
-      alert(`Tu código de recuperación es: ${recoveryCode}`);
-
+      const response = await requestPasswordRecovery(email);
+      alert(`Tu código de recuperación es: ${response.recoveryCode}`); // Mostrar el código (para desarrollo, quitar en prod)
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      if (error.response && error.response.status === 404) {
+        return {
+          success: false,
+          error: 'No se encontró un usuario con ese email'
+        };
+      }
+      console.error('Error en recuperación de contraseña (solicitud):', error);
+      return { success: false, error: error.response?.data?.error || 'Ocurrió un error inesperado' };
     }
   };
 
   const verifyRecoveryCode = async (email, code) => {
     try {
-      const recoveryData = JSON.parse(localStorage.getItem('passwordRecovery'));
-      
-      if (!recoveryData || 
-          recoveryData.email !== email || 
-          recoveryData.code !== parseInt(code) ||
-          Date.now() - recoveryData.timestamp > 3600000) { // Expira después de 1 hora
-        throw new Error('Código inválido o expirado');
-      }
-
+      await verifyPasswordRecoveryCode(email, code);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('Error en verificación de código:', error);
+      return { success: false, error: error.response?.data?.error || 'Código inválido o expirado' };
     }
   };
 
-  const resetPassword = async (email, newPassword) => {
+  const resetPassword = async (email, newPassword, code) => {
     try {
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      const updatedUsers = currentUsers.map(u => {
-        if (u.email === email) {
-          return { ...u, password: newPassword };
-        }
-        return u;
-      });
-
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-      localStorage.removeItem('passwordRecovery');
+      await resetUserPassword(email, newPassword, code);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('Error en reestablecimiento de contraseña:', error);
+      return { success: false, error: error.response?.data?.error || 'Ocurrió un error inesperado' };
     }
   };
 
@@ -216,34 +129,22 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
 
-      // Actualizar en la lista de usuarios
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      const updatedUsers = currentUsers.map(u => {
-        if (u.id === user.id) {
-          return {
-            ...u,
-            firstName: updates.firstName,
-            lastName: updates.lastName,
-            email: updates.email
-          };
-        }
-        return u;
-      });
+      const updatedUserBackend = await apiUpdateUser(user.id, updates); // Assuming backend returns updated user
 
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-
-      // Actualizar usuario actual
-      const updatedUser = {
+      const updatedUserLocal = {
         ...user,
-        firstName: updates.firstName,
-        lastName: updates.lastName,
-        email: updates.email
+        firstName: updatedUserBackend.firstName,
+        lastName: updatedUserBackend.lastName,
+        email: updatedUserBackend.email,
+        phone: updatedUserBackend.phone,
+        address: updatedUserBackend.address,
       };
 
-      setUser(updatedUser);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      setUser(updatedUserLocal);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUserLocal));
       return { success: true };
     } catch (error) {
+      console.error('Error al actualizar perfil:', error);
       return { success: false, error: error.message };
     }
   };
@@ -252,25 +153,10 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
 
-      // Verificar contraseña actual
-      const currentUsers = JSON.parse(localStorage.getItem('users')) || users;
-      const currentUser = currentUsers.find(u => u.id === user.id);
-
-      if (currentUser.password !== currentPassword) {
-        throw new Error('La contraseña actual es incorrecta');
-      }
-
-      // Actualizar contraseña
-      const updatedUsers = currentUsers.map(u => {
-        if (u.id === user.id) {
-          return { ...u, password: newPassword };
-        }
-        return u;
-      });
-
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
+      await apiChangePassword(user.id, { currentPassword, newPassword });
       return { success: true };
     } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
       return { success: false, error: error.message };
     }
   };
@@ -279,13 +165,13 @@ export const AuthProvider = ({ children }) => {
     user,
     loading,
     login,
-    register,
     logout,
-    updateProfile,
-    changePassword,
+    register,
     recoverPassword,
     verifyRecoveryCode,
-    resetPassword
+    resetPassword,
+    updateProfile,
+    changePassword
   };
 
   return (

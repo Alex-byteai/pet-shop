@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { FaArrowLeft, FaUpload, FaTimesCircle } from 'react-icons/fa';
+import { getProductById, updateProduct, uploadProductImage } from '../../services/api';
 import './EditProduct.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function EditProduct() {
   const { productId } = useParams();
@@ -12,7 +15,10 @@ export default function EditProduct() {
     price: '',
     stock: '',
     series: '',
-    images: []
+    images: [],
+    isNew: false,
+    isBestSeller: false,
+    active: true
   });
   const [imagePreview, setImagePreview] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,51 +29,57 @@ export default function EditProduct() {
     loadProduct();
   }, [productId]);
 
-  const loadProduct = () => {
+  const loadProduct = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const products = JSON.parse(localStorage.getItem('products')) || [];
-      const product = products.find(p => p.id === parseInt(productId));
+      const product = await getProductById(productId);
 
       if (!product) {
         setError('Producto no encontrado');
+        setLoading(false);
         return;
       }
 
       setFormData({
-        name: product.name,
-        description: product.description,
-        price: product.price.toString(),
-        stock: product.stock.toString(),
+        name: product.name || '',
+        description: product.description || '',
+        price: product.price?.toString() || '',
+        stock: product.stock?.toString() || '',
         series: product.series || '',
-        images: []
+        images: [],
+        isNew: product.isNew || false,
+        isBestSeller: product.isBestSeller || false,
+        active: product.active !== false
       });
 
-      setImagePreview(product.images || []);
+      setImagePreview(product.images ? product.images.map(img => img.startsWith('http') ? img : API_BASE_URL + img) : []);
+
     } catch (error) {
       console.error('Error al cargar el producto:', error);
-      setError('Error al cargar los datos del producto');
+      setError('Error al cargar los datos del producto.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const previews = [];
+    const newPreviews = [];
     const imageFiles = [];
 
     files.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        previews.push(reader.result);
+        newPreviews.push(reader.result);
         setImagePreview(prev => [...prev, reader.result]);
       };
       reader.readAsDataURL(file);
@@ -80,8 +92,8 @@ export default function EditProduct() {
     }));
   };
 
-  const removeImage = (index) => {
-    setImagePreview(prev => prev.filter((_, i) => i !== index));
+  const removeImage = (indexToRemove) => {
+    setImagePreview(prev => prev.filter((_, i) => i !== indexToRemove));
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +102,6 @@ export default function EditProduct() {
     setError(null);
 
     try {
-      // Validaciones
       if (!formData.name.trim()) throw new Error('El nombre es obligatorio');
       if (!formData.description.trim()) throw new Error('La descripción es obligatoria');
       if (!formData.price || isNaN(formData.price) || formData.price <= 0) {
@@ -100,42 +111,38 @@ export default function EditProduct() {
         throw new Error('El stock debe ser un número mayor o igual a 0');
       }
 
-      // Convertir nuevas imágenes a URLs
-      const newImageUrls = await Promise.all(
-        formData.images.map(file => new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        }))
-      );
+      let newImageUrls = [];
+      const filesToUpload = formData.images.filter(img => img instanceof File);
 
-      // Obtener productos existentes
-      const products = JSON.parse(localStorage.getItem('products')) || [];
-      const productIndex = products.findIndex(p => p.id === parseInt(productId));
-
-      if (productIndex === -1) {
-        throw new Error('Producto no encontrado');
+      if (filesToUpload.length > 0) {
+        newImageUrls = await Promise.all(
+          filesToUpload.map(file => uploadProductImage(file))
+        );
       }
 
-      // Actualizar producto
-      const updatedProduct = {
-        ...products[productIndex],
+      const existingImageUrls = imagePreview.filter(src => src.startsWith('http'));
+      const allImages = [...existingImageUrls, ...newImageUrls];
+
+      const updatedProductData = {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
         series: formData.series,
-        images: imagePreview,
+        images: allImages,
+        active: formData.active,
+        isNew: formData.isNew,
+        isBestSeller: formData.isBestSeller,
         updatedAt: new Date().toISOString()
       };
 
-      products[productIndex] = updatedProduct;
-      localStorage.setItem('products', JSON.stringify(products));
+      await updateProduct(productId, updatedProductData);
 
-      // Redireccionar a la lista de productos
+      alert('Producto actualizado correctamente!');
       navigate('/admin/products');
     } catch (error) {
-      setError(error.message);
+      console.error('Error al actualizar producto:', error);
+      setError(error.message || 'Ocurrió un error al actualizar el producto.');
     } finally {
       setSaving(false);
     }
@@ -241,12 +248,59 @@ export default function EditProduct() {
           />
         </div>
 
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isNew"
+            name="isNew"
+            checked={formData.isNew}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="isNew">Marcar como Nuevo Producto</label>
+        </div>
+
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isBestSeller"
+            name="isBestSeller"
+            checked={formData.isBestSeller}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="isBestSeller">Marcar como Producto Más Vendido</label>
+        </div>
+
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="active"
+            name="active"
+            checked={formData.active}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="active">Producto Activo (visible en la tienda)</label>
+        </div>
+
         <div className="form-group">
           <label>Imágenes del Producto</label>
+          <div className="image-preview-container">
+            {imagePreview.map((src, index) => (
+              <div key={index} className="image-preview-item">
+                <img src={src} alt="Vista previa" className="image-preview" />
+                <button 
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="remove-image-button"
+                >
+                  <FaTimesCircle />
+                </button>
+              </div>
+            ))}
+          </div>
           <div className="image-upload-container">
             <label htmlFor="images" className="image-upload-button">
               <FaUpload />
-              <span>Agregar más imágenes</span>
+              <span>Seleccionar más imágenes</span>
             </label>
             <input
               type="file"
@@ -258,41 +312,11 @@ export default function EditProduct() {
               className="hidden-input"
             />
           </div>
-
-          {imagePreview.length > 0 && (
-            <div className="image-preview-grid">
-              {imagePreview.map((src, index) => (
-                <div key={index} className="preview-item">
-                  <img src={src} alt={`Vista previa ${index + 1}`} />
-                  <button
-                    type="button"
-                    className="remove-image"
-                    onClick={() => removeImage(index)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
-        <div className="form-actions">
-          <button
-            type="button"
-            onClick={() => navigate('/admin/products')}
-            className="cancel-button"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={saving}
-          >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
-          </button>
-        </div>
+        <button type="submit" className="submit-button" disabled={saving}>
+          {saving ? 'Guardando...' : 'Guardar Cambios'}
+        </button>
       </form>
     </div>
   );

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaBox } from 'react-icons/fa';
-import { products } from '../../data/products';
+import { getCategories, getProducts } from '../../services/api';
 import './CategoryList.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -19,17 +21,26 @@ export default function CategoryList() {
 
   useEffect(() => {
     // Calcular el conteo de productos por categoría
-    const countByCategory = products.reduce((acc, product) => {
-      acc[product.category] = (acc[product.category] || 0) + 1;
-      return acc;
-    }, {});
-    setProductCountByCategory(countByCategory);
-  }, []);
+    const calculateProductCounts = async () => {
+      try {
+        const fetchedProducts = await getProducts();
+        const countByCategory = fetchedProducts.reduce((acc, product) => {
+          acc[product.category] = (acc[product.category] || 0) + 1;
+          return acc;
+        }, {});
+        setProductCountByCategory(countByCategory);
+      } catch (error) {
+        console.error('Error al calcular el conteo de productos por categoría:', error);
+      }
+    };
+    calculateProductCounts();
+  }, [categories]);
 
-  const loadCategories = () => {
+  const loadCategories = async () => {
+    setLoading(true);
     try {
-      const savedCategories = JSON.parse(localStorage.getItem('categories')) || [];
-      setCategories(savedCategories);
+      const fetchedCategories = await getCategories();
+      setCategories(fetchedCategories);
     } catch (error) {
       console.error('Error al cargar categorías:', error);
     } finally {
@@ -87,7 +98,7 @@ export default function CategoryList() {
               <div key={category.id} className="cl-category-card">
                 <div className="cl-category-image">
                   <img 
-                    src={category.image || 'https://via.placeholder.com/200?text=Categoría'} 
+                    src={category.image ? (category.image.startsWith('http') ? category.image : API_BASE_URL + category.image) : '/src/assets/placeholder.png'}
                     alt={category.name} 
                   />
                 </div>

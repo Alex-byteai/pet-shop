@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
+import { getUserById, getOrdersByUserId, getProductById } from '../../services/api'; // Importar funciones de API
 import './UserDetail.css';
 
 export default function UserDetail() {
@@ -16,29 +17,38 @@ export default function UserDetail() {
   }, [userId]);
 
   const loadUserData = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      // Cargar datos del usuario
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const foundUser = users.find(u => u.id === parseInt(userId));
+      // Cargar datos del usuario desde la API
+      const foundUser = await getUserById(userId);
       
       if (!foundUser) {
         setError('Usuario no encontrado');
+        setLoading(false);
         return;
       }
 
       setUser(foundUser);
 
-      // Cargar pedidos del usuario
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const userOrders = allOrders
-        .filter(order => order.userid === parseInt(userId))
+      // Cargar pedidos del usuario desde la API y enriquecerlos
+      const fetchedOrders = await getOrdersByUserId(userId);
+      const enrichedOrders = await Promise.all(fetchedOrders.map(async (order) => {
+        const enrichedItems = await Promise.all(order.items.map(async (item) => {
+          const productDetail = await getProductById(item.productId);
+          return { ...item, ...productDetail };
+        }));
+        return { ...order, items: enrichedItems };
+      }));
+
+      const userOrders = enrichedOrders
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 10); // Mostrar solo los últimos 10 pedidos
 
       setUserOrders(userOrders);
     } catch (error) {
-      console.error('Error al cargar datos del usuario:', error);
-      setError('Error al cargar los datos');
+      console.error('Error al cargar datos del usuario desde la API:', error);
+      setError('Error al cargar los datos del usuario.');
     } finally {
       setLoading(false);
     }
@@ -165,7 +175,7 @@ export default function UserDetail() {
                   {order.items.map((item, index) => (
                     <div key={index} className="order-item">
                       <img 
-                        src={item.images && item.images[0] ? item.images[0] : 'https://via.placeholder.com/50'} 
+                        src={item.images && item.images[0] ? item.images[0] : '/src/assets/placeholder.png'}
                         alt={item.name} 
                         className="item-image" 
                       />

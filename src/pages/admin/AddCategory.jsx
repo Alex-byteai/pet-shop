@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { createCategory, uploadCategoryImage } from '../../services/api';
 import './AddCategory.css';
 
 export default function AddCategory() {
@@ -8,17 +9,19 @@ export default function AddCategory() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    image: null
+    image: null, // This will hold the File object for new uploads
+    subcategories: '', // For easier input, will convert to array on submit
+    featured: false // New field
   });
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // This will hold the URL for display
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -34,6 +37,9 @@ export default function AddCategory() {
         }));
       };
       reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+      setFormData(prev => ({ ...prev, image: null }));
     }
   };
 
@@ -43,40 +49,35 @@ export default function AddCategory() {
     setError(null);
 
     try {
-      // Validaciones
       if (!formData.name.trim()) throw new Error('El nombre es obligatorio');
       if (!formData.description.trim()) throw new Error('La descripción es obligatoria');
 
-      // Convertir imagen a URL (en un entorno real, aquí se subiría a un servidor)
-      let imageUrl = null;
-      if (formData.image) {
-        imageUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(formData.image);
-        });
+      let finalImageUrl = null;
+      if (formData.image instanceof File) {
+        finalImageUrl = await uploadCategoryImage(formData.image);
       }
 
-      // Obtener categorías existentes
-      const existingCategories = JSON.parse(localStorage.getItem('categories')) || [];
-      
-      // Crear nueva categoría
-      const newCategory = {
-        id: Date.now(),
+      const subcategoriesArray = formData.subcategories
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+      const newCategoryData = {
         name: formData.name,
         description: formData.description,
-        image: imageUrl,
-        products: [],
+        image: finalImageUrl,
+        subcategories: subcategoriesArray,
+        featured: formData.featured,
         createdAt: new Date().toISOString()
       };
 
-      // Guardar en localStorage
-      localStorage.setItem('categories', JSON.stringify([...existingCategories, newCategory]));
+      await createCategory(newCategoryData);
 
-      // Redireccionar a la lista de categorías
+      alert('Categoría agregada correctamente!');
       navigate('/admin/categories');
     } catch (error) {
-      setError(error.message);
+      console.error('Error al agregar categoría:', error);
+      setError(error.message || 'Ocurrió un error al agregar la categoría.');
     } finally {
       setLoading(false);
     }
@@ -125,6 +126,18 @@ export default function AddCategory() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="subcategories">Subcategorías (separadas por coma)</label>
+          <input
+            type="text"
+            id="subcategories"
+            name="subcategories"
+            value={formData.subcategories}
+            onChange={handleInputChange}
+            placeholder="Ej: Alimento Seco, Alimento Húmedo"
+          />
+        </div>
+
+        <div className="form-group">
           <label>Imagen de la Categoría</label>
           <div className="image-upload-container">
             <label htmlFor="image" className="image-upload-button">
@@ -148,22 +161,20 @@ export default function AddCategory() {
           )}
         </div>
 
-        <div className="form-actions">
-          <button
-            type="button"
-            onClick={() => navigate('/admin/categories')}
-            className="cancel-button"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={loading}
-          >
-            {loading ? 'Guardando...' : 'Guardar Categoría'}
-          </button>
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="featured"
+            name="featured"
+            checked={formData.featured}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="featured">Marcar como Categoría Destacada</label>
         </div>
+
+        <button type="submit" className="submit-button" disabled={loading}>
+          {loading ? 'Guardando...' : 'Guardar Categoría'}
+        </button>
       </form>
     </div>
   );
