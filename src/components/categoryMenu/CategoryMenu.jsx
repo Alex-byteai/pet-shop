@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { categories } from '../../data/categories';
+import { getCategories } from '../../services/api';
 import './CategoryMenu.css';
 
 const CategoryMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getCategories().then(setCategories);
+  }, []);
 
   const handleCategoryClick = (categoryId) => {
     navigate(`/search?category=${categoryId}`);
@@ -32,7 +37,7 @@ const CategoryMenu = () => {
                 {category.name}
               </div>
               <div className="subcategories">
-                {category.subcategories.map((subcategory, index) => (
+                {category.subcategories && category.subcategories.map((subcategory, index) => (
                   <div 
                     key={index}
                     className="subcategory-item"

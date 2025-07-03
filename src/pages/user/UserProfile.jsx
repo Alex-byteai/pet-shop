@@ -11,19 +11,42 @@ export default function UserProfile() {
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
+    phone: user.phone || '',
+    address: user.address || { street: '', city: '', state: '', zipCode: '', country: '' },
   });
   
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Check if form data has changed from initial user data
+  const hasChanges = 
+    formData.firstName !== user.firstName ||
+    formData.lastName !== user.lastName ||
+    formData.email !== user.email ||
+    formData.phone !== user.phone ||
+    JSON.stringify(formData.address) !== JSON.stringify(user.address);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    // Handle nested address object if needed, or flat input for now
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
     setError('');
   };
 
@@ -44,6 +67,11 @@ export default function UserProfile() {
       setError('Email inválido');
       return false;
     }
+    // Basic validation for address fields if they are required
+    // if (!formData.address.street.trim()) {
+    //   setError('La calle es requerida');
+    //   return false;
+    // }
     return true;
   };
 
@@ -51,7 +79,7 @@ export default function UserProfile() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsLoading(true);
+    setIsSubmitting(true);
     setError('');
     setSuccess('');
 
@@ -66,7 +94,7 @@ export default function UserProfile() {
     } catch (err) {
       setError('Error al actualizar el perfil');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -132,6 +160,72 @@ export default function UserProfile() {
             />
           </div>
 
+          {/* Address Fields */}
+          <div className="up-form-group">
+            <label htmlFor="address.street">Calle</label>
+            <input
+              type="text"
+              id="address.street"
+              name="address.street"
+              value={formData.address.street}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
+            />
+          </div>
+
+          <div className="up-form-group">
+            <label htmlFor="address.city">Ciudad</label>
+            <input
+              type="text"
+              id="address.city"
+              name="address.city"
+              value={formData.address.city}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
+            />
+          </div>
+
+          <div className="up-form-group">
+            <label htmlFor="address.state">Provincia</label>
+            <input
+              type="text"
+              id="address.state"
+              name="address.state"
+              value={formData.address.state}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
+            />
+          </div>
+
+          <div className="up-form-group">
+            <label htmlFor="address.zipCode">Código Postal</label>
+            <input
+              type="text"
+              id="address.zipCode"
+              name="address.zipCode"
+              value={formData.address.zipCode}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
+            />
+          </div>
+
+          <div className="up-form-group">
+            <label htmlFor="address.country">País</label>
+            <input
+              type="text"
+              id="address.country"
+              name="address.country"
+              value={formData.address.country}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className={`up-profile-input ${isEditing ? 'editing' : ''}`}
+            />
+          </div>
+
           {error && <div className="up-error-message">{error}</div>}
           {success && <div className="up-success-message">{success}</div>}
 
@@ -157,8 +251,11 @@ export default function UserProfile() {
                       firstName: user.firstName,
                       lastName: user.lastName,
                       email: user.email,
+                      phone: user.phone || '',
+                      address: user.address || { street: '', city: '', state: '', zipCode: '', country: '' },
                     });
                     setError('');
+                    setSuccess('');
                   }}
                   className="up-cancel-button"
                   disabled={isSubmitting}

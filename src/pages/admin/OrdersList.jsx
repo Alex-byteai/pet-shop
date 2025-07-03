@@ -1,28 +1,55 @@
-import { useState } from "react";
-import { orders as ordersData } from "../../data/orders";
-import { users } from "../../data/users";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getOrders, getUsers, getProductById } from "../../services/api"; // Importar funciones de API
+// import { orders as ordersData } from "../../data/orders"; // Eliminar o comentar esta línea
+// import { users } from "../../data/users"; // Eliminar o comentar esta línea
 import "./OrdersList.css";
 
 function OrdersList() {
   const [search, setSearch] = useState("");
+  const [orders, setOrders] = useState([]); // Estado para las órdenes
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga
   const navigate = useNavigate();
 
-  // Combinar orden con datos de usuario
-  const orders = ordersData.map((order) => {
-    const user = users.find((u) => u.id === order.userid);
-    return {
-      ...order,
-      userName: user ? `${user.firstName} ${user.lastName}` : "Usuario no encontrado",
-    };
-  });
+  useEffect(() => {
+    loadOrders();
+  }, []); // Cargar órdenes una vez al montar el componente
+
+  const loadOrders = async () => {
+    setIsLoading(true);
+    try {
+      const fetchedOrders = await getOrders();
+      const fetchedUsers = await getUsers();
+
+      // Enriquecer órdenes con nombre de usuario y detalles de producto
+      const enrichedOrders = await Promise.all(fetchedOrders.map(async (order) => {
+        const user = fetchedUsers.find((u) => u.id === order.userid);
+        const userName = user ? `${user.firstName} ${user.lastName}` : "Usuario no encontrado";
+
+        const enrichedItems = await Promise.all(order.items.map(async (item) => {
+          const productDetail = await getProductById(item.productId);
+          return { ...item, ...productDetail };
+        }));
+        return { ...order, userName, items: enrichedItems };
+      }));
+
+      // Ordenar por fecha más reciente
+      const sortedOrders = enrichedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setOrders(sortedOrders);
+    } catch (error) {
+      console.error("Error al cargar las órdenes para el administrador:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Filtrado de órdenes
   const filteredOrders = orders.filter((order) => {
     const searchTerm = search.toLowerCase();
     return (
       order.orderid.toString().includes(searchTerm) ||
-      order.userName.toLowerCase().includes(searchTerm)
+      order.userName.toLowerCase().includes(searchTerm) ||
+      order.items.some(item => item.name?.toLowerCase().includes(searchTerm))
     );
   });
 
@@ -63,58 +90,62 @@ function OrdersList() {
 
       <input
         type="text"
-        placeholder="Buscar por ID de orden o nombre/apellido"
+        placeholder="Buscar por ID de orden, cliente o producto"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="orders-search-input"
       />
 
-      <table className="orders-table">
-        <thead>
-          <tr>
-            <th>ID Orden</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredOrders.map((order) => (
-            <tr key={order.orderid}>
-              <td>{order.orderid}</td>
-              <td>{order.userName}</td>
-              <td>{formatDate(order.date)}</td>
-              <td>{formatPrice(order.total)}</td>
-              <td>
-                <span 
-                  className="status-badge"
-                  style={{ 
-                    backgroundColor: getStatusColor(order.status),
-                    color: 'white',
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: '1rem',
-                    display: 'inline-block'
-                  }}
-                >
-                  {order.status}
-                </span>
-              </td>
-              <td>
-                <button
-                  className="view-detail-button"
-                  onClick={() => navigate(`/admin/orders/${order.orderid}`)}
-                >
-                  Ver Detalle
-                </button>
-              </td>
+      {isLoading ? (
+        <div className="loading-message">Cargando órdenes...</div>
+      ) : (
+        <table className="orders-table">
+          <thead>
+            <tr>
+              <th>ID Orden</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredOrders.map((order) => (
+              <tr key={order.orderid}>
+                <td>{order.orderid}</td>
+                <td>{order.userName}</td>
+                <td>{formatDate(order.date)}</td>
+                <td>{formatPrice(order.total)}</td>
+                <td>
+                  <span 
+                    className="status-badge"
+                    style={{ 
+                      backgroundColor: getStatusColor(order.status),
+                      color: 'white',
+                      padding: '0.25rem 0.75rem',
+                      borderRadius: '1rem',
+                      display: 'inline-block'
+                    }}
+                  >
+                    {order.status}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    className="view-detail-button"
+                    onClick={() => navigate(`/admin/orders/${order.orderid}`)}
+                  >
+                    Ver Detalle
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-      {filteredOrders.length === 0 && (
+      {filteredOrders.length === 0 && !isLoading && (
         <div className="no-orders-message">
           No se encontraron órdenes que coincidan con la búsqueda
         </div>

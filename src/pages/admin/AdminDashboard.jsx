@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaShoppingBag, FaMoneyBillWave } from 'react-icons/fa';
-import { products } from '../../data/products';
-import { categories } from '../../data/categories';
+import { getOrders, getUsers } from '../../services/api';
 import './AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -13,37 +12,34 @@ export default function AdminDashboard() {
   });
 
   const [dateRange, setDateRange] = useState(() => {
-    // Establecer el rango para marzo 2024
-    const startDate = new Date(2024, 2, 1); 
-    const endDate = new Date(2024, 2, 31);
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     
     return {
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0]
+      startDate: firstDayOfMonth.toISOString().split('T')[0],
+      endDate: lastDayOfMonth.toISOString().split('T')[0]
     };
   });
 
   useEffect(() => {
 
     if (!localStorage.getItem('products')) {
-      localStorage.setItem('products', JSON.stringify(products.map(product => ({
-        ...product,
-        active: true 
-      }))));
+      localStorage.setItem('products', JSON.stringify([]));
     }
     
     if (!localStorage.getItem('categories')) {
-      localStorage.setItem('categories', JSON.stringify(categories));
+      localStorage.setItem('categories', JSON.stringify([]));
     }
 
     loadSummaryData();
   }, [dateRange]);
 
-  const loadSummaryData = () => {
+  const loadSummaryData = async () => {
     try {
-      // Cargar órdenes
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      console.log('Todas las órdenes:', allOrders);
+      // Cargar órdenes desde el backend
+      const allOrders = await getOrders();
+      console.log('Todas las órdenes (desde API):', allOrders);
 
       const startDate = new Date(dateRange.startDate + 'T00:00:00-05:00'); 
       const endDate = new Date(dateRange.endDate + 'T23:59:59-05:00');
@@ -59,7 +55,7 @@ export default function AdminDashboard() {
       const filteredOrders = allOrders.filter(order => {
         const orderDate = new Date(order.date);
         const isInRange = orderDate >= startDate && orderDate <= endDate;
-        console.log('Orden:', {
+        console.log('Orden (filtrada):', {
           id: order.orderid,
           date: orderDate.toISOString(),
           dateLocal: orderDate.toString(),
@@ -69,16 +65,16 @@ export default function AdminDashboard() {
         return isInRange;
       });
 
-      // Cargar usuarios
-      const allUsers = JSON.parse(localStorage.getItem('users')) || [];
-      console.log('Todos los usuarios:', allUsers);
+      // Cargar usuarios desde el backend
+      const allUsers = await getUsers();
+      console.log('Todos los usuarios (desde API):', allUsers);
 
       // Filtrar usuarios por fecha de registro
       const newUsers = allUsers.filter(user => {
         if (!user.registerDate) return false;
         const registerDate = new Date(user.registerDate);
         const isInRange = registerDate >= startDate && registerDate <= endDate;
-        console.log('Usuario:', {
+        console.log('Usuario (filtrado):', {
           id: user.id,
           name: `${user.firstName} ${user.lastName}`,
           registerDate: registerDate.toISOString(),
@@ -104,7 +100,7 @@ export default function AdminDashboard() {
 
       setSummaryData(summary);
     } catch (error) {
-      console.error('Error al cargar datos del resumen:', error);
+      console.error('Error al cargar datos del resumen del administrador desde la API:', error);
       setSummaryData({
         orders: 0,
         newUsers: 0,

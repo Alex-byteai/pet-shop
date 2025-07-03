@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEye, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { getAllProducts, updateProduct } from '../../services/api'; // Cambiado getProducts a getAllProducts
 import './ProductList.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
@@ -17,10 +20,11 @@ export default function ProductList() {
     loadProducts();
   }, []);
 
-  const loadProducts = () => {
+  const loadProducts = async () => {
+    setLoading(true);
     try {
-      const savedProducts = JSON.parse(localStorage.getItem('products')) || [];
-      setProducts(savedProducts);
+      const fetchedProducts = await getAllProducts(); // Obtener TODOS los productos de la API para el admin
+      setProducts(fetchedProducts);
     } catch (error) {
       console.error('Error al cargar productos:', error);
     } finally {
@@ -28,21 +32,23 @@ export default function ProductList() {
     }
   };
 
-  const handleToggleProductStatus = (productId) => {
+  const handleToggleProductStatus = async (productId) => {
     try {
-      const updatedProducts = products.map(product => {
-        if (product.id === productId) {
-          return { ...product, active: !product.active };
-        }
-        return product;
-      });
+      const productToUpdate = products.find(p => p.id === productId);
+      if (!productToUpdate) return;
+
+      const updatedProduct = { ...productToUpdate, active: !productToUpdate.active };
+      await updateProduct(productId, { active: updatedProduct.active }); // Actualizar en el backend
       
-      localStorage.setItem('products', JSON.stringify(updatedProducts));
-      setProducts(updatedProducts);
+      // Actualizar el estado local después de la actualización exitosa en el backend
+      setProducts(prevProducts => 
+        prevProducts.map(p => (p.id === productId ? updatedProduct : p))
+      );
       setShowConfirmModal(false);
       setSelectedProduct(null);
     } catch (error) {
       console.error('Error al actualizar estado del producto:', error);
+      alert('Error al actualizar el estado del producto.');
     }
   };
 
@@ -132,7 +138,7 @@ export default function ProductList() {
               <div key={product.id} className={`pl-product-card ${!product.active ? 'pl-inactive' : ''}`}>
                 <div className="pl-product-image">
                   <img 
-                    src={product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/200'} 
+                    src={product.images && product.images[0] ? (product.images[0].startsWith('http') ? product.images[0] : API_BASE_URL + product.images[0]) : '/src/assets/placeholder.png'}
                     alt={product.name} 
                   />
                   {!product.active && (

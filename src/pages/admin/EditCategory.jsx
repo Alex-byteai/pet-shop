@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { getCategoryById, updateCategory, setCategoryFeatured, uploadCategoryImage } from '../../services/api';
 import './EditCategory.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 export default function EditCategory() {
   const { categoryId } = useParams();
@@ -9,37 +12,43 @@ export default function EditCategory() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    image: null
+    image: null,
+    subcategories: ''
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [isFeatured, setIsFeatured] = useState(false);
 
   useEffect(() => {
     loadCategory();
   }, [categoryId]);
 
-  const loadCategory = () => {
+  const loadCategory = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const categories = JSON.parse(localStorage.getItem('categories')) || [];
-      const category = categories.find(c => c.id === parseInt(categoryId));
+      const category = await getCategoryById(categoryId);
 
       if (!category) {
         setError('Categoría no encontrada');
+        setLoading(false);
         return;
       }
 
       setFormData({
-        name: category.name,
-        description: category.description,
-        image: null
+        name: category.name || '',
+        description: category.description || '',
+        image: null,
+        subcategories: Array.isArray(category.subcategories) ? category.subcategories.join(', ') : ''
       });
 
-      setImagePreview(category.image);
+      setImagePreview(category.image ? (category.image.startsWith('http') ? category.image : API_BASE_URL + category.image) : null);
+      setIsFeatured(!!category.featured);
     } catch (error) {
       console.error('Error al cargar la categoría:', error);
-      setError('Error al cargar los datos de la categoría');
+      setError('Error al cargar los datos de la categoría.');
     } finally {
       setLoading(false);
     }
@@ -65,6 +74,9 @@ export default function EditCategory() {
         }));
       };
       reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+      setFormData(prev => ({ ...prev, image: null }));
     }
   };
 
@@ -74,44 +86,38 @@ export default function EditCategory() {
     setError(null);
 
     try {
-      // Validaciones
       if (!formData.name.trim()) throw new Error('El nombre es obligatorio');
       if (!formData.description.trim()) throw new Error('La descripción es obligatoria');
 
-      // Convertir nueva imagen a URL si se ha seleccionado una
-      let imageUrl = imagePreview;
-      if (formData.image) {
-        imageUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(formData.image);
-        });
+      let finalImageUrl = imagePreview;
+
+      if (formData.image instanceof File) {
+        finalImageUrl = await uploadCategoryImage(formData.image);
+      } else if (imagePreview && !imagePreview.startsWith('http')) {
+        finalImageUrl = null;
       }
 
-      // Obtener categorías existentes
-      const categories = JSON.parse(localStorage.getItem('categories')) || [];
-      const categoryIndex = categories.findIndex(c => c.id === parseInt(categoryId));
+      const subcategoriesArray = formData.subcategories
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
 
-      if (categoryIndex === -1) {
-        throw new Error('Categoría no encontrada');
-      }
-
-      // Actualizar categoría
-      const updatedCategory = {
-        ...categories[categoryIndex],
+      const updatedCategoryData = {
         name: formData.name,
         description: formData.description,
-        image: imageUrl,
+        image: finalImageUrl,
+        subcategories: subcategoriesArray,
+        featured: isFeatured,
         updatedAt: new Date().toISOString()
       };
 
-      categories[categoryIndex] = updatedCategory;
-      localStorage.setItem('categories', JSON.stringify(categories));
+      await updateCategory(categoryId, updatedCategoryData);
 
-      // Redireccionar a la lista de categorías
+      alert('Categoría actualizada correctamente!');
       navigate('/admin/categories');
     } catch (error) {
-      setError(error.message);
+      console.error('Error al actualizar categoría:', error);
+      setError(error.message || 'Ocurrió un error al actualizar la categoría.');
     } finally {
       setSaving(false);
     }
@@ -175,6 +181,18 @@ export default function EditCategory() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="subcategories">Subcategorías (separadas por coma)</label>
+          <input
+            type="text"
+            id="subcategories"
+            name="subcategories"
+            value={formData.subcategories}
+            onChange={handleInputChange}
+            placeholder="Ej: Alimento Seco, Alimento Húmedo"
+          />
+        </div>
+
+        <div className="form-group">
           <label>Imagen de la Categoría</label>
           <div className="image-upload-container">
             <label htmlFor="image" className="image-upload-button">
@@ -198,22 +216,20 @@ export default function EditCategory() {
           )}
         </div>
 
-        <div className="form-actions">
-          <button
-            type="button"
-            onClick={() => navigate('/admin/categories')}
-            className="cancel-button"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={saving}
-          >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
-          </button>
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isFeatured"
+            name="isFeatured"
+            checked={isFeatured}
+            onChange={(e) => setIsFeatured(e.target.checked)}
+          />
+          <label htmlFor="isFeatured">Marcar como Categoría Destacada</label>
         </div>
+
+        <button type="submit" className="submit-button" disabled={saving}>
+          {saving ? 'Guardando...' : 'Guardar Cambios'}
+        </button>
       </form>
     </div>
   );

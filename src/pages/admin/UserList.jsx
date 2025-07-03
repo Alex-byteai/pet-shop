@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaUserSlash, FaUserCheck } from 'react-icons/fa';
+import { getUsers, updateUser } from '../../services/api'; // Importar funciones de API
 import './UserList.css';
 
 export default function UserList() {
@@ -17,10 +18,11 @@ export default function UserList() {
     loadUsers();
   }, []);
 
-  const loadUsers = () => {
+  const loadUsers = async () => {
+    setLoading(true);
     try {
-      const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
-      setUsers(savedUsers);
+      const fetchedUsers = await getUsers(); // Obtener usuarios de la API
+      setUsers(fetchedUsers);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     } finally {
@@ -28,21 +30,23 @@ export default function UserList() {
     }
   };
 
-  const handleToggleUserStatus = (userId) => {
+  const handleToggleUserStatus = async (userId) => {
     try {
-      const updatedUsers = users.map(user => {
-        if (user.id === userId) {
-          return { ...user, active: !user.active };
-        }
-        return user;
-      });
+      const userToUpdate = users.find(u => u.id === userId);
+      if (!userToUpdate) return;
+
+      const updatedUser = { ...userToUpdate, active: !userToUpdate.active };
+      await updateUser(userId, { active: updatedUser.active }); // Actualizar en el backend
       
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-      setUsers(updatedUsers);
+      // Actualizar el estado local después de la actualización exitosa en el backend
+      setUsers(prevUsers => 
+        prevUsers.map(u => (u.id === userId ? updatedUser : u))
+      );
       setShowConfirmModal(false);
       setSelectedUser(null);
     } catch (error) {
       console.error('Error al actualizar estado del usuario:', error);
+      alert('Error al actualizar el estado del usuario.');
     }
   };
 
@@ -130,7 +134,7 @@ export default function UserList() {
                     <td>{user.id}</td>
                     <td>{user.firstName} {user.lastName}</td>
                     <td>{user.email}</td>
-                    <td>{new Date(user.registerDate).toLocaleDateString()}</td>
+                    <td>{user.registerDate ? new Date(user.registerDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</td>
                     <td>
                       <span className={`status-badge ${user.active ? 'active' : 'inactive'}`}>
                         {user.active ? 'Activo' : 'Inactivo'}

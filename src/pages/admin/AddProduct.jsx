@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { createProduct, uploadProductImage } from '../../services/api'; // Importar createProduct y uploadProductImage
 import './AddProduct.css';
 
 export default function AddProduct() {
@@ -11,17 +12,19 @@ export default function AddProduct() {
     price: '',
     stock: '',
     series: '',
-    images: []
+    images: [],
+    isNew: false,
+    isBestSeller: false
   });
   const [imagePreview, setImagePreview] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -62,20 +65,16 @@ export default function AddProduct() {
         throw new Error('El stock debe ser un número mayor o igual a 0');
       }
 
-      const imageUrls = await Promise.all(
-        formData.images.map(file => new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        }))
-      );
+      // Subir imágenes al backend y obtener URLs
+      let imageUrls = [];
+      if (formData.images.length > 0) {
+        imageUrls = await Promise.all(
+          formData.images.map(file => uploadProductImage(file))
+        );
+      }
 
-      // Obtener productos existentes
-      const existingProducts = JSON.parse(localStorage.getItem('products')) || [];
-      
-      // Crear nuevo producto
-      const newProduct = {
-        id: Date.now(), 
+      // Crear nuevo producto para enviar al backend
+      const newProductData = {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
@@ -83,16 +82,21 @@ export default function AddProduct() {
         series: formData.series,
         images: imageUrls,
         active: true,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        soldCount: 0,
+        isNew: formData.isNew,
+        isBestSeller: formData.isBestSeller
       };
 
-      // Guardar en localStorage
-      localStorage.setItem('products', JSON.stringify([...existingProducts, newProduct]));
+      // Enviar al backend
+      await createProduct(newProductData);
 
+      alert('Producto agregado correctamente!');
       // Redireccionar a la lista de productos
       navigate('/admin/products');
     } catch (error) {
-      setError(error.message);
+      console.error('Error al agregar producto:', error);
+      setError(error.message || 'Ocurrió un error al agregar el producto.');
     } finally {
       setLoading(false);
     }
@@ -181,6 +185,28 @@ export default function AddProduct() {
             onChange={handleInputChange}
             placeholder="Ingrese la serie o categoría del producto (opcional)"
           />
+        </div>
+
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isNew"
+            name="isNew"
+            checked={formData.isNew}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="isNew">Marcar como Nuevo Producto</label>
+        </div>
+
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="isBestSeller"
+            name="isBestSeller"
+            checked={formData.isBestSeller}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="isBestSeller">Marcar como Producto Más Vendido</label>
         </div>
 
         <div className="form-group">

@@ -82,7 +82,7 @@ export default function RecoverPage() {
     setError('');
 
     try {
-      const result = await resetPassword(email, newPassword);
+      const result = await resetPassword(email, newPassword, code);
       if (result.success) {
         alert('Contraseña actualizada correctamente');
         navigate('/auth/login');

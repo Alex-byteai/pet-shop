@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { products } from '../../data/products';
-import { categories } from '../../data/categories';
+import { getProductById } from '../../services/api';
 import { FaCartPlus } from "react-icons/fa6";
 import './ProductDetail.css';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -12,14 +13,48 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const product = products.find(p => p.id === parseInt(productId));
-  
   useEffect(() => {
-    if (product && product.images.length > 0) {
-      setMainImage(product.images[0]);
-    }
-  }, [product]);
+    const fetchProduct = async () => {
+      try {
+        const fetchedProduct = await getProductById(productId);
+        setProduct(fetchedProduct);
+        if (fetchedProduct && fetchedProduct.images && fetchedProduct.images.length > 0) {
+          setMainImage(fetchedProduct.images[0]);
+        }
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <div className="pd-container">
+        <h1 className="pd-title">Cargando producto...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="pd-container">
+        <h1 className="pd-title">Error: {error.message}</h1>
+        <button
+          onClick={() => navigate('/')}
+          className="pd-button"
+        >
+          Volver al inicio
+        </button>
+      </div>
+    );
+  }
 
   if (!product) { 
     return (
@@ -35,8 +70,6 @@ const ProductDetail = () => {
     );
   }
 
-  const category = categories.find(c => c.id === product.category);
-
   const handleAddToCart = () => {
     addToCart(product, quantity);
     // Opcional: Mostrar una notificación de éxito
@@ -49,7 +82,7 @@ const ProductDetail = () => {
         <div className="pd-image-container">
           <div className="pd-main-image">
             <img
-              src={mainImage}
+              src={mainImage ? (mainImage.startsWith('http') ? mainImage : API_BASE_URL + mainImage) : 'https://via.placeholder.com/400'}
               alt={product.name}
               className="pd-image"
             />
@@ -60,14 +93,14 @@ const ProductDetail = () => {
             )}
           </div>
           <div className="pd-thumbnail-images">
-            {product.images.map((image, index) => (
+            {product.images && product.images.map((image, index) => (
               <div 
                 key={index} 
                 className={`pd-thumbnail ${mainImage === image ? 'pd-active' : ''}`}
                 onClick={() => setMainImage(image)}
               >
                 <img
-                  src={image}
+                  src={image.startsWith('http') ? image : API_BASE_URL + image}
                   alt={`${product.name} - Vista ${index + 1}`}
                 />
               </div>
@@ -78,7 +111,7 @@ const ProductDetail = () => {
         {/* Información del producto */}
         <div className="pd-info">
           <nav className="pd-category">
-            {category?.name} / {product.subcategory}
+            {product.category} / {product.subcategory}
           </nav>
           <div className="pd-title-container">
             <h1 className="pd-title">{product.name}</h1>
@@ -131,7 +164,7 @@ const ProductDetail = () => {
             <div className="pd-characteristics-grid">
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Categoría:</span>
-                <p className="pd-characteristic-value">{category?.name}</p>
+                <p className="pd-characteristic-value">{product.category}</p>
               </div>
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Subcategoría:</span>
