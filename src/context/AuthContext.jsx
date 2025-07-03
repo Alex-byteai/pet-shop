@@ -153,13 +153,6 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
 
-      // No need to verify current password on frontend if backend handles it
-      // const currentUsers = JSON.parse(localStorage.getItem('users')) || [];
-      // const currentUser = currentUsers.find(u => u.id === user.id);
-      // if (currentUser.password !== currentPassword) {
-      //   throw new Error('La contraseña actual es incorrecta');
-      // }
-
       await apiChangePassword(user.id, { currentPassword, newPassword });
       return { success: true };
     } catch (error) {

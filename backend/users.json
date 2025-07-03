@@ -205,5 +205,13 @@
     },
     "active": true,
     "registerDate": "2024-06-20T10:00:00Z"
+  },
+  {
+    "firstName": "Anthony",
+    "lastName": "Yance",
+    "email": "anthony@gmail.com",
+    "password": "123456",
+    "id": 1751562164412,
+    "registerDate": "2025-07-03T17:02:44.412Z"
   }
 ]

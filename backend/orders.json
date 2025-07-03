@@ -212,5 +212,18 @@
     ],
     "total": 239.96,
     "orderid": 1751511558531
+  },
+  {
+    "userid": 1751562164412,
+    "date": "2025-07-03T17:04:14.881Z",
+    "status": "pendiente",
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 1
+      }
+    ],
+    "total": 59.99,
+    "orderid": 1751562254881
   }
 ]
