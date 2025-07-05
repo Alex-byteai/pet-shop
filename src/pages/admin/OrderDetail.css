@@ -1,59 +1,276 @@
 .order-detail-container {
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
 }
 
 .order-detail-title {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #333;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #2d3748;
+  background: linear-gradient(135deg, #a26e3c 0%, #8b6b4d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+.order-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
 }
 
 .order-info p {
-    margin-bottom: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.order-info strong {
+  color: #2d3748;
+  font-weight: 600;
+  min-width: 120px;
 }
 
 .order-detail-subtitle {
-    font-size: 1.4rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: #555;
+  font-size: 1.8rem;
+  margin: 2rem 0 1.5rem;
+  color: #2d3748;
+  font-weight: 600;
+  text-align: center;
 }
 
 .order-items-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.order-items-table th,
-.order-items-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border: 1px solid #ddd;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
 }
 
 .order-items-table th {
-    background-color: #f3f3f3;
+  background: linear-gradient(135deg, #a26e3c 0%, #8b6b4d 100%);
+  color: white;
+  padding: 1.5rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-items-table td {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+  color: #4a5568;
+}
+
+.order-items-table tr:last-child td {
+  border-bottom: none;
+}
+
+.order-items-table tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.product-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.product-thumbnail:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .order-total {
-    margin-top: 1rem;
-    font-size: 1.2rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 2rem 0;
+  border: 2px solid #a26e3c;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .cancel-button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #d9534f;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+  display: block;
+  margin: 2rem auto;
+  min-width: 200px;
 }
 
 .cancel-button:hover {
-    background-color: #c9302c;
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(245, 101, 101, 0.4);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #4a5568;
+  font-weight: 500;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.error-container {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 2rem;
+}
+
+.error-container h2 {
+  color: #e53e3e;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #a26e3c 0%, #8b6b4d 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(162, 110, 60, 0.3);
+  margin-top: 1rem;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(162, 110, 60, 0.4);
+}
+
+/* Estilos para el estado de la orden */
+.order-info .status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 0.5rem;
+}
+
+.order-info .status-pendiente {
+  background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+}
+
+.order-info .status-enviado {
+  background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+}
+
+.order-info .status-cancelado {
+  background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .order-detail-container {
+    padding: 1rem;
+  }
+
+  .order-detail-title {
+    font-size: 2rem;
+  }
+
+  .order-info {
+    padding: 1.5rem;
+  }
+
+  .order-items-table {
+    font-size: 0.9rem;
+  }
+
+  .order-items-table th,
+  .order-items-table td {
+    padding: 1rem 0.5rem;
+  }
+
+  .product-thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+
+  .order-total {
+    font-size: 1.2rem;
+    padding: 1.5rem;
+  }
+
+  .cancel-button {
+    width: 100%;
+    margin: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-detail-title {
+    font-size: 1.8rem;
+  }
+
+  .order-info p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .order-info strong {
+    min-width: auto;
+  }
+
+  .order-items-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .product-thumbnail {
+    width: 50px;
+    height: 50px;
+  }
 }

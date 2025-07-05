@@ -120,7 +120,7 @@ const ProductDetail = () => {
           
           <div className="pd-price-container">
             <span className="pd-price">
-              ${product.price.toFixed(2)}
+              {isNaN(Number(product.price)) ? 'Precio inválido' : `$${Number(product.price).toFixed(2)}`}
             </span>
             {product.stock > 0 && (
               <span className="pd-stock-info">

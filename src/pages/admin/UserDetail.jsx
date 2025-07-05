@@ -4,6 +4,12 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { getUserById, getOrdersByUserId, getProductById } from '../../services/api'; // Importar funciones de API
 import './UserDetail.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
+const getDefaultProductImage = () => {
+  return 'https://via.placeholder.com/150x150?text=Sin+Imagen';
+};
+
 export default function UserDetail() {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -175,9 +181,12 @@ export default function UserDetail() {
                   {order.items.map((item, index) => (
                     <div key={index} className="order-item">
                       <img 
-                        src={item.images && item.images[0] ? item.images[0] : '/src/assets/placeholder.png'}
+                        src={item.images && item.images[0] ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()}
                         alt={item.name} 
                         className="item-image" 
+                        onError={(e) => {
+                          e.target.src = getDefaultProductImage();
+                        }}
                       />
                       <div className="item-details">
                         <h4>{item.name}</h4>

@@ -51,9 +51,9 @@ const HomePage = () => {
         <div className="category-grid">
           {featuredCategories.map((cat) => {
             let bgColor = '#fff'; // Default color
-            if (cat.id === 1 || cat.id === 4) {
+            if (cat.id === 56 || cat.id === 59) {
               bgColor = 'rgb(162, 110, 60)';
-            } else if (cat.id === 2 || cat.id === 3) {
+            } else if (cat.id === 57 || cat.id === 58) {
               bgColor = 'rgb(28, 28, 28)';
             }
             return (

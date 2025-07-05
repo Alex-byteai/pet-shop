@@ -151,22 +151,25 @@ export default function UserDashboard() {
                   </div>
 
                   <div className="ud-order-items-preview">
-                    {order.items.map((item, index) => (
-                      <div key={index} className="ud-preview-item">
-                        <img 
-                          src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()} 
-                          alt={item.name || 'Producto'} 
-                          className="ud-preview-image" 
-                          onError={(e) => {
-                            e.target.src = getDefaultProductImage();
-                          }}
-                        />
-                        <div className="ud-preview-details">
-                          <span className="ud-item-name">{item.name || 'Producto sin nombre'}</span>
-                          <span className="ud-item-quantity">x{item.quantity}</span>
+                    {order.items.map((item, index) => {
+                      console.log('Dashboard item:', item);
+                      return (
+                        <div key={index} className="ud-preview-item">
+                          <img 
+                            src={item.images && item.images.length > 0 ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()} 
+                            alt={item.name || 'Producto'} 
+                            className="ud-preview-image" 
+                            onError={(e) => {
+                              e.target.src = getDefaultProductImage();
+                            }}
+                          />
+                          <div className="ud-preview-details">
+                            <span className="ud-item-name">{item.name || 'Producto sin nombre'}</span>
+                            <span className="ud-item-quantity">x{item.quantity}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}

@@ -5,6 +5,18 @@ import { getOrderById, getUserById, getProductById, updateOrder } from "../../se
 // import { users } from "../../data/users"; // Eliminar o comentar esta línea
 import "./OrderDetail.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
+const getDefaultProductImage = () => {
+  return 'https://via.placeholder.com/150x150?text=Sin+Imagen';
+};
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return getDefaultProductImage();
+  if (imagePath.startsWith('http')) return imagePath;
+  return API_BASE_URL + imagePath;
+};
+
 function OrderDetail() {
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -29,9 +41,15 @@ function OrderDetail() {
         return;
       }
 
-      // Cargar usuario por ID desde el backend
-      const fetchedUser = await getUserById(fetchedOrder.userid);
-      setUser(fetchedUser);
+      // Cargar usuario por ID desde el backend (robusto)
+      const userId = fetchedOrder?.userid || fetchedOrder?.usuarioId || fetchedOrder?.usuario?.id;
+      if (userId) {
+        const fetchedUser = await getUserById(userId);
+        setUser(fetchedUser);
+      } else {
+        setUser(null);
+        console.warn('No se encontró el ID de usuario en la orden', fetchedOrder);
+      }
 
       // Enriquecer los ítems de la orden con detalles completos de los productos
       const enrichedItems = await Promise.all(fetchedOrder.items.map(async (item) => {
@@ -110,7 +128,10 @@ function OrderDetail() {
           <strong>Fecha:</strong> {formatDate(order.date)}
         </p>
         <p>
-          <strong>Estado:</strong> {order.status}
+          <strong>Estado:</strong> 
+          <span className={`status-badge status-${order.status.toLowerCase()}`}>
+            {order.status}
+          </span>
         </p>
       </div>
 
@@ -131,9 +152,12 @@ function OrderDetail() {
               <tr key={idx}>
                 <td>
                   <img 
-                    src={item.images && item.images[0] ? item.images[0] : '/src/assets/placeholder.png'} 
+                    src={item.images && item.images[0] ? getImageUrl(item.images[0]) : getDefaultProductImage()} 
                     alt={item.name || 'Producto'}
                     className="product-thumbnail"
+                    onError={(e) => {
+                      e.target.src = getDefaultProductImage();
+                    }}
                   />
                 </td>
                 <td>{item.name || 'Producto Desconocido'}</td>

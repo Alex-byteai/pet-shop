@@ -3,6 +3,18 @@ import { useCart } from '../../context/CartContext';
 import { Link } from 'react-router-dom';
 import './CartPage.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
+const getDefaultProductImage = () => {
+  return 'https://via.placeholder.com/150x150?text=Sin+Imagen';
+};
+
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return getDefaultProductImage();
+  if (imagePath.startsWith('http')) return imagePath;
+  return API_BASE_URL + imagePath;
+};
+
 export default function CartPage() {
   const {
     cart,
@@ -33,17 +45,21 @@ export default function CartPage() {
         {cart.map(item => (
           <div key={item.id} className="cart-page-item">
             <img 
-              src={item.images[0]} 
+              src={getImageUrl(item.images[0])} 
               alt={item.name} 
               className="cart-page-item-image"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = '/placeholder-image.jpg';
+                e.target.src = getDefaultProductImage();
               }}
             />
             <div className="cart-page-item-details">
               <h3>{item.name}</h3>
-              <p>${item.price.toFixed(2)}</p>
+              <p>{
+                isNaN(Number(item.price))
+                  ? 'Precio inválido'
+                  : `$${Number(item.price).toFixed(2)}`
+              }</p>
             </div>
             <div className="cart-page-item-actions">
               <div className="cart-page-quantity-controls">

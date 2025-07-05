@@ -37,16 +37,16 @@ const CategoryMenu = () => {
                 {category.name}
               </div>
               <div className="subcategories">
-                {category.subcategories && category.subcategories.map((subcategory, index) => (
+                {(Array.isArray(category.subcategories) ? category.subcategories : []).map((subcategory, index) => (
                   <div 
-                    key={index}
+                    key={subcategory.id || index}
                     className="subcategory-item"
                     onClick={() => {
-                      navigate(`/search?category=${category.id}&subcategory=${encodeURIComponent(subcategory)}`);
+                      navigate(`/search?category=${category.id}&subcategory=${encodeURIComponent(subcategory.name)}`);
                       setIsOpen(false);
                     }}
                   >
-                    {subcategory}
+                    {subcategory.name}
                   </div>
                 ))}
               </div>

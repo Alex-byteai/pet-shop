@@ -51,7 +51,7 @@ const SearchResults = () => {
   const getSubcategories = () => {
     if (!selectedCategory) return [];
     const category = allCategories.find(c => c.id === parseInt(selectedCategory));
-    return category ? category.subcategories : [];
+    return Array.isArray(category?.subcategories) ? category.subcategories : [];
   };
 
   // Filtrar y ordenar productos cada vez que cambian los productos, filtros o orden
@@ -70,14 +70,14 @@ const SearchResults = () => {
     // Filtrar por categoría si está seleccionada
     if (selectedCategory) {
       results = results.filter(product => 
-        product.category === parseInt(selectedCategory)
+        product.category && product.category.id === parseInt(selectedCategory)
       );
     }
 
     // Filtrar por subcategoría si está seleccionada
     if (selectedSubcategory) {
       results = results.filter(product => 
-        product.subcategory === selectedSubcategory
+        product.productSubcategory && product.productSubcategory.name.trim().toLowerCase() === selectedSubcategory.trim().toLowerCase()
       );
     }
 
@@ -159,8 +159,8 @@ const SearchResults = () => {
               >
                 <option value="">Todas las subcategorías</option>
                 {getSubcategories().map((subcategory, index) => (
-                  <option key={index} value={subcategory}>
-                    {subcategory}
+                  <option key={subcategory.id || index} value={subcategory.name}>
+                    {subcategory.name}
                   </option>
                 ))}
               </select>

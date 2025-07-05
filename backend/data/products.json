@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "name": "Royal Canin Adult",
     "description": "Alimento premium para perros adultos, formulado con proteínas de alta calidad y nutrientes esenciales.",
     "price": 59.99,
@@ -21,7 +20,6 @@
     "createdAt": "2024-06-01T12:00:00Z"
   },
   {
-    "id": 2,
     "name": "Whiskas Pescado",
     "description": "Alimento húmedo para gatos, sabor pescado en salsa.",
     "price": 2.99,
@@ -42,7 +40,6 @@
     "createdAt": "2024-06-03T10:00:00Z"
   },
   {
-    "id": 3,
     "name": "Collar Ajustable Premium",
     "description": "Collar ajustable de cuero genuino con hebilla metálica resistente.",
     "price": 24.99,
@@ -63,7 +60,6 @@
     "createdAt": "2024-06-10T09:00:00Z"
   },
   {
-    "id": 4,
     "name": "Cama Ortopédica Grande",
     "description": "Cama ortopédica con espuma viscoelástica para perros grandes.",
     "price": 89.99,
@@ -84,7 +80,6 @@
     "createdAt": "2024-06-12T08:00:00Z"
   },
   {
-    "id": 5,
     "name": "Shampoo Antipulgas Natural",
     "description": "Shampoo natural con ingredientes orgánicos y protección contra pulgas.",
     "price": 18.99,
@@ -105,7 +100,6 @@
     "createdAt": "2024-05-28T15:00:00Z"
   },
   {
-    "id": 6,
     "name": "Juguete Interactivo Dispensador",
     "description": "Juguete dispensador de premios que mantiene a tu mascota entretenida.",
     "price": 15.99,
@@ -126,7 +120,6 @@
     "createdAt": "2024-06-15T11:00:00Z"
   },
   {
-    "id": 7,
     "name": "Arena Premium para Gatos",
     "description": "Arena aglomerante de alta absorción y control de olores.",
     "price": 19.99,
@@ -147,7 +140,6 @@
     "createdAt": "2024-06-05T14:00:00Z"
   },
   {
-    "id": 8,
     "name": "Suplemento Vitamínico Completo",
     "description": "Complejo vitamínico completo para perros y gatos.",
     "price": 29.99,
@@ -168,7 +160,6 @@
     "createdAt": "2024-06-14T13:00:00Z"
   },
   {
-    "id": 9,
     "name": "Abrigo Impermeable",
     "description": "Abrigo impermeable con forro polar para días lluviosos.",
     "price": 34.99,
@@ -189,7 +180,6 @@
     "createdAt": "2024-06-13T16:00:00Z"
   },
   {
-    "id": 10,
     "name": "Transportadora Deluxe",
     "description": "Transportadora espaciosa y segura con ventilación óptima.",
     "price": 49.99,
@@ -210,7 +200,6 @@
     "createdAt": "2024-06-02T17:00:00Z"
   },
   {
-    "id": 11,
     "name": "Snacks Dentales",
     "description": "Premios dentales para la higiene bucal de tu mascota.",
     "price": 12.99,
@@ -231,7 +220,6 @@
     "createdAt": "2024-05-30T18:00:00Z"
   },
   {
-    "id": 12,
     "name": "Kit de Cepillado Premium",
     "description": "Kit completo de cepillos y peines para el cuidado del pelaje.",
     "price": 39.99,
@@ -251,4 +239,4 @@
     "soldCount": 3,
     "createdAt": "2024-06-16T19:00:00Z"
   }
-]
+] 

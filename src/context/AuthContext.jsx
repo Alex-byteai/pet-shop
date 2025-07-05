@@ -29,19 +29,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await apiLogin({ email, password });
       if (response) {
-        const userToStore = {
-          id: response.id,
-          firstName: response.firstName,
-          lastName: response.lastName,
-          email: response.email,
-          role: response.role,
-          phone: response.phone,
-          address: response.address,
-          registerDate: response.registerDate,
-          lastLogin: response.lastLogin
-        };
-        setUser(userToStore);
-        localStorage.setItem('currentUser', JSON.stringify(userToStore));
+        // Traer el usuario completo (con address)
+        const userFull = await getUserById(response.id);
+        setUser(userFull);
+        localStorage.setItem('currentUser', JSON.stringify(userFull));
         
         if (response.role === 'admin') {
           navigate('/admin');
@@ -129,19 +120,11 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
 
-      const updatedUserBackend = await apiUpdateUser(user.id, updates); // Assuming backend returns updated user
-
-      const updatedUserLocal = {
-        ...user,
-        firstName: updatedUserBackend.firstName,
-        lastName: updatedUserBackend.lastName,
-        email: updatedUserBackend.email,
-        phone: updatedUserBackend.phone,
-        address: updatedUserBackend.address,
-      };
-
-      setUser(updatedUserLocal);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUserLocal));
+      await apiUpdateUser(user.id, updates); // Solo actualiza
+      // Traer el usuario actualizado (con address)
+      const updatedUserBackend = await getUserById(user.id);
+      setUser(updatedUserBackend);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUserBackend));
       return { success: true };
     } catch (error) {
       console.error('Error al actualizar perfil:', error);
