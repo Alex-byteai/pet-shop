@@ -54,7 +54,7 @@ const ProductMenu = () => {
                     <img src={API_BASE_URL + product.images[0]} alt={product.name} />
                     <div className="highlight-info">
                       <span className="highlight-name">{product.name}</span>
-                      <span className="highlight-price">${product.price.toFixed(2)}</span>
+                      <span className="highlight-price">{isNaN(Number(product.price)) ? 'Precio inválido' : `$${Number(product.price).toFixed(2)}`}</span>
                     </div>
                   </div>
                 ))}
@@ -73,7 +73,7 @@ const ProductMenu = () => {
                     <img src={API_BASE_URL + product.images[0]} alt={product.name} />
                     <div className="highlight-info">
                       <span className="highlight-name">{product.name}</span>
-                      <span className="highlight-price">${product.price.toFixed(2)}</span>
+                      <span className="highlight-price">{isNaN(Number(product.price)) ? 'Precio inválido' : `$${Number(product.price).toFixed(2)}`}</span>
                     </div>
                   </div>
                 ))}

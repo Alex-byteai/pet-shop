@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { getOrderById, getProductById, updateOrder } from '../../services/api';
 import './OrderDetail.css';
 
 export default function OrderDetail() {
@@ -11,6 +12,7 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [imageErrors, setImageErrors] = useState(new Set());
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
@@ -18,17 +20,39 @@ export default function OrderDetail() {
     loadOrder();
   }, [orderId, user.id]);
 
-  const loadOrder = () => {
+  const loadOrder = async () => {
     try {
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const foundOrder = allOrders.find(o => o.orderid === parseInt(orderId) && o.userid === user.id);
+      console.log('Cargando pedido con ID:', orderId);
+      // Cargar el pedido desde la API del backend
+      const foundOrder = await getOrderById(orderId);
+      console.log('Pedido encontrado:', foundOrder);
       
-      if (!foundOrder) {
+      if (!foundOrder || foundOrder.usuarioId !== user.id) {
         setError('Pedido no encontrado');
+        setLoading(false);
         return;
       }
 
-      setOrder(foundOrder);
+      // Enriquecer los items con los detalles completos de los productos
+      const enrichedOrder = {
+        ...foundOrder,
+        items: await Promise.all(foundOrder.items.map(async (item) => {
+          console.log('Enriqueciendo item:', item);
+          const productDetail = await getProductById(item.productId);
+          console.log('Detalles del producto:', productDetail);
+          return {
+            ...item,
+            ...productDetail,
+            name: productDetail?.name || 'Producto sin nombre',
+            description: productDetail?.description || 'Sin descripción disponible',
+            price: productDetail?.price || item.price || 0,
+            images: productDetail?.images || []
+          };
+        }))
+      };
+
+      console.log('Pedido enriquecido:', enrichedOrder);
+      setOrder(enrichedOrder);
     } catch (error) {
       console.error('Error al cargar el pedido:', error);
       setError('Error al cargar el pedido');
@@ -37,19 +61,13 @@ export default function OrderDetail() {
     }
   };
 
-  const handleCancelOrder = () => {
+  const handleCancelOrder = async () => {
     try {
       setIsCancelling(true);
-      const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const updatedOrders = allOrders.map(o => {
-        if (o.orderid === parseInt(orderId)) {
-          return { ...o, status: 'cancelado' };
-        }
-        return o;
-      });
-
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
-      loadOrder();
+      // Usar la API para cancelar el pedido
+      await updateOrder(orderId, { status: 'cancelado' });
+      // Recargar los datos del pedido
+      await loadOrder();
     } catch (error) {
       console.error('Error al cancelar el pedido:', error);
       setError('Error al cancelar el pedido');
@@ -107,8 +125,26 @@ export default function OrderDetail() {
   };
 
   const getDefaultProductImage = () => {
-    // Implement the logic to return a default product image
-    return 'https://via.placeholder.com/150';
+    return 'https://via.placeholder.com/150x150?text=Sin+Imagen';
+  };
+
+  const getImageUrl = (imagePath) => {
+    console.log('getImageUrl recibió:', imagePath);
+    if (!imagePath) {
+      console.log('No hay imagen, usando default');
+      return getDefaultProductImage();
+    }
+    if (imagePath.startsWith('http')) {
+      console.log('URL completa, usando tal como está:', imagePath);
+      return imagePath;
+    }
+    const fullUrl = API_BASE_URL + imagePath;
+    console.log('Construyendo URL completa:', fullUrl);
+    return fullUrl;
+  };
+
+  const handleImageError = (index) => {
+    setImageErrors(prev => new Set(prev).add(index));
   };
 
   return (
@@ -148,11 +184,17 @@ export default function OrderDetail() {
               {order.items.map((item, index) => (
                 <div key={index} className="od-item-card">
                   <img
-                    src={item.images?.[0] ? (item.images[0].startsWith('http') ? item.images[0] : API_BASE_URL + item.images[0]) : getDefaultProductImage()}
+                    src={imageErrors.has(index) ? getDefaultProductImage() : (item.images?.[0] ? getImageUrl(item.images[0]) : getDefaultProductImage())}
                     alt={item.name}
                     className="od-item-image"
-                    onError={(e) => {
-                      e.target.src = getDefaultProductImage();
+                    onError={() => handleImageError(index)}
+                    onLoad={() => {
+                      // Si la imagen carga correctamente, remover del set de errores
+                      setImageErrors(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(index);
+                        return newSet;
+                      });
                     }}
                   />
                   <div className="od-item-info">

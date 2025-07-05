@@ -100,7 +100,7 @@ export default function Checkout() {
 
     try {
       const orderData = {
-        userid: user.id,
+        usuarioId: user.id, // <-- corregido
         date: new Date().toISOString(),
         status: 'pendiente',
         items: cart.map(item => ({

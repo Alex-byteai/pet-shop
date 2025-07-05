@@ -11,6 +11,14 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    phone: '',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: ''
+    }
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +51,27 @@ export default function RegisterPage() {
       newErrors.confirmPassword = 'Las contraseñas no coinciden';
     }
 
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'El teléfono es requerido';
+    }
+
+    // Validar dirección
+    if (!formData.address.street.trim()) {
+      newErrors.street = 'La calle es requerida';
+    }
+    if (!formData.address.city.trim()) {
+      newErrors.city = 'La ciudad es requerida';
+    }
+    if (!formData.address.state.trim()) {
+      newErrors.state = 'El estado/provincia es requerido';
+    }
+    if (!formData.address.zipCode.trim()) {
+      newErrors.zipCode = 'El código postal es requerido';
+    }
+    if (!formData.address.country.trim()) {
+      newErrors.country = 'El país es requerido';
+    }
+
     return newErrors;
   };
 
@@ -59,12 +88,18 @@ export default function RegisterPage() {
     setErrors({});
 
     try {
-      const result = await register({
+      const userData = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-      });
+        phone: formData.phone,
+        address: formData.address
+      };
+      
+      console.log('Datos a enviar al backend:', userData);
+      
+      const result = await register(userData);
 
       if (!result.success) {
         setErrors({ submit: result.error });
@@ -78,10 +113,25 @@ export default function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name.includes('.')) {
+      // Manejar campos anidados (dirección)
+      const [parent, child] = name.split('.');
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    } else {
+      // Manejar campos normales
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    
     // Limpiar error del campo cuando el usuario empieza a escribir
     if (errors[name]) {
       setErrors(prev => ({
@@ -143,6 +193,20 @@ export default function RegisterPage() {
             </div>
 
             <div className="form-group">
+              <label htmlFor="phone" className="form-label">Teléfono</label>
+              <input
+                id="phone"
+                type="tel"
+                name="phone"
+                className={`auth-input register-input ${errors.phone ? 'error' : ''}`}
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+34 123 456 789"
+              />
+              {errors.phone && <span className="error-message">{errors.phone}</span>}
+            </div>
+
+            <div className="form-group">
               <label htmlFor="password" className="form-label">Contraseña</label>
               <input
                 id="password"
@@ -170,6 +234,84 @@ export default function RegisterPage() {
               {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
             </div>
 
+            <div className="form-section">
+              <h3 className="section-title">Dirección de Envío</h3>
+              
+              <div className="form-group">
+                <label htmlFor="street" className="form-label">Calle y Número</label>
+                <input
+                  id="street"
+                  type="text"
+                  name="address.street"
+                  className={`auth-input register-input ${errors.street ? 'error' : ''}`}
+                  value={formData.address.street}
+                  onChange={handleChange}
+                  placeholder="Calle Mayor, 123"
+                />
+                {errors.street && <span className="error-message">{errors.street}</span>}
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city" className="form-label">Ciudad</label>
+                  <input
+                    id="city"
+                    type="text"
+                    name="address.city"
+                    className={`auth-input register-input ${errors.city ? 'error' : ''}`}
+                    value={formData.address.city}
+                    onChange={handleChange}
+                    placeholder="Madrid"
+                  />
+                  {errors.city && <span className="error-message">{errors.city}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="state" className="form-label">Estado/Provincia</label>
+                  <input
+                    id="state"
+                    type="text"
+                    name="address.state"
+                    className={`auth-input register-input ${errors.state ? 'error' : ''}`}
+                    value={formData.address.state}
+                    onChange={handleChange}
+                    placeholder="Madrid"
+                  />
+                  {errors.state && <span className="error-message">{errors.state}</span>}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="zipCode" className="form-label">Código Postal</label>
+                  <input
+                    id="zipCode"
+                    type="text"
+                    name="address.zipCode"
+                    className={`auth-input register-input ${errors.zipCode ? 'error' : ''}`}
+                    value={formData.address.zipCode}
+                    onChange={handleChange}
+                    placeholder="28001"
+                  />
+                  {errors.zipCode && <span className="error-message">{errors.zipCode}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="country" className="form-label">País</label>
+                  <input
+                    id="country"
+                    type="text"
+                    name="address.country"
+                    className={`auth-input register-input ${errors.country ? 'error' : ''}`}
+                    value={formData.address.country}
+                    onChange={handleChange}
+                    placeholder="España"
+                  />
+                  {errors.country && <span className="error-message">{errors.country}</span>}
+                </div>
+              </div>
+            </div>
+
             {errors.submit && (
               <div className="auth-error register-error">
                 {errors.submit}
@@ -181,7 +323,7 @@ export default function RegisterPage() {
               className="auth-button register-button"
               disabled={isLoading}
             >
-              Crear Cuenta
+              {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
             </button>
 
             <div className="auth-links register-links">

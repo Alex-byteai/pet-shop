@@ -19,22 +19,9 @@ function OrdersList() {
     setIsLoading(true);
     try {
       const fetchedOrders = await getOrders();
-      const fetchedUsers = await getUsers();
-
-      // Enriquecer órdenes con nombre de usuario y detalles de producto
-      const enrichedOrders = await Promise.all(fetchedOrders.map(async (order) => {
-        const user = fetchedUsers.find((u) => u.id === order.userid);
-        const userName = user ? `${user.firstName} ${user.lastName}` : "Usuario no encontrado";
-
-        const enrichedItems = await Promise.all(order.items.map(async (item) => {
-          const productDetail = await getProductById(item.productId);
-          return { ...item, ...productDetail };
-        }));
-        return { ...order, userName, items: enrichedItems };
-      }));
-
+      // Ya no es necesario enriquecer con getUsers, el backend trae order.usuario
       // Ordenar por fecha más reciente
-      const sortedOrders = enrichedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedOrders = fetchedOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
       setOrders(sortedOrders);
     } catch (error) {
       console.error("Error al cargar las órdenes para el administrador:", error);
@@ -46,9 +33,10 @@ function OrdersList() {
   // Filtrado de órdenes
   const filteredOrders = orders.filter((order) => {
     const searchTerm = search.toLowerCase();
+    const userName = order.usuario ? `${order.usuario.firstName} ${order.usuario.lastName}` : "Usuario no encontrado";
     return (
       order.orderid.toString().includes(searchTerm) ||
-      order.userName.toLowerCase().includes(searchTerm) ||
+      userName.toLowerCase().includes(searchTerm) ||
       order.items.some(item => item.name?.toLowerCase().includes(searchTerm))
     );
   });
@@ -114,7 +102,7 @@ function OrdersList() {
             {filteredOrders.map((order) => (
               <tr key={order.orderid}>
                 <td>{order.orderid}</td>
-                <td>{order.userName}</td>
+                <td>{order.usuario ? `${order.usuario.firstName} ${order.usuario.lastName}` : "Usuario no encontrado"}</td>
                 <td>{formatDate(order.date)}</td>
                 <td>{formatPrice(order.total)}</td>
                 <td>

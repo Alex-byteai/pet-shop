@@ -7,12 +7,13 @@ export default function UserProfile() {
   const { user, updateProfile } = useAuth();
   const navigate = useNavigate();
   
+  const defaultAddress = { street: '', city: '', state: '', zipCode: '', country: '' };
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
     phone: user.phone || '',
-    address: user.address || { street: '', city: '', state: '', zipCode: '', country: '' },
+    address: { ...defaultAddress, ...(user.address || {}) },
   });
   
   const [isEditing, setIsEditing] = useState(false);
@@ -20,6 +21,9 @@ export default function UserProfile() {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // DEBUG: Log isEditing state
+  console.log('isEditing:', isEditing);
 
   // Check if form data has changed from initial user data
   const hasChanges = 
@@ -77,6 +81,10 @@ export default function UserProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!hasChanges) {
+      setError('No hay cambios para guardar');
+      return;
+    }
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -101,8 +109,14 @@ export default function UserProfile() {
   return (
     <div className="up-user-profile-page">
       <div className="up-profile-header">
-        <button onClick={() => navigate('/user/dashboard')} className="up-back-button">
-          ← Volver
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="up-edit-button"
+          style={{ marginBottom: '1rem' }}
+          disabled={isEditing}
+        >
+          Editar Perfil
         </button>
         <h1>Mi Perfil</h1>
       </div>
@@ -229,42 +243,36 @@ export default function UserProfile() {
           {error && <div className="up-error-message">{error}</div>}
           {success && <div className="up-success-message">{success}</div>}
 
-          <div className="up-profile-actions">
-            {!isEditing ? (
-              <button type="button" onClick={() => setIsEditing(true)} className="up-edit-button">
-                Editar Perfil
+          {isEditing && (
+            <div className="up-profile-actions">
+              <button
+                type="submit"
+                className="up-save-button"
+                disabled={!hasChanges || isSubmitting}
+              >
+                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
               </button>
-            ) : (
-              <>
-                <button
-                  type="submit"
-                  className="up-save-button"
-                  disabled={!hasChanges || isSubmitting}
-                >
-                  {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setFormData({
-                      firstName: user.firstName,
-                      lastName: user.lastName,
-                      email: user.email,
-                      phone: user.phone || '',
-                      address: user.address || { street: '', city: '', state: '', zipCode: '', country: '' },
-                    });
-                    setError('');
-                    setSuccess('');
-                  }}
-                  className="up-cancel-button"
-                  disabled={isSubmitting}
-                >
-                  Cancelar
-                </button>
-              </>
-            )}
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setFormData({
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    phone: user.phone || '',
+                    address: { ...defaultAddress, ...(user.address || {}) },
+                  });
+                  setError('');
+                  setSuccess('');
+                }}
+                className="up-cancel-button"
+                disabled={isSubmitting}
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
         </form>
 
         <div className="up-profile-links">
@@ -276,6 +284,8 @@ export default function UserProfile() {
           </button>
         </div>
       </div>
+      {/* Fallback visual si nunca se habilita edición */}
+      {isEditing && <div style={{color:'red'}}>Modo edición activo</div>}
     </div>
   );
 } 

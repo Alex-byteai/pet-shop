@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "name": "Alimentos",
     "image": "/images/categories/category-1.png",
     "subcategories": ["Alimento Seco", "Alimento Húmedo", "Snacks y Premios", "Suplementos"],
@@ -8,7 +7,6 @@
     "featured": true
   },
   {
-    "id": 2,
     "name": "Accesorios",
     "image": "/images/categories/category-2.png",
     "subcategories": ["Collares", "Correas", "Camas", "Juguetes", "Transportadoras"],
@@ -16,7 +14,6 @@
     "featured": true
   },
   {
-    "id": 3,
     "name": "Higiene y Cuidado",
     "image": "/images/categories/category-3.png",
     "subcategories": ["Shampoo", "Cepillos", "Arena para Gatos", "Limpieza"],
@@ -24,7 +21,6 @@
     "featured": true
   },
   {
-    "id": 4,
     "name": "Salud",
     "image": "/images/categories/category-4.png",
     "subcategories": ["Antiparasitarios", "Vitaminas", "Medicamentos", "Cuidado Dental"],
@@ -32,7 +28,6 @@
     "featured": true
   },
   {
-    "id": 5,
     "name": "Ropa y Moda",
     "image": "/images/categories/category-1.png",
     "subcategories": ["Abrigos", "Camisetas", "Disfraces", "Accesorios de Moda"],
