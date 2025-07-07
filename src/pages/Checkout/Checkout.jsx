@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -31,6 +31,18 @@ export default function Checkout() {
     cardNumber: '',
     cardExpiry: '',
   });
+
+  useEffect(() => {
+    if (user && user.address) {
+      setFormData(prev => ({
+        ...prev,
+        address: user.address.street || '',
+        city: user.address.city || '',
+        state: user.address.state || '',
+        zipCode: user.address.zipCode || ''
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

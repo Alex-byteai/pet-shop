@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload } from 'react-icons/fa';
-import { createProduct, uploadProductImage } from '../../services/api'; // Importar createProduct y uploadProductImage
+import { createProduct, uploadProductImage, getCategories } from '../../services/api';
 import './AddProduct.css';
 
 export default function AddProduct() {
@@ -11,14 +11,42 @@ export default function AddProduct() {
     description: '',
     price: '',
     stock: '',
-    series: '',
+    brand: '',
+    rating: '', // Inicializar como string para el input type="number"
+    categoryId: '',
+    subcategoryId: '',
     images: [],
     isNew: false,
     isBestSeller: false
   });
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const cats = await getCategories();
+        setCategories(cats);
+      } catch (err) {
+        setError('Error al cargar categorías.');
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (formData.categoryId) {
+      const selectedCat = categories.find(cat => cat.id === parseInt(formData.categoryId));
+      setSubcategories(Array.isArray(selectedCat?.subcategories) ? selectedCat.subcategories : []);
+      setFormData(prev => ({ ...prev, subcategoryId: '' }));
+    } else {
+      setSubcategories([]);
+      setFormData(prev => ({ ...prev, subcategoryId: '' }));
+    }
+  }, [formData.categoryId, categories]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,6 +54,16 @@ export default function AddProduct() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, categoryId: value, subcategoryId: '' }));
+  };
+
+  const handleSubcategoryChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, subcategoryId: value }));
   };
 
   const handleImageChange = (e) => {
@@ -56,14 +94,30 @@ export default function AddProduct() {
 
     try {
       // Validaciones
-      if (!formData.name.trim()) throw new Error('El nombre es obligatorio');
-      if (!formData.description.trim()) throw new Error('La descripción es obligatoria');
-      if (!formData.price || isNaN(formData.price) || formData.price <= 0) {
-        throw new Error('El precio debe ser un número mayor a 0');
+      if (!formData.name.trim()) throw new Error('El nombre es obligatorio.');
+      if (!formData.description.trim()) throw new Error('La descripción es obligatoria.');
+
+      const price = parseFloat(formData.price);
+      if (isNaN(price) || price <= 0) {
+        throw new Error('El precio debe ser un número mayor a 0.');
       }
-      if (!formData.stock || isNaN(formData.stock) || formData.stock < 0) {
-        throw new Error('El stock debe ser un número mayor o igual a 0');
+
+      const stock = parseInt(formData.stock);
+      if (isNaN(stock) || stock < 0) {
+        throw new Error('El stock debe ser un número mayor o igual a 0.');
       }
+
+      if (!formData.brand.trim()) {
+        throw new Error('La marca es obligatoria.');
+      }
+
+      const rating = parseFloat(formData.rating);
+      if (isNaN(rating) || rating < 0 || rating > 5) { // Asumiendo escala de 0 a 5
+        throw new Error('La calificación debe ser un número entre 0 y 5.');
+      }
+
+      if (!formData.categoryId) throw new Error('La categoría es obligatoria.');
+      if (!formData.subcategoryId) throw new Error('La subcategoría es obligatoria.');
 
       // Subir imágenes al backend y obtener URLs
       let imageUrls = [];
@@ -75,11 +129,14 @@ export default function AddProduct() {
 
       // Crear nuevo producto para enviar al backend
       const newProductData = {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
-        series: formData.series,
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        price: price,
+        brand: formData.brand.trim(),
+        rating: rating,
+        stock: stock,
+        categoryId: parseInt(formData.categoryId),
+        subcategoryId: parseInt(formData.subcategoryId),
         images: imageUrls,
         active: true,
         createdAt: new Date().toISOString(),
@@ -91,8 +148,7 @@ export default function AddProduct() {
       // Enviar al backend
       await createProduct(newProductData);
 
-      alert('Producto agregado correctamente!');
-      // Redireccionar a la lista de productos
+      alert('¡Producto agregado correctamente!');
       navigate('/admin/products');
     } catch (error) {
       console.error('Error al agregar producto:', error);
@@ -132,6 +188,19 @@ export default function AddProduct() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="brand">Nombre de la Marca *</label>
+          <input
+            type="text"
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleInputChange}
+            placeholder="Ingrese el nombre de la marca"
+            required
+          />
+        </div>
+
+        <div className="form-group">
           <label htmlFor="description">Descripción *</label>
           <textarea
             id="description"
@@ -144,9 +213,25 @@ export default function AddProduct() {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="rating">Calificación *</label>
+          <input
+            type="number" // Cambiado a "number"
+            id="rating"
+            name="rating"
+            value={formData.rating}
+            onChange={handleInputChange}
+            placeholder="Ej: 4.5" // Placeholder más descriptivo
+            step="0.1"
+            min="0"
+            max="5"
+            required
+          />
+        </div>
+
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="price">Precio (€) *</label>
+            <label htmlFor="price">Precio ($) *</label>
             <input
               type="number"
               id="price"
@@ -176,16 +261,38 @@ export default function AddProduct() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="series">Serie o Categoría</label>
-          <input
-            type="text"
-            id="series"
-            name="series"
-            value={formData.series}
-            onChange={handleInputChange}
-            placeholder="Ingrese la serie o categoría del producto (opcional)"
-          />
+          <label htmlFor="categoryId">Categoría *</label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={handleCategoryChange}
+            required
+          >
+            <option value="">Seleccione una categoría</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
         </div>
+
+        {formData.categoryId && (
+          <div className="form-group">
+            <label htmlFor="subcategoryId">Subcategoría *</label>
+            <select
+              id="subcategoryId"
+              name="subcategoryId"
+              value={formData.subcategoryId}
+              onChange={handleSubcategoryChange}
+              required
+            >
+              <option value="">Seleccione una subcategoría</option>
+              {subcategories.map(sub => (
+                <option key={sub.id} value={sub.id}>{sub.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="form-group checkbox-group">
           <input
@@ -242,13 +349,13 @@ export default function AddProduct() {
           <button
             type="button"
             onClick={() => navigate('/admin/products')}
-            className="cancel-button"
+            className="add-product-cancel-button"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="submit-button"
+            className="add-product-submit-button"
             disabled={loading}
           >
             {loading ? 'Guardando...' : 'Guardar Producto'}
@@ -257,4 +364,4 @@ export default function AddProduct() {
       </form>
     </div>
   );
-} 
+}

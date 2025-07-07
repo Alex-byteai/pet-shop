@@ -25,7 +25,10 @@ export default function CategoryList() {
       try {
         const fetchedProducts = await getProducts();
         const countByCategory = fetchedProducts.reduce((acc, product) => {
-          acc[product.category] = (acc[product.category] || 0) + 1;
+          const catId = product.category?.id;
+          if (catId) {
+            acc[catId] = (acc[catId] || 0) + 1;
+          }
           return acc;
         }, {});
         setProductCountByCategory(countByCategory);

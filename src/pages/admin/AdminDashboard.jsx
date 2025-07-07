@@ -41,8 +41,9 @@ export default function AdminDashboard() {
       const allOrders = await getOrders();
       console.log('Todas las órdenes (desde API):', allOrders);
 
-      const startDate = new Date(dateRange.startDate + 'T00:00:00-05:00'); 
-      const endDate = new Date(dateRange.endDate + 'T23:59:59-05:00');
+      // Cambiar el cálculo de startDate y endDate para comparar en UTC
+      const startDate = new Date(dateRange.startDate + 'T00:00:00');
+      const endDate = new Date(dateRange.endDate + 'T23:59:59');
 
       console.log('Rango de fechas:', {
         startDate: startDate.toISOString(),
@@ -86,7 +87,7 @@ export default function AdminDashboard() {
 
       // Calcular totales
       const totalIncome = filteredOrders.reduce((sum, order) => {
-        const orderTotal = typeof order.total === 'number' ? order.total : 0;
+        const orderTotal = Number(order.total) || 0;
         return sum + orderTotal;
       }, 0);
 
@@ -112,7 +113,7 @@ export default function AdminDashboard() {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(price);
   };
 

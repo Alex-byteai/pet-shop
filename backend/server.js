@@ -174,7 +174,12 @@ app.get('/api/products/all', async (req, res) => {
 
 app.get('/api/products/:id', async (req, res) => {
   try {
-    const product = await Producto.findByPk(req.params.id);
+    const product = await Producto.findByPk(req.params.id, {
+      include: [
+        { model: Category, as: 'category' },
+        { model: Subcategory, as: 'productSubcategory' }
+      ]
+    });
     if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
     res.json(product);
   } catch (error) {
@@ -286,6 +291,48 @@ app.post('/api/categories', async (req, res) => {
     res.status(201).json(categoryWithSubcategories);
   } catch (error) {
     console.error('Error al crear categoría:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.put('/api/categories/:id', async (req, res) => {
+  try {
+    const category = await Category.findByPk(req.params.id, {
+      include: [{ model: Subcategory, as: 'subcategories' }]
+    });
+    if (!category) {
+      return res.status(404).json({ error: 'Categoría no encontrada' });
+    }
+
+    // Actualizar datos principales
+    await category.update({
+      name: req.body.name,
+      description: req.body.description,
+      image: req.body.image,
+      featured: req.body.featured,
+      updatedAt: req.body.updatedAt || new Date().toISOString()
+    });
+
+    // Actualizar subcategorías
+    if (Array.isArray(req.body.subcategories)) {
+      // Elimina las subcategorías actuales
+      await Subcategory.destroy({ where: { categoryId: category.id } });
+      // Crea las nuevas subcategorías
+      const newSubs = req.body.subcategories.map(name => ({
+        name,
+        categoryId: category.id
+      }));
+      await Subcategory.bulkCreate(newSubs);
+    }
+
+    // Devuelve la categoría actualizada con subcategorías
+    const updatedCategory = await Category.findByPk(category.id, {
+      include: [{ model: Subcategory, as: 'subcategories' }]
+    });
+
+    res.json(updatedCategory);
+  } catch (error) {
+    console.error('Error al actualizar categoría:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
@@ -604,22 +651,33 @@ app.get('/api/orders/user/:userid', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
   try {
-    // Extraer los items del body y quitar del objeto de la orden
     const { items, ...orderData } = req.body;
-    // Crear la orden principal
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'La orden debe tener al menos un item.' });
+    }
+    // Calcular el total de la orden de forma segura
+    let total = 0;
+    for (const item of items) {
+      // Buscar el producto en la base de datos
+      const product = await Producto.findByPk(item.productId);
+      if (!product || !product.active) {
+        return res.status(400).json({ error: `Producto con ID ${item.productId} no existe o está inactivo.` });
+      }
+      total += Number(product.price) * Number(item.quantity);
+    }
+    // Crear la orden principal con el total calculado
     const newOrder = await Order.create({
       ...orderData,
+      total,
       date: new Date().toISOString()
     });
     // Crear los items asociados
-    if (Array.isArray(items) && items.length > 0) {
-      for (const item of items) {
-        await Item.create({
-          orderId: newOrder.orderid,
-          productId: item.productId,
-          quantity: item.quantity
-        });
-      }
+    for (const item of items) {
+      await Item.create({
+        orderId: newOrder.orderid,
+        productId: item.productId,
+        quantity: item.quantity
+      });
     }
     // Devolver la orden con los items y usuario incluidos
     const orderWithItems = await Order.findByPk(newOrder.orderid, {

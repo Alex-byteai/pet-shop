@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload, FaTimesCircle } from 'react-icons/fa';
 import { getProductById, updateProduct, uploadProductImage } from '../../services/api';
+import { getCategories } from '../../services/api';
 import './EditProduct.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
@@ -14,22 +15,48 @@ export default function EditProduct() {
     description: '',
     price: '',
     stock: '',
-    series: '',
+    brand: '',
+    rating: '',
+    categoryId: '',
+    subcategoryId: '',
     images: [],
     isNew: false,
     isBestSeller: false,
     active: true
   });
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadProduct();
+    fetchCategories();
   }, [productId]);
 
-  const loadProduct = async () => {
+  const fetchCategories = async () => {
+    try {
+      const cats = await getCategories();
+      setCategories(cats);
+      // Una vez cargadas las categorías, carga el producto
+      await loadProduct(cats);
+    } catch (err) {
+      setError('Error al cargar categorías');
+    }
+  };
+
+  // Actualizar subcategorías cuando cambie la categoría seleccionada o al cargar producto y categorías
+  useEffect(() => {
+    if (formData.categoryId && categories.length > 0) {
+      const selectedCat = categories.find(cat => cat.id === parseInt(formData.categoryId));
+      setSubcategories(Array.isArray(selectedCat?.subcategories) ? selectedCat.subcategories : []);
+    } else {
+      setSubcategories([]);
+    }
+  }, [formData.categoryId, categories]);
+
+  const loadProduct = async (cats) => {
     setLoading(true);
     setError(null);
     try {
@@ -41,12 +68,24 @@ export default function EditProduct() {
         return;
       }
 
+      // Usar las categorías ya cargadas para setear subcategorías correctas
+      const categoryId = product.category?.id ? product.category.id.toString() : '';
+      const subcategoryId = product.productSubcategory?.id ? product.productSubcategory.id.toString() : '';
+      let subs = [];
+      if (categoryId && cats && cats.length > 0) {
+        const selectedCat = cats.find(cat => cat.id === parseInt(categoryId));
+        subs = Array.isArray(selectedCat?.subcategories) ? selectedCat.subcategories : [];
+        setSubcategories(subs);
+      }
       setFormData({
         name: product.name || '',
         description: product.description || '',
         price: product.price?.toString() || '',
         stock: product.stock?.toString() || '',
-        series: product.series || '',
+        brand: product.brand || '',
+        rating: product.rating?.toString() || '',
+        categoryId,
+        subcategoryId: subs.some(sub => String(sub.id) === String(subcategoryId)) ? subcategoryId : '',
         images: [],
         isNew: product.isNew || false,
         isBestSeller: product.isBestSeller || false,
@@ -69,6 +108,17 @@ export default function EditProduct() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  // Limpiar subcategoría solo si el usuario cambia la categoría manualmente
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, categoryId: value, subcategoryId: '' }));
+  };
+
+  const handleSubcategoryChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, subcategoryId: value }));
   };
 
   const handleImageChange = (e) => {
@@ -110,6 +160,12 @@ export default function EditProduct() {
       if (!formData.stock || isNaN(formData.stock) || formData.stock < 0) {
         throw new Error('El stock debe ser un número mayor o igual a 0');
       }
+      if (!formData.brand.trim()) throw new Error('La marca es obligatoria');
+      if (!formData.rating || isNaN(formData.rating) || formData.rating < 0 || formData.rating > 5) {
+        throw new Error('La calificación debe ser un número entre 0 y 5');
+      }
+      if (!formData.categoryId) throw new Error('La categoría es obligatoria');
+      if (!formData.subcategoryId) throw new Error('La subcategoría es obligatoria');
 
       let newImageUrls = [];
       const filesToUpload = formData.images.filter(img => img instanceof File);
@@ -120,7 +176,15 @@ export default function EditProduct() {
         );
       }
 
-      const existingImageUrls = imagePreview.filter(src => src.startsWith('http'));
+      const existingImageUrls = imagePreview
+        .filter(src => typeof src === 'string')
+        .map(src => {
+          // Si es absoluta, conviértela a relativa
+          if (src.startsWith(API_BASE_URL)) {
+            return src.replace(API_BASE_URL, '');
+          }
+          return src;
+        });
       const allImages = [...existingImageUrls, ...newImageUrls];
 
       const updatedProductData = {
@@ -128,7 +192,10 @@ export default function EditProduct() {
         description: formData.description,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
-        series: formData.series,
+        brand: formData.brand,
+        rating: parseFloat(formData.rating),
+        categoryId: parseInt(formData.categoryId),
+        subcategoryId: parseInt(formData.subcategoryId),
         images: allImages,
         active: formData.active,
         isNew: formData.isNew,
@@ -193,6 +260,35 @@ export default function EditProduct() {
         </div>
 
         <div className="form-group">
+          <label htmlFor="brand">Nombre de la marca *</label>
+          <input
+            type="text"
+            id="brand"
+            name="brand"
+            value={formData.brand}
+            onChange={handleInputChange}
+            placeholder="Ingrese el nombre de la marca"
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="rating">Calificación *</label>
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            value={formData.rating}
+            onChange={handleInputChange}
+            placeholder="Ingrese la calificación del producto (0 a 5)"
+            min="0"
+            max="5"
+            step="0.1"
+            required
+          />
+        </div>
+
+        <div className="form-group">
           <label htmlFor="description">Descripción *</label>
           <textarea
             id="description"
@@ -207,7 +303,7 @@ export default function EditProduct() {
 
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="price">Precio (€) *</label>
+            <label htmlFor="price">Precio ($) *</label>
             <input
               type="number"
               id="price"
@@ -237,16 +333,38 @@ export default function EditProduct() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="series">Serie o Categoría</label>
-          <input
-            type="text"
-            id="series"
-            name="series"
-            value={formData.series}
-            onChange={handleInputChange}
-            placeholder="Ingrese la serie o categoría del producto (opcional)"
-          />
+          <label htmlFor="categoryId">Categoría *</label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            value={formData.categoryId}
+            onChange={handleCategoryChange}
+            required
+          >
+            <option value="">Seleccione una categoría</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
         </div>
+
+        {formData.categoryId && (
+          <div className="form-group">
+            <label htmlFor="subcategoryId">Subcategoría *</label>
+            <select
+              id="subcategoryId"
+              name="subcategoryId"
+              value={formData.subcategoryId}
+              onChange={handleSubcategoryChange}
+              required
+            >
+              <option value="">Seleccione una subcategoría</option>
+              {subcategories.map(sub => (
+                <option key={sub.id} value={sub.id}>{sub.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="form-group checkbox-group">
           <input
