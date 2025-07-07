@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaUpload } from 'react-icons/fa';
 import { getCategoryById, updateCategory, setCategoryFeatured, uploadCategoryImage } from '../../services/api';
@@ -13,13 +13,14 @@ export default function EditCategory() {
     name: '',
     description: '',
     image: null,
-    subcategories: ''
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [isFeatured, setIsFeatured] = useState(false);
+  const [subcategories, setSubcategories] = useState([]);
+  const subcatInputRef = useRef(null);
 
   useEffect(() => {
     loadCategory();
@@ -41,8 +42,10 @@ export default function EditCategory() {
         name: category.name || '',
         description: category.description || '',
         image: null,
-        subcategories: Array.isArray(category.subcategories) ? category.subcategories.join(', ') : ''
       });
+      setSubcategories(Array.isArray(category.subcategories)
+        ? category.subcategories.map(s => typeof s === 'string' ? s : s.name)
+        : []);
 
       setImagePreview(category.image ? (category.image.startsWith('http') ? category.image : API_BASE_URL + category.image) : null);
       setIsFeatured(!!category.featured);
@@ -80,6 +83,25 @@ export default function EditCategory() {
     }
   };
 
+  const handleAddSubcategory = (e) => {
+    const value = subcatInputRef.current.value.trim();
+    if (value && !subcategories.includes(value)) {
+      setSubcategories(prev => [...prev, value]);
+      subcatInputRef.current.value = '';
+    }
+  };
+
+  const handleSubcatInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddSubcategory();
+    }
+  };
+
+  const handleRemoveSubcategory = (name) => {
+    setSubcategories(prev => prev.filter(s => s !== name));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -97,10 +119,12 @@ export default function EditCategory() {
         finalImageUrl = null;
       }
 
-      const subcategoriesArray = formData.subcategories
-        .split(',')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
+      // Si la imagen es una URL absoluta, conviértela a relativa
+      if (typeof finalImageUrl === 'string' && finalImageUrl.startsWith(API_BASE_URL)) {
+        finalImageUrl = finalImageUrl.replace(API_BASE_URL, '');
+      }
+
+      const subcategoriesArray = subcategories;
 
       const updatedCategoryData = {
         name: formData.name,
@@ -181,15 +205,26 @@ export default function EditCategory() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="subcategories">Subcategorías (separadas por coma)</label>
-          <input
-            type="text"
-            id="subcategories"
-            name="subcategories"
-            value={formData.subcategories}
-            onChange={handleInputChange}
-            placeholder="Ej: Alimento Seco, Alimento Húmedo"
-          />
+          <label htmlFor="subcategories">Subcategorías</label>
+         <div className="subcategory-chips-container">
+           {subcategories.map((sub, idx) => (
+             <span key={sub} className="subcategory-chip">
+               {sub}
+               <button type="button" className="remove-chip-btn" onClick={() => handleRemoveSubcategory(sub)}>&times;</button>
+             </span>
+           ))}
+           <div className="add-subcategory-form">
+             <input
+               type="text"
+               ref={subcatInputRef}
+               placeholder="Agregar subcategoría y Enter"
+               className="add-subcategory-input"
+               maxLength={40}
+               onKeyDown={handleSubcatInputKeyDown}
+             />
+             <button type="button" className="add-chip-btn" onClick={handleAddSubcategory}>Agregar</button>
+           </div>
+         </div>
         </div>
 
         <div className="form-group">

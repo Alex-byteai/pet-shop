@@ -10,7 +10,7 @@ GET http://localhost:3001/api/products/all HTTP/1.1
 content-type: application/json
 
 ###
-GET http://localhost:3001/api/products/17 HTTP/1.1
+GET http://localhost:3001/api/products/147 HTTP/1.1
 content-type: application/json
 
 ###
@@ -41,7 +41,7 @@ GET http://localhost:3001/api/categories/featured HTTP/1.1
 content-type: application/json
 
 ###
-GET http://localhost:3001/api/categories/1 HTTP/1.1
+GET http://localhost:3001/api/categories/77 HTTP/1.1
 content-type: application/json
 
 ###

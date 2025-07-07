@@ -111,7 +111,7 @@ const ProductDetail = () => {
         {/* Información del producto */}
         <div className="pd-info">
           <nav className="pd-category">
-            {product.category} / {product.subcategory}
+            {product.category?.name} / {product.productSubcategory?.name}
           </nav>
           <div className="pd-title-container">
             <h1 className="pd-title">{product.name}</h1>
@@ -164,11 +164,11 @@ const ProductDetail = () => {
             <div className="pd-characteristics-grid">
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Categoría:</span>
-                <p className="pd-characteristic-value">{product.category}</p>
+                <p className="pd-characteristic-value">{product.category?.name}</p>
               </div>
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Subcategoría:</span>
-                <p className="pd-characteristic-value">{product.subcategory}</p>
+                <p className="pd-characteristic-value">{product.productSubcategory?.name}</p>
               </div>
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Marca:</span>
