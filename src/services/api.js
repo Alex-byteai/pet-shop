@@ -1,10 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL + '/api',
 });
+
+// Función helper para construir URLs de imágenes
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  return IMAGE_BASE_URL + imagePath;
+};
 
 // Products
 export const getProducts = async () => {

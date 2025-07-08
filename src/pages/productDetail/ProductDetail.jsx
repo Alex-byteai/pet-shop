@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { getProductById } from '../../services/api';
+import { getProductById, getImageUrl } from '../../services/api';
 import { FaCartPlus } from "react-icons/fa6";
 import './ProductDetail.css';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -82,7 +80,7 @@ const ProductDetail = () => {
         <div className="pd-image-container">
           <div className="pd-main-image">
             <img
-              src={mainImage ? (mainImage.startsWith('http') ? mainImage : API_BASE_URL + mainImage) : 'https://via.placeholder.com/400'}
+              src={mainImage ? getImageUrl(mainImage) : 'https://via.placeholder.com/400'}
               alt={product.name}
               className="pd-image"
             />
@@ -100,7 +98,7 @@ const ProductDetail = () => {
                 onClick={() => setMainImage(image)}
               >
                 <img
-                  src={image.startsWith('http') ? image : API_BASE_URL + image}
+                  src={getImageUrl(image)}
                   alt={`${product.name} - Vista ${index + 1}`}
                 />
               </div>
@@ -111,7 +109,8 @@ const ProductDetail = () => {
         {/* Información del producto */}
         <div className="pd-info">
           <nav className="pd-category">
-            {product.category?.name} / {product.productSubcategory?.name}
+            {product.category?.name} 
+            {product.productSubcategory?.name && ` / ${product.productSubcategory.name}`}
           </nav>
           <div className="pd-title-container">
             <h1 className="pd-title">{product.name}</h1>
@@ -168,7 +167,9 @@ const ProductDetail = () => {
               </div>
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Subcategoría:</span>
-                <p className="pd-characteristic-value">{product.productSubcategory?.name}</p>
+                <p className="pd-characteristic-value">
+                  {product.productSubcategory?.name || 'Sin subcategoría'}
+                </p>
               </div>
               <div className="pd-characteristic-item">
                 <span className="pd-characteristic-label">Marca:</span>
