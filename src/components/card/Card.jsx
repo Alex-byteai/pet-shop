@@ -1,14 +1,13 @@
 import './Card.css';
 import { useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+import { getImageUrl } from '../../services/api';
 
 const Card = ({ id, name, price, images, brand }) => {
   const navigate = useNavigate();
   const priceNumber = Number(price); // Conversión segura
   return (
     <div className="card">
-      <img src={API_BASE_URL + images[0]} alt={name} className="card-image" />
+      <img src={getImageUrl(images[0])} alt={name} className="card-image" />
       <h3 className="card-title">{name}</h3>
       <div className="card-price">
         {isNaN(priceNumber) ? 'Precio inválido' : `$${priceNumber.toFixed(2)}`}
