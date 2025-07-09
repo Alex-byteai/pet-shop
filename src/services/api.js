@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+// URL base de la API, configurable por variable de entorno
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
+// Instancia de axios configurada para la API
 const api = axios.create({
   baseURL: API_BASE_URL + '/api',
 });
@@ -14,7 +16,9 @@ export const getImageUrl = (imagePath) => {
   return IMAGE_BASE_URL + imagePath;
 };
 
-// Products
+// ===================== PRODUCTOS =====================
+
+// Obtener todos los productos
 export const getProducts = async () => {
   try {
     const response = await api.get('/products');
@@ -25,6 +29,7 @@ export const getProducts = async () => {
   }
 };
 
+// Obtener un producto por su ID
 export const getProductById = async (id) => {
   try {
     const response = await api.get(`/products/${id}`);
@@ -35,6 +40,7 @@ export const getProductById = async (id) => {
   }
 };
 
+// Crear un nuevo producto
 export const createProduct = async (productData) => {
   try {
     const response = await api.post('/products', productData);
@@ -45,6 +51,7 @@ export const createProduct = async (productData) => {
   }
 };
 
+// Actualizar un producto existente
 export const updateProduct = async (id, productData) => {
   try {
     const response = await api.put(`/products/${id}`, productData);
@@ -55,6 +62,7 @@ export const updateProduct = async (id, productData) => {
   }
 };
 
+// Eliminar un producto
 export const deleteProduct = async (id) => {
   try {
     const response = await api.delete(`/products/${id}`);
@@ -65,6 +73,7 @@ export const deleteProduct = async (id) => {
   }
 };
 
+// Subir imagen de producto
 export const uploadProductImage = async (file) => {
   const formData = new FormData();
   formData.append('image', file);
@@ -74,6 +83,7 @@ export const uploadProductImage = async (file) => {
   return response.data.imageUrl;
 };
 
+// Obtener todos los productos (incluyendo inactivos o borrados)
 export const getAllProducts = async () => {
   try {
     const response = await api.get('/products/all');
@@ -84,7 +94,9 @@ export const getAllProducts = async () => {
   }
 };
 
-// Categories
+// ===================== CATEGORÍAS =====================
+
+// Obtener todas las categorías
 export const getCategories = async () => {
   try {
     const response = await api.get('/categories');
@@ -95,6 +107,7 @@ export const getCategories = async () => {
   }
 };
 
+// Obtener categorías destacadas
 export const getFeaturedCategories = async () => {
   try {
     const response = await api.get('/categories/featured');
@@ -105,6 +118,7 @@ export const getFeaturedCategories = async () => {
   }
 };
 
+// Obtener una categoría por su ID
 export const getCategoryById = async (id) => {
   try {
     const response = await api.get(`/categories/${id}`);
@@ -115,6 +129,7 @@ export const getCategoryById = async (id) => {
   }
 };
 
+// Crear una nueva categoría
 export const createCategory = async (categoryData) => {
   try {
     const response = await api.post('/categories', categoryData);
@@ -125,6 +140,7 @@ export const createCategory = async (categoryData) => {
   }
 };
 
+// Actualizar una categoría existente
 export const updateCategory = async (id, categoryData) => {
   try {
     const response = await api.put(`/categories/${id}`, categoryData);
@@ -135,6 +151,7 @@ export const updateCategory = async (id, categoryData) => {
   }
 };
 
+// Eliminar una categoría
 export const deleteCategory = async (id) => {
   try {
     const response = await api.delete(`/categories/${id}`);
@@ -145,6 +162,7 @@ export const deleteCategory = async (id) => {
   }
 };
 
+// Marcar una categoría como destacada
 export const setCategoryFeatured = async (id, featured) => {
   try {
     const response = await api.put(`/categories/${id}/featured`, { featured });
@@ -155,6 +173,7 @@ export const setCategoryFeatured = async (id, featured) => {
   }
 };
 
+// Subir imagen de categoría
 export const uploadCategoryImage = async (file) => {
   const formData = new FormData();
   formData.append('image', file);
@@ -164,7 +183,9 @@ export const uploadCategoryImage = async (file) => {
   return response.data.imageUrl;
 };
 
-// Users
+// ===================== USUARIOS =====================
+
+// Obtener todos los usuarios
 export const getUsers = async () => {
   try {
     const response = await api.get('/users');
@@ -175,6 +196,7 @@ export const getUsers = async () => {
   }
 };
 
+// Buscar usuario por email
 export const getUserByEmail = async (email) => {
   try {
     const response = await api.get(`/users/search`, {
@@ -187,6 +209,7 @@ export const getUserByEmail = async (email) => {
   }
 };
 
+// Obtener usuario por ID
 export const getUserById = async (id) => {
   try {
     const response = await api.get(`/users/${id}`);
@@ -197,6 +220,7 @@ export const getUserById = async (id) => {
   }
 };
 
+// Crear un nuevo usuario
 export const createUser = async (userData) => {
   try {
     const response = await api.post('/users', userData);
@@ -207,6 +231,7 @@ export const createUser = async (userData) => {
   }
 };
 
+// Actualizar usuario existente
 export const updateUser = async (id, userData) => {
   try {
     const response = await api.put(`/users/${id}`, userData);
@@ -217,6 +242,7 @@ export const updateUser = async (id, userData) => {
   }
 };
 
+// Eliminar usuario
 export const deleteUser = async (id) => {
   try {
     const response = await api.delete(`/users/${id}`);
@@ -227,6 +253,7 @@ export const deleteUser = async (id) => {
   }
 };
 
+// Iniciar sesión
 export const login = async (credentials) => {
   try {
     const response = await api.post('/login', credentials);
@@ -237,7 +264,9 @@ export const login = async (credentials) => {
   }
 };
 
-// Orders
+// ===================== ÓRDENES =====================
+
+// Obtener todas las órdenes
 export const getOrders = async () => {
   try {
     const response = await api.get('/orders');
@@ -248,6 +277,7 @@ export const getOrders = async () => {
   }
 };
 
+// Obtener una orden por su ID
 export const getOrderById = async (id) => {
   try {
     const response = await api.get(`/orders/${id}`);
@@ -258,6 +288,7 @@ export const getOrderById = async (id) => {
   }
 };
 
+// Obtener órdenes por ID de usuario
 export const getOrdersByUserId = async (userId) => {
   try {
     const response = await api.get(`/orders/user/${userId}`);
@@ -268,6 +299,7 @@ export const getOrdersByUserId = async (userId) => {
   }
 };
 
+// Crear una nueva orden
 export const createOrder = async (orderData) => {
   try {
     const response = await api.post('/orders', orderData);
@@ -278,6 +310,7 @@ export const createOrder = async (orderData) => {
   }
 };
 
+// Actualizar una orden existente
 export const updateOrder = async (id, orderData) => {
   try {
     const response = await api.put(`/orders/${id}`, orderData);
@@ -288,6 +321,7 @@ export const updateOrder = async (id, orderData) => {
   }
 };
 
+// Eliminar una orden
 export const deleteOrder = async (id) => {
   try {
     const response = await api.delete(`/orders/${id}`);
@@ -298,6 +332,7 @@ export const deleteOrder = async (id) => {
   }
 };
 
+// Cambiar la contraseña de un usuario
 export const changePassword = async (id, passwords) => {
   try {
     const response = await api.put(`/users/${id}/change-password`, passwords);
@@ -308,7 +343,9 @@ export const changePassword = async (id, passwords) => {
   }
 };
 
-// Funciones para recuperación de contraseña (nuevas)
+// ===================== RECUPERACIÓN DE CONTRASEÑA =====================
+
+// Solicitar recuperación de contraseña
 export const requestPasswordRecovery = async (email) => {
   try {
     const response = await api.post('/users/recover-password-request', { email });
@@ -319,6 +356,7 @@ export const requestPasswordRecovery = async (email) => {
   }
 };
 
+// Verificar código de recuperación
 export const verifyPasswordRecoveryCode = async (email, code) => {
   try {
     const response = await api.post('/users/verify-recovery-code', { email, code });
@@ -329,6 +367,7 @@ export const verifyPasswordRecoveryCode = async (email, code) => {
   }
 };
 
+// Reestablecer contraseña de usuario
 export const resetUserPassword = async (email, newPassword, code) => {
   try {
     const response = await api.post('/users/reset-password', { email, newPassword, code });
@@ -339,6 +378,9 @@ export const resetUserPassword = async (email, newPassword, code) => {
   }
 };
 
+// ===================== PRODUCTOS DESTACADOS Y NUEVOS =====================
+
+// Obtener productos más vendidos o destacados
 export const getTopProducts = async () => {
   try {
     const response = await api.get('/products/top');
@@ -349,6 +391,7 @@ export const getTopProducts = async () => {
   }
 };
 
+// Obtener productos nuevos
 export const getNewProducts = async () => {
   try {
     const response = await api.get('/products/new');

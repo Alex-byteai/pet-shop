@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login as apiLogin, createUser as apiRegister, getUserByEmail ,getUserById, updateUser as apiUpdateUser, changePassword as apiChangePassword, requestPasswordRecovery, verifyPasswordRecoveryCode, resetUserPassword } from '../services/api';
 
+// Contexto de autenticación para toda la aplicación
 const AuthContext = createContext(null);
 
+// Hook personalizado para acceder al contexto de autenticación
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -12,11 +14,15 @@ export const useAuth = () => {
   return context;
 };
 
+// Proveedor de autenticación que envuelve la app
 export const AuthProvider = ({ children }) => {
+  // Estado del usuario autenticado
   const [user, setUser] = useState(null);
+  // Estado de carga para saber si se está verificando el usuario
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Al montar, cargar usuario desde localStorage si existe
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -25,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // Función para iniciar sesión
   const login = async (email, password) => {
     try {
       const response = await apiLogin({ email, password });
@@ -33,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         const userFull = await getUserById(response.id);
         setUser(userFull);
         localStorage.setItem('currentUser', JSON.stringify(userFull));
-        
+        // Redirigir según el rol
         if (response.role === 'admin') {
           navigate('/admin');
         } else {
@@ -47,10 +54,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para registrar un nuevo usuario
   const register = async (userData) => {
     try {
       const newUser = await apiRegister(userData);
-
       const userToStore = {
         id: newUser.id,
         firstName: newUser.firstName,
@@ -62,7 +69,6 @@ export const AuthProvider = ({ children }) => {
         registerDate: newUser.registerDate,
         lastLogin: newUser.lastLogin
       };
-
       setUser(userToStore);
       localStorage.setItem('currentUser', JSON.stringify(userToStore));
       navigate('/user/dashboard');
@@ -73,12 +79,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para cerrar sesión
   const logout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
     navigate('/auth/login');
   };
 
+  // Función para solicitar recuperación de contraseña
   const recoverPassword = async (email) => {
     try {
       const response = await requestPasswordRecovery(email);
@@ -96,6 +104,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para verificar el código de recuperación
   const verifyRecoveryCode = async (email, code) => {
     try {
       await verifyPasswordRecoveryCode(email, code);
@@ -106,6 +115,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para reestablecer la contraseña
   const resetPassword = async (email, newPassword, code) => {
     try {
       await resetUserPassword(email, newPassword, code);
@@ -116,10 +126,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para actualizar el perfil del usuario
   const updateProfile = async (updates) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
-
       await apiUpdateUser(user.id, updates); // Solo actualiza
       // Traer el usuario actualizado (con address)
       const updatedUserBackend = await getUserById(user.id);
@@ -132,10 +142,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Función para cambiar la contraseña
   const changePassword = async (currentPassword, newPassword) => {
     try {
       if (!user) throw new Error('No hay usuario autenticado');
-
       await apiChangePassword(user.id, { currentPassword, newPassword });
       return { success: true };
     } catch (error) {
@@ -144,6 +154,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Valor que se provee a los componentes hijos
   const value = {
     user,
     loading,
@@ -157,8 +168,10 @@ export const AuthProvider = ({ children }) => {
     changePassword
   };
 
+  // Proveedor del contexto, solo renderiza hijos cuando termina de cargar
   return (
     <AuthContext.Provider value={value}>
+      {/* Renderiza hijos solo cuando loading es false */}
       {!loading && children}
     </AuthContext.Provider>
   );

@@ -49,23 +49,27 @@ import ChangePassword from './pages/user/ChangePassword';
 import UserOrderDetail from './pages/user/OrderDetail';
 import OrdersPage from './pages/user/OrdersPage';
 
+// Estructura principal de rutas y providers de la aplicación
 function App() {
   return (
     <Router>
+      {/* Proveedor de autenticación para toda la app */}
       <AuthProvider>
+        {/* Proveedor de carrito para toda la app */}
         <CartProvider>
           <div className="App">
+            {/* Header presente en todas las páginas */}
             <Header />
             <main className="main-content">
               <Routes>
-                <Route element={<Footer />}>
-                  {/* Rutas principales */}
+                {/* Footer envuelve todas las rutas para mostrarlo siempre */}
+                <Route element={<Footer />}> 
+                  {/* Rutas principales de la tienda */}
                   <Route path="/" element={<HomePage />} />
                   <Route path="/search" element={<SearchResults />} />
                   <Route path="/product/:productId" element={<ProductDetail />} />
                   <Route path="/cart" element={<CartPage />} />
-                  
-                  {/* Rutas que requieren autenticación */}
+                  {/* Rutas protegidas: requieren autenticación */}
                   <Route path="/checkout" element={
                     <ProtectedRoute>
                       <Checkout />
@@ -76,8 +80,7 @@ function App() {
                       <OrderComplete />
                     </ProtectedRoute>
                   } />
-
-                  {/* Footer */}
+                  {/* Rutas de información y contacto (footer) */}
                   <Route path="/about" element={<About />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
@@ -87,8 +90,7 @@ function App() {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/support" element={<Support />} />
                   <Route path="/feedback" element={<Feedback />} />
-
-                  {/* Admin - Todas las rutas protegidas y solo para admin */}
+                  {/* Rutas de administración, solo accesibles para admin */}
                   <Route path="/admin" element={
                     <ProtectedRoute adminOnly>
                       <AdminDashboard />
@@ -144,13 +146,11 @@ function App() {
                       <EditCategory />
                     </ProtectedRoute>
                   } />
-
-                  {/* Autenticación */}
+                  {/* Rutas de autenticación (login, registro, recuperación) */}
                   <Route path="/auth/login" element={<LoginPage />} />
                   <Route path="/auth/register" element={<RegisterPage />} />
                   <Route path="/auth/recover" element={<RecoverPage />} />
-
-                  {/* Usuario - Rutas protegidas */}
+                  {/* Rutas de usuario autenticado */}
                   <Route path="/user/dashboard" element={
                     <ProtectedRoute>
                       <UserDashboard />
