@@ -78,7 +78,7 @@ export default function UserDashboard() {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(price);
   };
 

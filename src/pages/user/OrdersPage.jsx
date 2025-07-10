@@ -93,7 +93,7 @@ export default function OrdersPage() {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(price);
   };
 

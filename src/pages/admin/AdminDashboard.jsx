@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUsers, FaShoppingBag, FaMoneyBillWave } from 'react-icons/fa';
+import { FaUsers, FaShoppingBag, FaMoneyBillWave, FaCalendarAlt, FaPlus, FaCog, FaBox, FaTags } from 'react-icons/fa';
 import { getOrders, getUsers } from '../../services/api';
 import './AdminDashboard.css';
 
@@ -10,6 +10,9 @@ export default function AdminDashboard() {
     newUsers: 0,
     totalIncome: 0
   });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [dateRange, setDateRange] = useState(() => {
     const today = new Date();
@@ -23,7 +26,6 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-
     if (!localStorage.getItem('products')) {
       localStorage.setItem('products', JSON.stringify([]));
     }
@@ -36,6 +38,9 @@ export default function AdminDashboard() {
   }, [dateRange]);
 
   const loadSummaryData = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
       // Cargar órdenes desde el backend
       const allOrders = await getOrders();
@@ -102,11 +107,14 @@ export default function AdminDashboard() {
       setSummaryData(summary);
     } catch (error) {
       console.error('Error al cargar datos del resumen del administrador desde la API:', error);
+      setError('Error al cargar los datos. Por favor, intenta de nuevo.');
       setSummaryData({
         orders: 0,
         newUsers: 0,
         totalIncome: 0
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,13 +125,35 @@ export default function AdminDashboard() {
     }).format(price);
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="admin-dashboard">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Cargando datos del dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-dashboard">
       <div className="dashboard-header">
         <h1>Panel de Administración</h1>
         <div className="date-filter">
           <div className="date-input">
-            <label>Desde:</label>
+            <label>
+              <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
+              Desde:
+            </label>
             <input
               type="date"
               value={dateRange.startDate}
@@ -132,7 +162,10 @@ export default function AdminDashboard() {
             />
           </div>
           <div className="date-input">
-            <label>Hasta:</label>
+            <label>
+              <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
+              Hasta:
+            </label>
             <input
               type="date"
               value={dateRange.endDate}
@@ -142,6 +175,14 @@ export default function AdminDashboard() {
             />
           </div>
         </div>
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+            <button onClick={loadSummaryData} className="retry-button">
+              Reintentar
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="summary-cards">
@@ -151,7 +192,10 @@ export default function AdminDashboard() {
           </div>
           <div className="card-content">
             <h3>Pedidos</h3>
-            <p className="card-value">{summaryData.orders}</p>
+            <p className="card-value">{summaryData.orders.toLocaleString()}</p>
+            <p className="card-period">
+              {formatDate(dateRange.startDate)} - {formatDate(dateRange.endDate)}
+            </p>
             <Link to="/admin/orders" className="card-link">Ver pedidos</Link>
           </div>
         </div>
@@ -162,7 +206,10 @@ export default function AdminDashboard() {
           </div>
           <div className="card-content">
             <h3>Nuevos Usuarios</h3>
-            <p className="card-value">{summaryData.newUsers}</p>
+            <p className="card-value">{summaryData.newUsers.toLocaleString()}</p>
+            <p className="card-period">
+              {formatDate(dateRange.startDate)} - {formatDate(dateRange.endDate)}
+            </p>
             <Link to="/admin/users" className="card-link">Ver usuarios</Link>
           </div>
         </div>
@@ -174,6 +221,9 @@ export default function AdminDashboard() {
           <div className="card-content">
             <h3>Ingresos Totales</h3>
             <p className="card-value">{formatPrice(summaryData.totalIncome)}</p>
+            <p className="card-period">
+              {formatDate(dateRange.startDate)} - {formatDate(dateRange.endDate)}
+            </p>
             <Link to="/admin/orders" className="card-link">Ver detalles</Link>
           </div>
         </div>
@@ -183,15 +233,19 @@ export default function AdminDashboard() {
         <h2>Acciones Rápidas</h2>
         <div className="action-buttons">
           <Link to="/admin/products/new" className="action-button">
+            <FaPlus style={{ marginRight: '0.5rem' }} />
             Agregar Producto
           </Link>
           <Link to="/admin/categories/new" className="action-button">
+            <FaTags style={{ marginRight: '0.5rem' }} />
             Crear Categoría
           </Link>
           <Link to="/admin/products" className="action-button">
+            <FaBox style={{ marginRight: '0.5rem' }} />
             Gestionar Productos
           </Link>
           <Link to="/admin/categories" className="action-button">
+            <FaCog style={{ marginRight: '0.5rem' }} />
             Gestionar Categorías
           </Link>
         </div>
