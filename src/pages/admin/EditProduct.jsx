@@ -232,10 +232,10 @@ export default function EditProduct() {
 
   return (
     <div className="edit-product-page">
-      <div className="page-header">
-        <button onClick={() => navigate('/admin/products')} className="back-button">
+      <button onClick={() => navigate('/admin/products')} className="back-button">
           <FaArrowLeft /> Volver al listado
         </button>
+      <div className="page-header">
         <h1>Editar Producto</h1>
       </div>
 
