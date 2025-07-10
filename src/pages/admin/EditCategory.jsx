@@ -164,10 +164,10 @@ export default function EditCategory() {
 
   return (
     <div className="edit-category-page">
-      <div className="page-header">
-        <button onClick={() => navigate('/admin/categories')} className="back-button">
+      <button onClick={() => navigate('/admin/categories')} className="back-button">
           <FaArrowLeft /> Volver al listado
         </button>
+      <div className="page-header">
         <h1>Editar Categoría</h1>
       </div>
 
