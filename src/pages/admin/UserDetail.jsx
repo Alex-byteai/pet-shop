@@ -74,7 +74,7 @@ export default function UserDetail() {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(price);
   };
 
@@ -95,10 +95,11 @@ export default function UserDetail() {
 
   return (
     <div className="user-detail-page">
-      <div className="page-header">
-        <button onClick={() => navigate('/admin/users')} className="back-button">
+      <button onClick={() => navigate('/admin/users')} className="back-button">
           <FaArrowLeft /> Volver al listado
-        </button>
+      </button>
+
+      <div className="page-header">
         <h1>Detalle del Usuario</h1>
       </div>
 
@@ -137,7 +138,9 @@ export default function UserDetail() {
           </div>
           <div className="info-item">
             <label>Rol</label>
-            <span className="role-badge">{user.role}</span>
+            <span className={`ud-role-badge ${user.role}`}>
+              {user.role}
+            </span>
           </div>
         </div>
 

@@ -1,221 +1,180 @@
+/* Paleta de colores */
+:root {
+  --cafe-claro: #b89b72;
+  --cafe-medio: #a26e3c;
+  --cafe-oscuro: #7c4f23;
+  --beige: #f5eee6;
+  --blanco: #fff;
+  --gris-suave: #f9f9f9;
+  --gris-texto: #555;
+  --borde: #e5dacb;
+}
+
 .ud-user-dashboard {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 30px auto;
   padding: 2rem;
+  background-color: #f3f1ee;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(186, 155, 114, 0.08);
+  border: 1px solid var(--borde);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  color: var(--gris-texto);
 }
 
 .ud-dashboard-header {
-  margin-bottom: 2rem;
-  background-color: #fff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.ud-dashboard-header h1 {
-  margin: 0;
-  color: #333;
-  font-size: 2rem;
-  font-weight: 600;
-}
-
-.ud-user-info {
-  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 1rem;
+}
+
+.ud-dashboard-header h1 {
+  color: var(--cafe-oscuro);
+  font-size: 2.3rem;
+  margin: 0;
+}
+
+.ud-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
 }
 
 .ud-user-name {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  font-size: 2.1rem;
+  color: var(--cafe-medio);
 }
 
 .ud-user-email {
-  font-size: 1rem;
-  color: #777;
+  font-size: 0.95rem;
+  color: var(--gris-texto);
+  font-style: italic;
 }
 
 .ud-dashboard-nav {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid #f0f0f0;
+  flex-wrap: wrap;
+  margin: 2rem 0;
+  border-bottom: 1px solid var(--borde);
   padding-bottom: 1rem;
 }
 
 .ud-nav-link {
+  padding: 0.6rem 1.2rem;
+   background: none;
+  border: 1.5px solid var(--cafe-claro);
+  border-radius: 6px;
+  color: var(--cafe-medio);
   text-decoration: none;
-  color: #666;
-  padding: 0.75rem 1.25rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  font-size: 0.95rem;
   font-weight: 500;
+  transition: all 0.2s;
 }
 
 .ud-nav-link:hover {
-  background-color: #f8f8f8;
-  color: #a26e3c;
-}
-
-.ud-orders-section {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 2rem;
+  background-color: #e2c9a9;
+  border-color: var(--cafe-claro);
 }
 
 .ud-orders-section h2 {
-  margin: 0 0 1.5rem;
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--cafe-oscuro);
+  font-size: 1.8rem;
+  border-left: 4px solid var(--cafe-claro);
+  padding-left: 0.75rem;
 }
 
 .ud-orders-list {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .ud-order-card {
-  border: 1px solid #eee;
-  border-radius: 10px;
+  background-color: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
   padding: 1.5rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(186, 155, 114, 0.07);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .ud-order-card:hover {
+  box-shadow: 0 4px 12px rgba(186, 155, 114, 0.15);
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-  border-color: #ddd;
 }
 
 .ud-order-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.ud-order-number {
+  margin-bottom: 1rem;
   font-weight: 600;
-  color: #333;
   font-size: 1.1rem;
 }
 
 .ud-order-status {
-  padding: 0.35rem 1rem;
-  border-radius: 20px;
+  padding: 0.25rem 0.9rem;
+  border-radius: 1rem;
   font-size: 0.9rem;
-  font-weight: 500;
-  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--blanco);
+  text-transform: capitalize;
 }
 
 .ud-order-status.pending {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeeba;
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
 }
 
 .ud-order-status.completed {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
 }
 
 .ud-order-status.cancelled {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
 }
 
 .ud-order-details {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-}
-
-.ud-order-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.ud-order-date {
+  margin-bottom: 1rem;
   font-size: 0.95rem;
-  color: #666;
-}
-
-.ud-order-items {
-  font-size: 0.95rem;
-  color: #777;
-}
-
-.ud-order-total {
-  font-weight: 600;
-  color: #a26e3c;
-  font-size: 1.1rem;
+  color: var(--gris-texto);
 }
 
 .ud-order-items-preview {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid #eee;
 }
 
 .ud-preview-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background-color: #f8f9fa;
-  padding: 0.75rem;
+  gap: 0.5rem;
+  background: var(--gris-suave);
+  padding: 0.5rem;
   border-radius: 8px;
-  flex: 1;
-  min-width: 200px;
-  max-width: calc(50% - 0.5rem);
-  transition: background-color 0.2s ease;
-}
-
-.ud-preview-item:hover {
-  background-color: #f0f0f0;
 }
 
 .ud-preview-image {
-  width: 60px !important;
-  height: 60px !important;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-  border: 1px solid #eee;
+  border-radius: 6px;
+  border: 1px solid var(--borde);
 }
 
 .ud-preview-details {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  overflow: hidden;
-}
-
-.ud-item-name {
-  font-size: 0.95rem;
-  color: #333;
-  font-weight: 500;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.ud-item-quantity {
   font-size: 0.9rem;
-  color: #666;
-  font-weight: 500;
 }
 
 .ud-pagination {
@@ -224,25 +183,23 @@
   align-items: center;
   gap: 1rem;
   margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #eee;
 }
 
 .ud-page-button {
-  padding: 0.5rem 1.25rem;
-  border: 1px solid #ddd;
-  background: white;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--borde);
+  background: none;
   border-radius: 6px;
-  color: #666;
+  color: var(--cafe-medio);
   cursor: pointer;
-  transition: all 0.2s ease;
   font-weight: 500;
+  transition: all 0.2s;
 }
 
 .ud-page-button:hover:not(:disabled) {
-  background-color: #f5f5f5;
-  color: #333;
-  border-color: #ccc;
+  background-color: var(--beige);
+  color: var(--cafe-oscuro);
+  border-color: var(--cafe-oscuro);
 }
 
 .ud-page-button:disabled {
@@ -251,68 +208,37 @@
 }
 
 .ud-page-info {
-  color: #666;
-  font-size: 0.95rem;
-}
-
-.ud-loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem;
+  color: var(--cafe-medio);
+  font-weight: 500;
 }
 
 .ud-no-orders {
   text-align: center;
-  padding: 3rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  padding: 2rem;
+  background: var(--blanco);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(186, 155, 114, 0.07);
+  color: var(--gris-texto);
 }
 
 .ud-shop-link {
-  display: inline-block;
   margin-top: 1rem;
+  display: inline-block;
+  background: var(--cafe-medio);
+  color: var(--blanco);
   padding: 0.75rem 1.5rem;
-  background-color: #a26e3c;
-  color: white;
-  text-decoration: none;
   border-radius: 8px;
-  transition: all 0.2s ease;
-  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s;
 }
 
 .ud-shop-link:hover {
-  background-color: #8a5c32;
-  transform: translateY(-2px);
+  background: var(--cafe-oscuro);
 }
 
-@media (max-width: 768px) {
-  .ud-user-dashboard {
-    padding: 1rem;
-  }
-
-  .ud-preview-item {
-    max-width: 100%;
-  }
-
-  .ud-dashboard-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .ud-nav-link {
-    width: 100%;
-    text-align: center;
-  }
-
-  .ud-order-header,
-  .ud-order-details {
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-start;
-  }
-
-  .ud-order-total {
-    margin-top: 0.5rem;
-  }
-} 
+.ud-loading-spinner {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: var(--gris-texto);
+}

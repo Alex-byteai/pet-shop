@@ -1,8 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getOrderById, getUserById, getProductById, updateOrder } from "../../services/api"; // Importar funciones de API
-// import { orders as ordersData } from "../../data/orders"; // Eliminar o comentar esta línea
-// import { users } from "../../data/users"; // Eliminar o comentar esta línea
+import { getOrderById, getUserById, getProductById, updateOrder } from "../../services/api";
+
 import "./OrderDetail.css";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
@@ -27,13 +26,13 @@ function OrderDetail() {
 
   useEffect(() => {
     loadOrderData();
+    // eslint-disable-next-line
   }, [orderId]);
 
   const loadOrderData = async () => {
     setLoading(true);
     setError(null);
     try {
-      // Cargar orden por ID desde el backend
       const fetchedOrder = await getOrderById(orderId);
       if (!fetchedOrder) {
         setError("Orden no encontrada");
@@ -41,7 +40,6 @@ function OrderDetail() {
         return;
       }
 
-      // Cargar usuario por ID desde el backend (robusto)
       const userId = fetchedOrder?.userid || fetchedOrder?.usuarioId || fetchedOrder?.usuario?.id;
       if (userId) {
         const fetchedUser = await getUserById(userId);
@@ -51,7 +49,6 @@ function OrderDetail() {
         console.warn('No se encontró el ID de usuario en la orden', fetchedOrder);
       }
 
-      // Enriquecer los ítems de la orden con detalles completos de los productos
       const enrichedItems = await Promise.all(fetchedOrder.items.map(async (item) => {
         const productDetail = await getProductById(item.productId);
         return { ...item, ...productDetail };
@@ -71,10 +68,9 @@ function OrderDetail() {
     if (!confirmCancel) return;
 
     try {
-      // Actualizar estado de la orden en el backend
       await updateOrder(order.orderid, { status: "cancelado" });
       alert("Orden cancelada correctamente!");
-      loadOrderData(); // Recargar los datos de la orden para reflejar el cambio
+      loadOrderData();
     } catch (error) {
       console.error("Error al cancelar la orden:", error);
       alert("Hubo un error al cancelar la orden.");
@@ -95,19 +91,19 @@ function OrderDetail() {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(price);
   };
 
   if (loading) {
-    return <div className="loading">Cargando detalle de la orden...</div>;
+    return <div className="order-detail-loading">Cargando detalle de la orden...</div>;
   }
 
   if (error || !order) {
     return (
-      <div className="error-container">
+      <div className="order-detail-error-container">
         <h2>{error || "Orden no encontrada"}</h2>
-        <button onClick={() => navigate("/admin/orders")} className="back-button">
+        <button onClick={() => navigate("/admin/orders")} className="order-detail-back-button">
           Volver a la lista de órdenes
         </button>
       </div>
@@ -117,7 +113,7 @@ function OrderDetail() {
   return (
     <div className="order-detail-container">
       <h2 className="order-detail-title">Detalle de Orden #{order.orderid}</h2>
-      <div className="order-info">
+      <div className="order-detail-info">
         <p>
           <strong>ID:</strong> {order.orderid}
         </p>
@@ -128,8 +124,8 @@ function OrderDetail() {
           <strong>Fecha:</strong> {formatDate(order.date)}
         </p>
         <p>
-          <strong>Estado:</strong> 
-          <span className={`status-badge status-${order.status.toLowerCase()}`}>
+          <strong>Estado:</strong>
+          <span className={`order-detail-status-badge order-detail-status-${order.status.toLowerCase()}`}>
             {order.status}
           </span>
         </p>
@@ -137,7 +133,7 @@ function OrderDetail() {
 
       <h3 className="order-detail-subtitle">Productos</h3>
       {order.items && order.items.length > 0 ? (
-        <table className="order-items-table">
+        <table className="order-detail-items-table">
           <thead>
             <tr>
               <th>Imagen</th>
@@ -151,10 +147,10 @@ function OrderDetail() {
             {order.items.map((item, idx) => (
               <tr key={idx}>
                 <td>
-                  <img 
-                    src={item.images && item.images[0] ? getImageUrl(item.images[0]) : getDefaultProductImage()} 
+                  <img
+                    src={item.images && item.images[0] ? getImageUrl(item.images[0]) : getDefaultProductImage()}
                     alt={item.name || 'Producto'}
-                    className="product-thumbnail"
+                    className="order-detail-product-thumbnail"
                     onError={(e) => {
                       e.target.src = getDefaultProductImage();
                     }}
@@ -169,15 +165,15 @@ function OrderDetail() {
           </tbody>
         </table>
       ) : (
-        <p>No hay productos en esta orden.</p>
+        <p className="order-detail-no-products">No hay productos en esta orden.</p>
       )}
 
-      <p className="order-total">
+      <p className="order-detail-total">
         <strong>Total:</strong> {formatPrice(order.total || 0)}
       </p>
 
       {order.status.toLowerCase() !== "cancelado" && (
-        <button className="cancel-button" onClick={cancelarOrden}>
+        <button className="order-detail-cancel-button" onClick={cancelarOrden}>
           Cancelar Orden
         </button>
       )}

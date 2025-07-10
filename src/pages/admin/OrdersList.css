@@ -1,103 +1,207 @@
+:root {
+  --cafe-claro: #b89b72;
+  --cafe-medio: #a26e3c;
+  --cafe-oscuro: #7c4f23;
+  --beige: #f5eee6;
+  --blanco: #fff;
+  --gris-suave: #f9f9f9;
+  --gris-texto: #555;
+  --borde: #e5dacb;
+}
+
+/* Contenedor principal */
 .orders-list-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 2rem;
+  background: var(--beige);
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(186, 155, 114, 0.08);
+  border: 1px solid var(--borde);
 }
 
+/* Título */
 .orders-list-title {
-    color: #333;
-    margin-bottom: 2rem;
-    font-size: 2rem;
+  margin: 0 0 2rem;
+  color: var(--cafe-oscuro);
+  font-size: 2rem;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  letter-spacing: 1px;
 }
 
-.orders-search-input {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1.5rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
+/* Búsqueda */
+.orders-list-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1.5px solid var(--borde);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--gris-texto);
+  background: var(--blanco);
+  transition: border-color 0.2s;
 }
 
-.orders-search-input:focus {
-    outline: none;
-    border-color: #a26e3c;
+.orders-list-search-input:focus {
+  outline: none;
+  border-color: var(--cafe-claro);
+  background: #fdf8f3;
 }
 
-.orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* Tabla */
+.orders-list-users-table {
+  background: var(--blanco);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(186, 155, 114, 0.07);
+  overflow: hidden;
 }
 
-.orders-table th,
-.orders-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+.orders-list-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.orders-table th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #333;
+.orders-list-table th {
+  background-color: #f8f5f1;
+  color: var(--cafe-medio);
+  font-weight: 600;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 2px solid var(--borde);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
 }
 
-.orders-table tr:last-child td {
-    border-bottom: none;
+.orders-list-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--borde);
+  color: var(--gris-texto);
+  font-size: 1rem;
 }
 
-.orders-table tbody tr:hover {
-    background-color: #f8f9fa;
+.orders-list-table tr:last-child td {
+  border-bottom: none;
 }
 
-.view-detail-button {
-    padding: 0.5rem 1rem;
-    background-color: #a26e3c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.orders-list-table tbody tr:hover {
+  background-color: #f5eee6;
+  transition: background 0.2s;
 }
 
-.view-detail-button:hover {
-    background-color: #8a5c32;
+/* Badge de estado con degradado */
+.orders-list-status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  color: var(--blanco);
+  box-shadow: 0 1px 4px rgba(186, 155, 114, 0.08);
 }
 
-.no-orders-message {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-    background: white;
-    border-radius: 8px;
-    margin-top: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.orders-list-status-badge.pendiente {
+  background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
 }
 
+.orders-list-status-badge.enviado {
+  background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+}
+
+.orders-list-status-badge.cancelado {
+  background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+}
+
+/* Botón */
+.orders-list-view-detail-button {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1.5px solid var(--cafe-claro);
+  border-radius: 6px;
+  color: var(--cafe-medio);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.orders-list-view-detail-button:hover {
+  background-color: #e4ceb4;
+  color: var(--cafe-oscuro);
+  border-color: var(--cafe-oscuro);
+}
+
+
+/* Mensajes */
+.orders-list-loading-message,
+.orders-list-no-orders-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gris-texto);
+  background: var(--blanco);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  border: 1px solid var(--borde);
+  box-shadow: 0 2px 8px rgba(186, 155, 114, 0.07);
+  margin-top: 1.5rem;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-    .orders-list-container {
-        padding: 1rem;
-    }
+  .orders-list-container {
+    padding: 1rem;
+  }
 
-    .orders-table {
-        display: block;
-        overflow-x: auto;
-    }
+  .orders-list-table {
+    overflow-x: auto;
+    display: block;
+  }
 
-    .orders-table th,
-    .orders-table td {
-        padding: 0.75rem;
-        font-size: 0.9rem;
-    }
+  .orders-list-table th,
+  .orders-list-table td {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
 
-    .view-detail-button {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-    }
+  .orders-list-view-detail-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Paginación */
+.orders-list-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.orders-list-page-button {
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--borde);
+  background: none;
+  border-radius: 6px;
+  color: var(--cafe-medio);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.orders-list-page-button:hover:not(:disabled) {
+  background-color: var(--beige);
+  color: var(--cafe-oscuro);
+  border-color: var(--cafe-oscuro);
+}
+
+.orders-list-page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.orders-list-page-info {
+  color: var(--cafe-medio);
+  font-weight: 500;
 }

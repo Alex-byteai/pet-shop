@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaUserSlash, FaUserCheck } from 'react-icons/fa';
-import { getUsers, updateUser } from '../../services/api'; // Importar funciones de API
+import { getUsers, updateUser } from '../../services/api';
 import './UserList.css';
 
 export default function UserList() {
@@ -11,7 +11,7 @@ export default function UserList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  
+
   const usersPerPage = 10;
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function UserList() {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const fetchedUsers = await getUsers(); // Obtener usuarios de la API
+      const fetchedUsers = await getUsers();
       setUsers(fetchedUsers);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
@@ -36,10 +36,9 @@ export default function UserList() {
       if (!userToUpdate) return;
 
       const updatedUser = { ...userToUpdate, active: !userToUpdate.active };
-      await updateUser(userId, { active: updatedUser.active }); // Actualizar en el backend
-      
-      // Actualizar el estado local después de la actualización exitosa en el backend
-      setUsers(prevUsers => 
+      await updateUser(userId, { active: updatedUser.active });
+
+      setUsers(prevUsers =>
         prevUsers.map(u => (u.id === userId ? updatedUser : u))
       );
       setShowConfirmModal(false);
@@ -54,8 +53,8 @@ export default function UserList() {
   const filteredUsers = users.filter(user => {
     const searchTermLower = searchTerm.toLowerCase();
     return user.id.toString().includes(searchTermLower) ||
-           user.firstName.toLowerCase().includes(searchTermLower) ||
-           user.lastName.toLowerCase().includes(searchTermLower);
+      user.firstName.toLowerCase().includes(searchTermLower) ||
+      user.lastName.toLowerCase().includes(searchTermLower);
   });
 
   // Calcular paginación
@@ -65,26 +64,26 @@ export default function UserList() {
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   const ConfirmationModal = () => (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="user-list-modal-overlay">
+      <div className="user-list-modal-content">
         <h3>{selectedUser?.active ? 'Desactivar' : 'Activar'} Usuario</h3>
         <p>¿Estás seguro de que deseas {selectedUser?.active ? 'desactivar' : 'activar'} al usuario {selectedUser?.firstName} {selectedUser?.lastName}?</p>
         {selectedUser?.active && (
-          <p className="warning">El usuario no podrá iniciar sesión después de ser desactivado.</p>
+          <p className="user-list-warning">El usuario no podrá iniciar sesión después de ser desactivado.</p>
         )}
-        <div className="modal-actions">
-          <button 
+        <div className="user-list-modal-actions">
+          <button
             onClick={() => handleToggleUserStatus(selectedUser.id)}
-            className="confirm-button"
+            className="user-list-confirm-button"
           >
             Sí, {selectedUser?.active ? 'desactivar' : 'activar'} usuario
           </button>
-          <button 
+          <button
             onClick={() => {
               setShowConfirmModal(false);
               setSelectedUser(null);
             }}
-            className="cancel-button"
+            className="user-list-cancel-button"
           >
             Cancelar
           </button>
@@ -95,12 +94,13 @@ export default function UserList() {
 
   return (
     <div className="user-list-page">
-      <div className="page-header">
-        <h1>Usuarios Registrados</h1>
-        <div className="search-box">
-          <FaSearch className="search-icon" />
+      <div className="user-list-header">
+        <h1 className="user-list-header-title">Usuarios Registrados</h1>
+        <div className="user-list-search-box">
+          <FaSearch className="user-list-search-icon" />
           <input
             type="text"
+            className="user-list-search-input"
             placeholder="Buscar por ID, nombre o apellido..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -109,15 +109,15 @@ export default function UserList() {
       </div>
 
       {loading ? (
-        <div className="loading">Cargando usuarios...</div>
+        <div className="user-list-loading">Cargando usuarios...</div>
       ) : currentUsers.length === 0 ? (
-        <div className="no-results">
+        <div className="user-list-no-results">
           <p>No se encontraron usuarios{searchTerm && ' que coincidan con la búsqueda'}.</p>
         </div>
       ) : (
         <>
-          <div className="users-table">
-            <table>
+          <div className="user-list-users-table">
+            <table className="user-list-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -130,23 +130,23 @@ export default function UserList() {
               </thead>
               <tbody>
                 {currentUsers.map(user => (
-                  <tr key={user.id} className={!user.active ? 'inactive-user' : ''}>
+                  <tr key={user.id} className={!user.active ? 'user-list-inactive-user' : ''}>
                     <td>{user.id}</td>
                     <td>{user.firstName} {user.lastName}</td>
                     <td>{user.email}</td>
                     <td>{user.registerDate ? new Date(user.registerDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</td>
                     <td>
-                      <span className={`status-badge ${user.active ? 'active' : 'inactive'}`}>
+                      <span className={`user-list-status-badge ${user.active ? 'active' : 'inactive'}`}>
                         {user.active ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
                     <td>
-                      <div className="action-buttons">
-                        <Link to={`/admin/users/${user.id}`} className="view-button">
+                      <div className="user-list-action-buttons">
+                        <Link to={`/admin/users/${user.id}`} className="user-list-view-button">
                           Ver detalle
                         </Link>
                         <button
-                          className={`toggle-status-button ${user.active ? 'deactivate' : 'activate'}`}
+                          className={`user-list-toggle-status-button ${user.active ? 'deactivate' : 'activate'}`}
                           onClick={() => {
                             setSelectedUser(user);
                             setShowConfirmModal(true);
@@ -173,21 +173,21 @@ export default function UserList() {
           </div>
 
           {totalPages > 1 && (
-            <div className="pagination">
+            <div className="user-list-pagination">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="page-button"
+                className="user-list-page-button"
               >
                 Anterior
               </button>
-              <span className="page-info">
+              <span className="user-list-page-info">
                 Página {currentPage} de {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="page-button"
+                className="user-list-page-button"
               >
                 Siguiente
               </button>
